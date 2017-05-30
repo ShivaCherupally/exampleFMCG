@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <TableLayout
+        android:id="@+id/tableRow1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:shrinkColumns="*"
+        android:stretchColumns="*">
+
+        <!-- Row 1 with 5 columns -->
+
+        <TableRow
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:background="@drawable/table_view_border_3"
+                android:gravity="center"
+                android:padding="10dip"
+                android:singleLine="true"
+                android:text="Prod"
+                android:textColor="#ffffff"/>
+
+            <TextView
+                android:layout_weight="1"
+                android:background="@drawable/table_view_border_3"
+                android:gravity="center"
+                android:padding="10dip"
+                android:singleLine="true"
+                android:text="Prc"
+                android:textColor="#ffffff"/>
+
+            <TextView
+                android:layout_weight="1"
+                android:background="@drawable/table_view_border_3"
+                android:gravity="center"
+                android:padding="10dip"
+                android:singleLine="true"
+                android:text="Qty"
+                android:textColor="#ffffff"/>
+
+            <TextView
+                android:layout_weight="1"
+                android:background="@drawable/table_view_border_3"
+                android:gravity="center"
+                android:padding="10dip"
+                android:singleLine="true"
+                android:text="Fres"
+                android:textColor="#ffffff"/>
+
+            <TextView
+                android:layout_weight="1"
+                android:background="@drawable/table_view_border_3"
+                android:gravity="center"
+                android:padding="10dip"
+                android:singleLine="true"
+                android:text="TaxAmt"
+                android:textColor="#ffffff"/>
+
+            <TextView
+                android:layout_weight="1"
+                android:background="@drawable/table_view_border_3"
+                android:gravity="center"
+                android:padding="10dip"
+                android:singleLine="true"
+                android:text="STot"
+                android:textColor="#ffffff"/>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp">
+
+            <TextView
+                android:id="@+id/TextView0"
+                android:layout_width="0px"
+                android:layout_weight="0.35"
+                android:background="@drawable/table_view_border"
+                android:paddingLeft="5dp"
+
+                android:text="Product1 dsfsdfsdfsdfsdfsdfsdfsdfsdf hkkjhkjhkjhkjhkjhkjhkjhkjhkjhj">
+
+            </TextView>
+
+            <TextView
+                android:background="@drawable/table_view_border"
+                android:gravity="center_horizontal"
+                android:text="10"
+                android:typeface="serif">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/TextView03"
+                android:background="@drawable/table_view_border"
+                android:gravity="center_horizontal"
+                android:text="5"
+                android:typeface="serif">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/TextView02"
+                android:background="@drawable/table_view_border"
+                android:gravity="center_horizontal"
+                android:text=""
+                android:typeface="serif">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/TextView01"
+                android:background="@drawable/table_view_border"
+                android:gravity="center_horizontal"
+                android:text="14.5"
+                android:typeface="serif">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/textView1"
+                android:background="@drawable/table_view_border"
+                android:gravity="center_horizontal"
+                android:text=""
+                android:typeface="serif">
+
+            </TextView>
+        </TableRow>
+
+
+        <!-- <TableRow
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginRight="5dp">
+
+             <TextView
+                 android:id="@+id/TextView0"
+                 android:background="@drawable/table_view_border"
+                 android:paddingLeft="5dp"
+                 android:text="Product1">
+
+             </TextView>
+
+             <TextView
+                 android:background="@drawable/table_view_border"
+                 android:gravity="center_horizontal"
+                 android:text="10"
+                 android:typeface="serif">
+
+             </TextView>
+
+             <TextView
+                 android:id="@+id/TextView03"
+                 android:background="@drawable/table_view_border"
+                 android:gravity="center_horizontal"
+                 android:text="5"
+                 android:typeface="serif">
+
+             </TextView>
+
+             <TextView
+                 android:id="@+id/TextView02"
+                 android:background="@drawable/table_view_border"
+                 android:gravity="center_horizontal"
+                 android:text=""
+                 android:typeface="serif">
+
+             </TextView>
+
+             <TextView
+                 android:id="@+id/TextView01"
+                 android:background="@drawable/table_view_border"
+                 android:gravity="center_horizontal"
+                 android:text="14.5"
+                 android:typeface="serif">
+
+             </TextView>
+
+             <TextView
+                 android:id="@+id/textView1"
+                 android:background="@drawable/table_view_border"
+                 android:gravity="center_horizontal"
+                 android:text=""
+                 android:typeface="serif">
+
+             </TextView>
+         </TableRow>
+
+         <TableRow
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:paddingLeft="5dp"
+                 android:text="Product2">
+
+             </TextView>
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:gravity="center_horizontal"
+                 android:text="10">
+
+             </TextView>
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:gravity="center_horizontal"
+                 android:text="5">
+
+             </TextView>
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:gravity="center_horizontal"
+                 android:text="">
+
+             </TextView>
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:gravity="center_horizontal"
+                 android:text="14.5">
+
+             </TextView>
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:gravity="center_horizontal"
+                 android:text="">
+
+             </TextView>
+         </TableRow>
+
+         <TableRow
+             android:id="@+id/tableRow2"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
+
+             <TextView
+                 android:id="@+id/textView2"
+                 android:background="@drawable/table_view_border"
+                 android:paddingLeft="5dp"
+                 android:text="Product3"
+                 android:textStyle="bold">
+
+             </TextView>
+
+             <TextView
+                 android:id="@+id/textView3"
+                 android:background="@drawable/table_view_border"
+                 android:gravity="center_horizontal"
+                 android:text="10">
+
+             </TextView>
+
+             <TextView
+                 android:id="@+id/textView4"
+                 android:background="@drawable/table_view_border"
+                 android:gravity="center_horizontal"
+                 android:text="5">
+
+             </TextView>
+
+             <TextView
+                 android:id="@+id/textView5"
+                 android:background="@drawable/table_view_border"
+                 android:gravity="center_horizontal"
+                 android:text="">
+
+             </TextView>
+
+             <TextView
+                 android:id="@+id/textView6"
+                 android:background="@drawable/table_view_border"
+                 android:gravity="center_horizontal"
+                 android:text="14.5">
+
+             </TextView>
+
+             <TextView
+                 android:id="@+id/textView7"
+                 android:background="@drawable/table_view_border"
+                 android:gravity="center_horizontal"
+                 android:text="">
+
+             </TextView>
+         </TableRow>
+
+         <TableRow
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:paddingLeft="5dp"
+                 android:text="Product4">
+
+             </TextView>
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:gravity="center_horizontal"
+                 android:text="10">
+
+             </TextView>
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:gravity="center_horizontal"
+                 android:text="5">
+
+             </TextView>
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:gravity="center_horizontal"
+                 android:text="">
+
+             </TextView>
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:gravity="center_horizontal"
+                 android:text="0">
+
+             </TextView>
+
+             <TextView
+                 android:background="@drawable/table_view_border_2"
+                 android:gravity="center_horizontal"
+                 android:text="14.5">
+
+             </TextView>
+         </TableRow>
+
+
+         <TableRow
+             android:id="@+id/tableRow3"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:gravity="center">
+
+         </TableRow>-->
+
+
+    </TableLayout>
+</LinearLayout>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.fmcg.Dotsoft"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--Permissions-->
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
+
+    <application
+        android:name="android.support.multidex.MultiDexApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/fmcg"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppBaseTheme">
+        <activity
+            android:name="com.fmcg.ui.Splashscreen"
+            android:theme="@style/AppBaseTheme"
+
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.fmcg.permission.DangerousPermissionActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <activity
+            android:name="com.fmcg.ui.LoginActivity"
+            android:label="@string/login_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme">
+
+        </activity>
+
+        <activity
+            android:name="com.fmcg.ui.DashboardActivity"
+            android:label="@string/dashboard"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemesidemenu"
+            android:windowSoftInputMode="stateHidden"/>
+
+        <activity
+            android:name="com.fmcg.ui.NavigationActivity"
+            android:label="@string/home"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemesidemenu"
+            android:windowSoftInputMode="stateHidden"/>
+
+
+        <activity
+            android:name="com.fmcg.ui.GetShopsByRoute"
+            android:label="@string/ShopsByRoute"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
+
+
+        <activity
+            android:name="com.fmcg.ui.AddNewCustomer"
+            android:label="@string/addNew_customer"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
+
+        <activity
+            android:name="com.fmcg.ui.MyLocation"
+            android:label="@string/myLocation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme">
+
+        </activity>
+
+        <activity
+            android:name="com.fmcg.ui.EndTrip"
+            android:label="@string/endTrip"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme">
+
+        </activity>
+
+        <activity
+            android:name="com.fmcg.ui.Remarks"
+            android:label="@string/remarks"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+
+        </activity>
+
+
+        <activity
+            android:name="com.fmcg.ui.Order"
+            android:label="Order Booking"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+
+        </activity>
+
+        <activity
+            android:name="com.fmcg.ui.Invoice"
+            android:label="Invoice"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+
+        </activity>
+
+        <activity
+            android:name="com.fmcg.ui.RouteDetails"
+            android:label="Route Details"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+
+
+        </activity>
+        <activity
+            android:name="com.fmcg.ui.UpdateShopDetailsActvity"
+            android:label="Update Shop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity
+            android:name="com.fmcg.ui.AddRemainderActivity"
+            android:label="Add Remainder"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity
+            android:name="com.fmcg.ui.RemainderListActivity"
+            android:label="Remainder"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <!--  <receiver android:name="com.fmcg.ui.ConnectionReceiver">
+              <intent-filter>
+                  <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+              </intent-filter>
+          </receiver>-->
+
+
+        <!--Google MAP API key-->
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDrWICgv42u3DWMEZBAtLjv9fWnNKSMYIQ"/>
+        <!--<meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyAFAg_3bEWFB-Nj6lvZv3UATmXpr0aDYc0" />-->
+        <!--AIzaSyDrWICgv42u3DWMEZBAtLjv9fWnNKSMYIQ-->
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
+        <receiver android:name="com.fmcg.util.AlarmReceiver">
+            <intent-filter>
+                <action android:name="android.media.action.DISPLAY_NOTIFICATION"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
+
+
+    </application>
+
+</manifest>

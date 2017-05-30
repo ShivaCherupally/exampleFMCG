@@ -1,0 +1,74 @@
+<resources>
+    <string name="app_name">Bright Udyog</string>
+    <!--<string name="app_name">Example</string>-->
+    <string name="dotsoft">Bright Udyog</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="routecd">RouteCD</string>
+    <string name="shop_name">ShopName</string>
+    <string name="owner">OwnerName</string>
+    <string name="shop_address">ShopAddress</string>
+    <string name="pin">Pincode</string>
+    <string name="religion">Religion</string>
+    <string name="paymentmode">Payment Mode</string>
+    <string name="location">LocationName</string>
+    <string name="mobile">MobileNumber</string>
+    <string name="ph">PhoneNumber</string>
+    <string name="lat">Lat</string>
+    <string name="lan">Lang</string>
+    <string name="Location">LocationName</string>
+    <string name="createdby">CreatedBy</string>
+    <string name="submit">Submit</string>
+    <string name="no">non</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="home">Home</string>
+    <string name="maps">GoogleMaps</string>
+    <string name="CreateShop">CreateShop</string>
+    <string name="ShopsByRoute">Shops By Route</string>
+    <string name="myLocation">Current Location</string>
+    <string name="endTrip">End Trip</string>
+    <string name="login_activity">Login</string>
+    <string name="addNew_customer">Add New Customer</string>
+    <string name="emailid">Emailid</string>
+    <string name="remarks">Remarks</string>
+    <string name="orderBooking">OrderBooking</string>
+    <string name="isShopClosed">Is ShopClosed</string>
+    <string name="orderStatusName">orderStatus Name</string>
+    <string name="category">Category Name</string>
+    <string name="paymentTermNames">PaymentTerm Names</string>
+    <string name="orderDate">Order Date</string>
+    <string name="uploadImage">Upload Image</string>
+    <string name="shopClosed">ShopClosed</string>
+    <string name="isOrdered">Is Ordered</string>
+    <string name="isDelivered">Is Delivered</string>
+    <string name="shopName">ShopName</string>
+    <string name="isInvoice">isInvoice</string>
+    <string name="isOrder">isOrder</string>
+    <string name="accept">Accept</string>
+    <string name="noPlan">No Plan Assigned for you</string>
+
+    <string name="zone_code">Zone Code</string>
+    <string name="route_code">Route Code</string>
+    <string name="area_code">Area Code</string>
+    <string name="shop_code">Shop Id</string>
+
+
+    <string name="zone_name">Zone Name</string>
+    <string name="area_name">Area Name</string>
+
+    <string name="event_name">Event Name</string>
+    <string name="event_date">Date</string>
+    <string name="event_Time">Time</string>
+
+    <string name="enter_reminder">Enter Your Remainder</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="pick_Time">Pick Time</string>
+
+    <string name="add">Add</string>
+    <string name="total_count">Total Count : 50</string>
+    <string name="today_count">Today Count : 1</string>
+
+    <string name="swipe_left_delete">Swipe left to delete a remainder item</string>
+
+</resources>

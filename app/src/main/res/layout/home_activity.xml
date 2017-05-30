@@ -1,0 +1,174 @@
+<!-- This DrawerLayout has two children at the root  -->
+<android.support.v4.widget.DrawerLayout android:id="@+id/drawer_layout"
+                                        xmlns:android="http://schemas.android.com/apk/res/android"
+                                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent">
+    <!-- This LinearLayout represents the contents of the screen  -->
+    <LinearLayout
+        android:id="@+id/subLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorPrimaryDark"
+        android:orientation="vertical">
+
+        <!-- The ActionBar displayed at the top -->
+        <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
+                                           xmlns:android="http://schemas.android.com/apk/res/android"
+                                           xmlns:app="http://schemas.android.com/apk/res-auto"
+                                           android:layout_width="match_parent"
+                                           android:layout_height="wrap_content"
+                                           android:background="?attr/colorPrimaryDark"
+                                           android:fitsSystemWindows="true"
+                                           android:minHeight="50dp"
+                                           android:paddingBottom="10dp"
+                                           app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        </android.support.v7.widget.Toolbar>
+
+        <!-- The main content view where fragments are loaded -->
+        <FrameLayout
+            android:id="@+id/details_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="170dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/rect_bg_ligth_black"
+                        android:drawablePadding="5dp"
+
+                        android:gravity="center_vertical"
+                        android:padding="20dp"
+                        android:text="@string/total_count"
+                        android:textColor="@color/HeaderColor"
+                        android:textSize="15sp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="170dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/rect_bg_ligth_black"
+                        android:drawablePadding="5dp"
+
+                        android:gravity="center_vertical"
+                        android:padding="20dp"
+                        android:text="@string/today_count"
+                        android:textColor="@color/HeaderColor"
+                        android:textSize="15sp"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/layout"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/chartlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
+
+                            <com.github.mikephil.charting.charts.PieChart
+                                android:id="@+id/chart1"
+                                android:layout_width="0dp"
+                                android:layout_height="170dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_weight="1"
+                                android:background="@drawable/rect_bg_ligth_black"
+                                android:padding="5dp"
+                                />
+
+                            <com.github.mikephil.charting.charts.PieChart
+                                android:id="@+id/chart2"
+                                android:layout_width="0dp"
+                                android:layout_height="170dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginLeft="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/rect_bg_ligth_black"
+                                android:padding="5dp"
+
+                                />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/chartlayout"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/rect_bg_ligth_black"
+                        android:padding="8dp">
+
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/barChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+
+
+                            />
+                    </RelativeLayout>
+                </LinearLayout>
+
+
+            </RelativeLayout>
+        </ScrollView>
+
+    </RelativeLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="220dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"/>
+
+</android.support.v4.widget.DrawerLayout>
+
+
+
