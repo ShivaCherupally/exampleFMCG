@@ -58,6 +58,14 @@ public class HttpAdapter
 	public static final String UPDATESHOP_DETAILS = BASE_URL + "updateShopDetails";
 
 	public static final String SHOP_NAMES_DROPDOWN = BASE_URL + "GetShopDetailsDropDown";
+
+	////////Dashboard Details
+	public static final String GET_DASHBOARD_TARGET_AMOUNT = BASE_URL + "GetDashboardTargetAmount";
+	public static final String GET_DASHBOARD_SALES_AMOUNT = BASE_URL + "GetDashboardSalesAmount";
+	public static final String GET_DASHBOARD_SALES_RATIO = BASE_URL + "GetDashboardTotalSalesRatio";
+	public static final String GET_DASHBOARD_SALES_MONTH = BASE_URL + "GetDashboardTotalSalesBymonth";
+
+
 //CancelOrderNumber
 	//http://202.143.96.20/Orderstest/Api/Services/GetRouteDataAgent?AgentCode
 	//http://202.143.96.20/Orderstest/api/Services/GetShopeDetailsByRouteID?RouteID=1
@@ -295,6 +303,43 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(GET_INVOICENUMBER, METHOD_GET, "NONE");
+	}
+
+
+	//Target Amount
+	public static void dashboardTargetAmount(NetworkOperationListener listener, Object tag, String empolyeeId)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(GET_DASHBOARD_TARGET_AMOUNT + "?EmployeeId=" + empolyeeId, METHOD_GET, "NONE");
+	}
+
+	//Sales Amount
+	public static void dashboardSalesAmount(NetworkOperationListener listener, Object tag, String empolyeeId)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(GET_DASHBOARD_SALES_AMOUNT + "?EmployeeId=" + empolyeeId, METHOD_GET, "NONE");
+	}
+
+	//Sales Ratio
+	public static void dashboardSalesRatio(NetworkOperationListener listener, Object tag, String empolyeeId)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(GET_DASHBOARD_SALES_RATIO + "?EmployeeId=" + empolyeeId, METHOD_GET, "NONE");
+	}
+
+	//Sales Month Graph
+	public static void dashboardSalesMonth(NetworkOperationListener listener, Object tag, String empolyeeId)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(GET_DASHBOARD_SALES_MONTH + "?EmployeeId=" + empolyeeId, METHOD_GET, "NONE");
 	}
 
 }

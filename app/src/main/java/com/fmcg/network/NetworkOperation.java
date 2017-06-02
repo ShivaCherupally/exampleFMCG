@@ -39,7 +39,8 @@ import android.widget.Toast;
 
 
 public class NetworkOperation extends
-		AsyncTask<String, Integer, NetworkResponse> {
+                              AsyncTask<String, Integer, NetworkResponse>
+{
 
 	private static final String RESPONSE_STATUS = "status";
 	private static final String RESPONSE_MESSAGE = "responseMsg";
@@ -52,9 +53,10 @@ public class NetworkOperation extends
 	private static String sessionCookie;
 	private static HttpClient httpclient;
 	int timeoutConnection = 50000;
-	
 
-	public NetworkOperation(NetworkOperationListener listener, Object tag) {
+
+	public NetworkOperation(NetworkOperationListener listener, Object tag)
+	{
 		this.listener = listener;
 		this.tag = tag;
 		HttpParams httpParameters = new BasicHttpParams();
@@ -63,52 +65,73 @@ public class NetworkOperation extends
 		HttpConnectionParams.setSoTimeout(httpParameters, timeoutConnection);
 		httpclient = new DefaultHttpClient(httpParameters);
 	}
-	
-	public void timerDelayRemoveDialog(long time, final Dialog d){
-	    new Handler().postDelayed(new Runnable() {
-	        public void run() {                
-	            d.dismiss();         
-	        }
-	    }, time); 
+
+	public void timerDelayRemoveDialog(long time, final Dialog d)
+	{
+		new Handler().postDelayed(new Runnable()
+		{
+			public void run()
+			{
+				d.dismiss();
+			}
+		}, time);
 	}
 
-	public static String getSessionCookie() {
+	public static String getSessionCookie()
+	{
 		return sessionCookie;
 	}
 
 	private HttpRequestBase createRequest(String... params)
-			throws UnsupportedEncodingException {
+			throws UnsupportedEncodingException
+	{
 		HttpRequestBase request = null;
 		String url = params[0];
 		this.url = url;
 		method = params[1];
-		if (method == HttpAdapter.METHOD_GET) {
+		if (method == HttpAdapter.METHOD_GET)
+		{
 			request = new HttpGet(url);
-		} else if (method == HttpAdapter.METHOD_POST) {
-			if (params.length > 2) {
+		}
+		else if (method == HttpAdapter.METHOD_POST)
+		{
+			if (params.length > 2)
+			{
 				HttpPost post = new HttpPost(url);
 				System.out.println(params[2]);
 				post.setEntity(new StringEntity(params[2]));
-				if (contentType == null) {
+				if (contentType == null)
+				{
 					post.addHeader(HttpAdapter.HEADER_CONTENT_TYPE,
-							HttpAdapter.CONTENT_TYPE_APPLICATION_URL_ENCODED);
-				} else {
+					               HttpAdapter.CONTENT_TYPE_APPLICATION_URL_ENCODED);
+				}
+				else
+				{
 					post.addHeader(HttpAdapter.HEADER_CONTENT_TYPE, contentType);
 				}
 				request = post;
 			}
-		} else if (method == HttpAdapter.METHOD_DELETE) {
+		}
+		else if (method == HttpAdapter.METHOD_DELETE)
+		{
 			HttpDelete delete = new HttpDelete(url);
 			request = delete;
-		} else if (method == HttpAdapter.METHOD_UPDATE) {
+		}
+		else if (method == HttpAdapter.METHOD_UPDATE)
+		{
 			return null;
-		} else if (method == HttpAdapter.METHOD_PUT) {
+		}
+		else if (method == HttpAdapter.METHOD_PUT)
+		{
 			HttpPut put = new HttpPut(url);
-			if (contentType == null) {
+			if (contentType == null)
+			{
 				put.addHeader(HttpAdapter.HEADER_CONTENT_TYPE,
 
-								HttpAdapter.CONTENT_TYPE_APPLICATION_JSON);
-			} else {
+				              HttpAdapter.CONTENT_TYPE_APPLICATION_JSON);
+			}
+			else
+			{
 				put.addHeader(HttpAdapter.HEADER_CONTENT_TYPE, contentType);
 			}
 			request = put;
@@ -117,21 +140,25 @@ public class NetworkOperation extends
 		return request;
 	}
 
-	
+
 	@Override
-	protected NetworkResponse doInBackground(String... params) {
+	protected NetworkResponse doInBackground(String... params)
+	{
 
 		NetworkResponse nResponse = new NetworkResponse();
 		nResponse.setTag(tag);
 		HttpResponse response;
 		boolean success = true;
-		try {
+		try
+		{
 			response = httpclient.execute(createRequest(params));
 			StatusLine statusLine = response.getStatusLine();
 			if (statusLine.getStatusCode() >= HttpStatus.SC_OK
-					&& statusLine.getStatusCode() <= HttpStatus.SC_ACCEPTED) {
+					&& statusLine.getStatusCode() <= HttpStatus.SC_ACCEPTED)
+			{
 				Header header = response.getFirstHeader("Set-Cookie");
-				if (header != null && url.endsWith("preAuth/accounts/verify")) {
+				if (header != null && url.endsWith("preAuth/accounts/verify"))
+				{
 					sessionCookie = header.getValue();
 					Log.i("LOGIN_SESSION", sessionCookie);
 				}
@@ -142,33 +169,42 @@ public class NetworkOperation extends
 				// object.put("dateOfBirth", "2014-06-17");
 				// System.out.println("json:"+object);
 				nResponse.setStatusCode(statusLine.getStatusCode());
-				if (json != null && json.trim().length() > 0) {
+				if (json != null && json.trim().length() > 0)
+				{
 					nResponse.setResponseObject(parseResponseString(json,
-							params[0]));
+					                                                params[0]));
 				}
 				nResponse.setResponseString(json);
 				return nResponse;
-			} else {
+			}
+			else
+			{
 				nResponse.setStatusCode(statusLine.getStatusCode());
 				String responseString = extractResponseString(response
-						.getEntity().getContent());
+						                                              .getEntity().getContent());
 				nResponse.setResponseString(responseString);
 				return nResponse;
 				// throw new
 				// IOException(statusLine.getStatusCode()+" "+statusLine.getReasonPhrase()+" "+responseString);
 			}
-		} catch (ClientProtocolException e) {
-			success = false;
-			e.printStackTrace();
-		} catch (IOException e) {
-			success = false;
-			e.printStackTrace();
-			onProgress(e.toString());
-		} catch (JSONException e) {
+		}
+		catch (ClientProtocolException e)
+		{
 			success = false;
 			e.printStackTrace();
 		}
-		 
+		catch (IOException e)
+		{
+			success = false;
+			e.printStackTrace();
+			onProgress(e.toString());
+		}
+		catch (JSONException e)
+		{
+			success = false;
+			e.printStackTrace();
+		}
+
 		nResponse
 				.setResponseString("Unable to contact server, please try again later");
 		nResponse.setResponseStatus("ERROR");
@@ -176,12 +212,14 @@ public class NetworkOperation extends
 	}
 
 	private String extractResponseString(InputStream content)
-			throws IOException {
+			throws IOException
+	{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				content));
 		String line;
 		StringBuilder builder = new StringBuilder();
-		while ((line = reader.readLine()) != null) {
+		while ((line = reader.readLine()) != null)
+		{
 			builder.append(line);
 		}
 		// JSONObject object = new JSONObject(builder.toString());
@@ -191,7 +229,8 @@ public class NetworkOperation extends
 	}
 
 	public Object parseResponseString(String jsonString, String call)
-			throws JSONException {
+			throws JSONException
+	{
 		System.out.println("Response....." + jsonString);
 		/*
 		 * if(call.startsWith(HttpAdapter.URL_USER) && method ==
@@ -208,34 +247,39 @@ public class NetworkOperation extends
 	}
 
 	@Override
-	protected void onPostExecute(NetworkResponse result) {
+	protected void onPostExecute(NetworkResponse result)
+	{
 		super.onPostExecute(result);
 		listener.operationCompleted(result);
 	}
-	
-	
-	
-	protected String onProgress(String value) {
+
+
+	protected String onProgress(String value)
+	{
 		return value;
 	}
 
-	
-	public String getContentType() {
+
+	public String getContentType()
+	{
 		return contentType;
 	}
 
-	public void setContentType(String contentType) {
+	public void setContentType(String contentType)
+	{
 		this.contentType = contentType;
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public static void clearCookies() {
+	public static void clearCookies()
+	{
 		sessionCookie = "";
 	}
 
-	public static void setSessionCookie(String cookie) {
+	public static void setSessionCookie(String cookie)
+	{
 		sessionCookie = cookie;
 	}
 

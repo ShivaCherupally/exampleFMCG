@@ -1,3 +1,4 @@
+
 package com.fmcg.ui;
 
 import android.app.AlarmManager;
@@ -34,56 +35,42 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fmcg.Dotsoft.R;
-import com.fmcg.adapter.RemainderAdapter;
 import com.fmcg.database.RemainderDataBase;
-import com.fmcg.models.GetAreaDetailsByRouteId;
-import com.fmcg.models.GetRouteDetails;
-import com.fmcg.models.GetRouteDropDown;
-import com.fmcg.models.GetShopTypeDropDown;
-import com.fmcg.models.GetZoneDetails;
-import com.fmcg.models.PaymentDropDown;
-import com.fmcg.models.ReligionsDropDown;
 import com.fmcg.models.RemainderData;
-import com.fmcg.models.ShopNamesData;
 import com.fmcg.network.HttpAdapter;
 import com.fmcg.network.NetworkOperationListener;
 import com.fmcg.network.NetworkResponse;
-import com.fmcg.util.AlertDialogManager;
 import com.fmcg.util.Common;
 import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
 import com.fmcg.util.Util;
-import com.fmcg.util.Utility;
-import com.fmcg.util.Validation;
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.gson.Gson;
+
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -97,6 +84,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -127,10 +115,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	private LocationManager locationManager;
 	public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 	Context mContext;
-	String UserId = "";
+	String UserId = "", EmployeeId = "";
 
 	//////// Pie Chart
-	private PieChart mChart, mChart2;
+	private PieChart mChart;// mChart2;
 	private SeekBar mSeekBarX, mSeekBarY;
 	private TextView tvX, tvY;
 	protected String[] mParties = new String[]{
@@ -143,13 +131,24 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	/*private float[] yData = {25.3f, 10.6f, 66.76f, 44.32f, 46.01f, 16.89f, 23.9f};
 	private String[] xData = {"Sample 1", "Sample 2", "Sample 3", "Sample 4", "Sample 5", "Sample 6", "Sample 7"};*/
 	private float[] yData = {25.3f, 44.7f, 25.00f, 25.00f};
-	private String[] xData = {"Sample 1", "Sample 2", "Sample 3", "Sample 4"};
+	private String[] xData = {"Sample 1", "Sample 2"};
+
+	private float[] mCircleValues = new float[2];
+	private float[] mBarGraphValues = new float[2];
 
 	BarChart barChart;
+	BarChart chart;
+	ArrayList<BarEntry> BARENTRY;
+	ArrayList<String> BarEntryLabels;
+	BarDataSet Bardataset;
+	BarData BARDATA;
+
 	ArrayList<String> dates;
 	Random random;
 	ArrayList<BarEntry> barEntries;
 	RemainderDataBase remainderDb;
+	TextView targetAmount, salesAmount, month;
+	String MonthName = "";
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -158,19 +157,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		/*getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 		                     WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
 		setContentView(R.layout.home_activity);
-
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		toolbar.setTitle("Home");
+
+		targetAmount = (TextView) findViewById(R.id.targetAmount);
+		salesAmount = (TextView) findViewById(R.id.salesAmount);
+		month = (TextView) findViewById(R.id.month);
+
 		//setSupportActionBar(toolbar);
 		mContext = DashboardActivity.this;
 		remanderDateAndTimeCheck();
-		pieChart1GraphAccess();
-		pieChart2GraphAccess();
-		barGraphDataGet();
-
-
-
-//		pieChartAccess();
+		//pieChart1GraphAccess();
+//		pieChart2GraphAccess();
+		//barGraphDataGet();
 		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 				this, drawer, toolbar, R.string.app_name, R.string.app_name);
@@ -223,10 +222,23 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		try
 		{
 			UserId = SharedPrefsUtil.getStringPreference(mContext, "EmployeeCode");
+			EmployeeId = SharedPrefsUtil.getStringPreference(mContext, "EmployeeId");
+			Log.e("EmployeeId", EmployeeId);
+
 			if (!UserId.equalsIgnoreCase(null) && !UserId.isEmpty())
 			{
 				userName.setText("User ID : " + UserId);
 			}
+
+			if (!EmployeeId.isEmpty() && EmployeeId != null && !EmployeeId.equalsIgnoreCase("null"))
+			{
+				HttpAdapter.dashboardTargetAmount(DashboardActivity.this, "TargetAmount", EmployeeId);
+				HttpAdapter.dashboardSalesAmount(DashboardActivity.this, "SalesAmount", EmployeeId);
+				HttpAdapter.dashboardSalesRatio(DashboardActivity.this, "SalesRatio", EmployeeId);
+				HttpAdapter.dashboardSalesMonth(DashboardActivity.this, "SalesMonth", EmployeeId);
+			}
+
+
 		}
 		catch (Exception e)
 		{
@@ -249,32 +261,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		remainder.setOnClickListener(this);
 
 		navigationView.setNavigationItemSelectedListener(this);
-
-	}
-
-	private void remainderNotification()
-	{
-
-
-		/*Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.SECOND, 15);*/
-
-		/*String presentDate = DateUtil.presentDate();
-		String presentTime = DateUtil.presentTime();*/
-		String dateAndTime = DateUtil.presentDate() + ", " + DateUtil.presentTime();
-		Log.e("CurrentDateAndTime", dateAndTime);
-		remanderDateAndTimeCheck();
-
-		/*if (android.os.Build.VERSION.SDK_INT >= 19)
-		{
-			alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
-		}
-		else
-		{
-			//mAlarmManager.set(AlarmManager.RTC_WAKEUP, time, pIntent);
-			alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
-		}*/
-
 
 	}
 
@@ -337,44 +323,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 	}
 
-	private void barGraphDataGet()
+
+	/*private void pieChart2GraphAccess()
 	{
-		barChart = (BarChart) findViewById(R.id.barChart);
-		ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-
-		for (int i = (int) 0; i < 10 + 1; i++)
-		{
-			float val = (float) (Math.random());
-			yVals1.add(new BarEntry(i, val));
-		}
-
-		BarDataSet set1;
-
-		set1 = new BarDataSet(yVals1, "The year 2017");
-		set1.setColors(ColorTemplate.MATERIAL_COLORS);
-
-		ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-		dataSets.add(set1);
-
-		BarData data = new BarData(dataSets);
-
-		data.setValueTextSize(10f);
-		data.setBarWidth(0.9f);
-
-
-		barChart.setTouchEnabled(false);
-		barChart.setData(data);
-
-
-	}
-
-	private void pieChart2GraphAccess()
-	{
-		mChart2 = (PieChart) findViewById(R.id.chart2);
+		*//*mChart2 = (PieChart) findViewById(R.id.chart2);
 		mChart2.setRotationEnabled(true);
 		mChart2.setCenterText("Employee");
 		mChart2.setCenterTextSize(10);
-		mChart2.setDrawEntryLabels(true);
+		mChart2.setDrawEntryLabels(true);*//*
 		addSetData2();
 		// configure pie chart
 		mChart.setUsePercentValues(true);
@@ -411,13 +367,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		pieDataset.setColors(colors);
 
 		//add legend to chart
-		/*Legend legend = mChart.getLegend();
+		*//*Legend legend = mChart.getLegend();
 		legend.setForm(Legend.LegendForm.CIRCLE);
-		legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);*/
+		legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);*//*
 
 		//creat pie data object
 		PieData pieData = new PieData(pieDataset);
-		mChart2.setData(pieData);
+		*//*mChart2.setData(pieData);
 		mChart2.invalidate();
 
 		mChart2.setOnChartValueSelectedListener(new OnChartValueSelectedListener()
@@ -434,10 +390,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			{
 
 			}
-		});
+		});*//*
 
 
-	}
+	}*/
 
 
 	/////////////////////Pie Chart 1
@@ -445,9 +401,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	{
 		mChart = (PieChart) findViewById(R.id.chart1);
 		mChart.setRotationEnabled(true);
-		mChart.setCenterText("Agent");
-		mChart.setCenterTextSize(10);
+//		mChart.setCenterText("Agent");
+//		mChart.setCenterTextSize(10);
 		mChart.setDrawEntryLabels(true);
+		mChart.setDrawHoleEnabled(true);
+		mChart.setHoleRadius(1);
+		mChart.setTransparentCircleRadius(1);
+		mChart.setContentDescription("Shiva");
 		addSetData();
 	}
 
@@ -455,10 +415,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	{
 		ArrayList<PieEntry> yEntry = new ArrayList<>();
 		ArrayList<String> xEntry = new ArrayList<>();
-		for (int i = 0; i < yData.length; i++)
+		/*for (int i = 0; i < yData.length; i++)
 		{
 			yEntry.add(new PieEntry(yData[i], i));
+		}*/
+		for (int i = 0; i < mCircleValues.length; i++)
+		{
+			yEntry.add(new PieEntry(mCircleValues[i], i));
 		}
+
 		for (int i = 0; i < xData.length; i++)
 		{
 			xEntry.add(xData[i]);
@@ -467,14 +432,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		//create the Data set
 		PieDataSet pieDataset = new PieDataSet(yEntry, "");
 		pieDataset.setSliceSpace(2);
-		pieDataset.setValueTextSize(8);
+		pieDataset.setValueTextSize(9);
 
 		//add color to data set
 		ArrayList<Integer> colors = new ArrayList<>();
 //		colors.add(Color.GRAY);
 //		colors.add(Color.BLUE);
 //		colors.add(Color.RED);
+		colors.add(Color.parseColor("#3366cc"));
+		colors.add(Color.parseColor("#ffad33"));
 		colors.add(Color.GREEN);
+
 		colors.add(Color.CYAN);
 		colors.add(Color.YELLOW);
 		colors.add(Color.MAGENTA);
@@ -487,6 +455,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 		//creat pie data object
 		PieData pieData = new PieData(pieDataset);
+		pieData.setValueTextColor(Color.WHITE);
+		pieData.setValueTextSize(8.5f);
+		pieData.setValueFormatter(new PercentFormatter());
 		mChart.setData(pieData);
 		mChart.invalidate();
 
@@ -508,71 +479,109 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 	}
 
-	private void pieChartAccess()
+
+	/////Bar Chart
+	private void barGraphDataGet()
 	{
-		/*tvX = (TextView) findViewByImad(R.id.tvXMax);
-		tvY = (TextView) findViewById(R.id.tvYMax);*/
+		barChart = (BarChart) findViewById(R.id.barChart);
 
-		/*mSeekBarX = (SeekBar) findViewById(R.id.seekBar1);
-		mSeekBarY = (SeekBar) findViewById(R.id.seekBar2);*/
-		mSeekBarX.setProgress(4);
-		mSeekBarY.setProgress(10);
+		ArrayList<BarEntry> yVals1 = new ArrayList<>();
+		ArrayList<String> xEntry = new ArrayList<>();
 
-		mChart = (PieChart) findViewById(R.id.chart1);
-		mChart.setUsePercentValues(true);
-		mChart.getDescription().setEnabled(false);
-		mChart.setExtraOffsets(5, 10, 5, 5);
+		/*for (int i = 0; i < mBarGraphValues.length; i++)
+		{
+			yVals1.add(new BarEntry(mBarGraphValues[i], i));
+//			yVals1.add(new BarEntry(i, mBarGraphValues[i]));
+		}*/
 
-		mChart.setDragDecelerationFrictionCoef(0.95f);
+		barChart.setVisibleYRangeMaximum(mBarGraphValues[0], YAxis.AxisDependency.LEFT);
+		barChart.setVisibleXRangeMaximum(mBarGraphValues[0]);
+		barChart.moveViewTo(10, 10, YAxis.AxisDependency.LEFT);
+		barChart.invalidate();
+		for (int i = 0; i < mBarGraphValues.length; i++)
+		{
+//			yVals1.add(new BarEntry(mBarGraphValues[i], i));
+//			yVals1.add(new BarEntry(i, mBarGraphValues[i]));
+//			float val = (float) (Math.random());
+			if (i == 0)
+			{
+				yVals1.add(new BarEntry(0, mBarGraphValues[i]));
+			}
+			if (i == 1)
+			{
+				yVals1.add(new BarEntry(1, mBarGraphValues[i]));
+			}
 
-//		mChart.setCenterTextTypeface(mTfLight);
-		mChart.setCenterText(generateCenterSpannableText());
+		}
 
-		mChart.setDrawHoleEnabled(true);
-		mChart.setHoleColor(Color.WHITE);
+		/*for (int i = 0; i < xData.length; i++)
+		{
+			xEntry.add(xData[i]);
+		}*/
 
-		mChart.setTransparentCircleColor(Color.WHITE);
-		mChart.setTransparentCircleAlpha(110);
+		//XAxis xAxis = barChart.getXAxis();
+		//xAxis.setEnabled(false);
 
-		mChart.setHoleRadius(58f);
-		mChart.setTransparentCircleRadius(61f);
 
-		mChart.setDrawCenterText(true);
+		final String[] ds = new String[2];
+		ds[0] = "Target Value";
+		ds[1] = "Sales Value";//MonthName;
 
-		mChart.setRotationAngle(0);
-		// enable rotation of the chart by touch
-		mChart.setRotationEnabled(true);
-		mChart.setHighlightPerTapEnabled(true);
+		XAxis xval = barChart.getXAxis();
+		xval.setDrawLabels(true);
+		xval.setLabelCount(1);
+//		xval.setAxisMaxValue(50f);
+		xval.setPosition(XAxis.XAxisPosition.BOTTOM);
+		xval.setValueFormatter(new IAxisValueFormatter()
+		{
+			@Override
+			public String getFormattedValue(final float value, final AxisBase axis)
+			{
+				Log.i("zain", "value " + value);
+//				return ds[0];
+				return ds[Math.round(value)];
 
-		// mChart.setUnit(" €");
-		// mChart.setDrawUnitsInChart(true);
+			}
 
-		// add a selection listener
-		mChart.setOnChartValueSelectedListener(this);
+		});
 
-		setData(4, 100);
 
-		mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
-		// mChart.spin(2000, 0, 360);
 
-		mSeekBarX.setOnSeekBarChangeListener(this);
-		mSeekBarY.setOnSeekBarChangeListener(this);
+		/*Log.i("zain", "value " + value);
+				return ds[Math.round(value)];*/
 
-		Legend l = mChart.getLegend();
-		l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-		l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-		l.setOrientation(Legend.LegendOrientation.VERTICAL);
-		l.setDrawInside(false);
-		l.setXEntrySpace(7f);
-		l.setYEntrySpace(0f);
-		l.setYOffset(0f);
 
-		// entry label styling
-		mChart.setEntryLabelColor(Color.WHITE);
-//		mChart.setEntryLabelTypeface(mTfRegular);
-		mChart.setEntryLabelTextSize(12f);
+		// hide legend
+		Legend legend = barChart.getLegend();
+		legend.setEnabled(false);
+
+		BarDataSet set1;
+		if (MonthName != null && !MonthName.isEmpty())
+		{
+			set1 = new BarDataSet(yVals1, "Month : " + MonthName);
+			set1.setColors(ColorTemplate.MATERIAL_COLORS);
+
+		}
+		else
+		{
+			set1 = new BarDataSet(yVals1, "");
+			set1.setColors(ColorTemplate.MATERIAL_COLORS);
+		}
+
+
+		ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+		dataSets.add(set1);
+		BarData data = new BarData(dataSets);
+		data.setValueTextSize(10f);
+		data.setBarWidth(0.9f);
+		barChart.setTouchEnabled(false);
+		barChart.setData(data);
+
+
 	}
 
+
+	//
 
 	@Override
 	public void onBackPressed()
@@ -737,19 +746,117 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	public void operationCompleted(NetworkResponse response)
 	{
 		Common.disMissDialog();
-		Log.d("outputResponse", String.valueOf(response));
+		Log.e("response", response.getResponseString());
 		if (response.getStatusCode() == 200)
 		{
 			try
 			{
 				JSONObject mJson = new JSONObject(response.getResponseString());
-				/*if (response.getTag().equals("registerShops"))
+				if (response.getTag().equals("TargetAmount"))
 				{
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
+						try
+						{
+							double TargetAmount = mJson.getDouble("Data");
+//							long TargetAmount = jsonobj.getLong("TargetAmount");
+							if (TargetAmount != 0.0000)
+							{
+								targetAmount.setText("Target Amount : " + TargetAmount + "");
+							}
+						}
+						catch (Exception e)
+						{
+							Log.e("error", e + "");
+						}
 					}
-					}*/
-				//register
+				}
+				else if (response.getTag().equals("SalesAmount"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						try
+						{
+							double SalesAmount = mJson.getDouble("Data");
+//							long SalesAmount = jsonobj.getLong("SalesAmount");
+							if (SalesAmount != 0.0000)
+							{
+								salesAmount.setText("Sales Amount : " + SalesAmount + "");
+							}
+						}
+						catch (Exception e)
+						{
+							Log.e("error", e + "");
+						}
+					}
+				}
+				else if (response.getTag().equals("SalesRatio"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						try
+						{
+							JSONObject jsonobj = mJson.getJSONObject("Data");
+							double TotalAmount = jsonobj.getDouble("TotalAmount");
+							double SalesRatio = jsonobj.getDouble("SalesRatio");
+
+
+							double differenceValue = 100.0 - SalesRatio;
+
+							mCircleValues[0] = (float) (SalesRatio);
+							mCircleValues[1] = (float) (differenceValue);
+
+							pieChart1GraphAccess();
+
+							if (TotalAmount != 0.0000)
+							{
+							}
+							if (SalesRatio != 0.0000)
+							{
+							}
+						}
+						catch (Exception e)
+						{
+							Log.e("error", e + "");
+						}
+					}
+				}
+				else if (response.getTag().equals("SalesMonth"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						try
+						{
+							JSONObject jsonobj = mJson.getJSONObject("Data");
+							MonthName = jsonobj.getString("MonthName");
+							double TargetAmount = jsonobj.getDouble("TargetAmount");
+							double SalesAmount = jsonobj.getDouble("SalesAmount");
+
+							if (MonthName != null && !MonthName.equalsIgnoreCase("null"))
+							{
+								month.setText("Month : " + MonthName);
+							}
+							/*{"Data":{"MonthName":"Jan","TargetAmount":0.0000,"SalesAmount":0.0000},"StatusCode":"000","Status":"OK","ResponseID":"000","Message":"SuccessFull"}*/
+
+							/*TargetAmount = 100.0;
+							SalesAmount = 20.0;*/
+							if (TargetAmount != 0.0000)
+							{
+								double differenceValue = TargetAmount - SalesAmount;
+								mBarGraphValues[0] = (float) (TargetAmount);
+								mBarGraphValues[1] = (float) (SalesAmount);
+								//barGraphData(TargetAmount, SalesAmount);
+								//barGraphDataInserting();
+								barGraphDataGet();
+							}
+						}
+						catch (Exception e)
+						{
+							Log.e("error", e + "");
+						}
+					}
+				}
+
 			}
 			catch (JSONException e)
 			{
@@ -758,6 +865,154 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 
 		}
+	}
+
+	private void barGraphDataInserting()
+	{
+		barChart = (BarChart) findViewById(R.id.barChart);
+		barChart.setDrawBarShadow(false);
+		barChart.setDrawValueAboveBar(true);
+		barChart.setMaxVisibleValueCount(60);
+		barChart.getDescription().setEnabled(false);
+		barChart.setPinchZoom(false);
+
+		barChart.setDrawGridBackground(false);
+		XAxis xAxis = barChart.getXAxis();
+		xAxis.setEnabled(false);
+
+		YAxis leftAxis = barChart.getAxisLeft();
+		leftAxis.setLabelCount(6, false);
+		leftAxis.setAxisMinimum(-2.5f);
+		leftAxis.setAxisMaximum(2.5f);
+		leftAxis.setGranularityEnabled(true);
+		leftAxis.setGranularity(0.1f);
+
+		YAxis rightAxis = barChart.getAxisRight();
+		rightAxis.setDrawGridLines(false);
+		rightAxis.setLabelCount(6, false);
+		rightAxis.setAxisMinimum(-2.5f);
+		rightAxis.setAxisMaximum(2.5f);
+		rightAxis.setGranularity(0.1f);
+
+		/*mSeekBarX.setOnSeekBarChangeListener(this);
+		mSeekBarX.setProgress(150); // set data*/
+
+		Legend l = barChart.getLegend();
+		l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+		l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+		l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+		l.setDrawInside(false);
+		l.setForm(Legend.LegendForm.SQUARE);
+		l.setFormSize(9f);
+		l.setTextSize(11f);
+		l.setXEntrySpace(4f);
+
+		barChart.animateXY(2000, 2000);
+
+		ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+		entries.add(new BarEntry(0.09983341664682815f, 0));
+		entries.add(new BarEntry(-0.8672021794855902f, 1));
+
+		/*for (int i = 0; i < 2; i++)
+		{
+			entries.add(mSinusData.get(i));
+		}*/
+
+		BarDataSet set;
+
+		if (barChart.getData() != null &&
+				barChart.getData().getDataSetCount() > 0)
+		{
+			set = (BarDataSet) barChart.getData().getDataSetByIndex(0);
+			set.setValues(entries);
+			barChart.getData().notifyDataChanged();
+			barChart.notifyDataSetChanged();
+		}
+		else
+		{
+			set = new BarDataSet(entries, "Sinus Function");
+			set.setColor(Color.rgb(240, 120, 124));
+		}
+
+		BarData data = new BarData(set);
+		data.setValueTextSize(10f);
+		data.setDrawValues(false);
+		data.setBarWidth(0.8f);
+
+		barChart.setData(data);
+	}
+
+	public void AddValuesToBARENTRY()
+	{
+
+		BARENTRY.add(new BarEntry(2f, 0));
+		BARENTRY.add(new BarEntry(4f, 1));
+		BARENTRY.add(new BarEntry(6f, 2));
+		BARENTRY.add(new BarEntry(8f, 3));
+		BARENTRY.add(new BarEntry(7f, 4));
+		BARENTRY.add(new BarEntry(3f, 5));
+
+	}
+
+	public void AddValuesToBarEntryLabels()
+	{
+
+		BarEntryLabels.add("January");
+		BarEntryLabels.add("February");
+		BarEntryLabels.add("March");
+		BarEntryLabels.add("April");
+		BarEntryLabels.add("May");
+		BarEntryLabels.add("June");
+
+	}
+
+	private void barGraphData(double TargetAmount, double SalesAmount)
+	{
+		barChart = (BarChart) findViewById(R.id.barChart);
+		ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+		yVals1.add(new BarEntry(44f, 0));
+		yVals1.add(new BarEntry(88f, 1));
+		/*yVals1.add(new BarEntry((float) TargetAmount, 0));
+		yVals1.add(new BarEntry((float) SalesAmount, 1));*/
+
+		BarDataSet barDataSet = new BarDataSet(yVals1, "Dates");
+
+
+		/*ArrayList<String> thDataa = new ArrayList<>();
+		if (MonthName != null && !MonthName.isEmpty())
+		{
+			thDataa.add(MonthName);
+		}
+
+
+		BarDataSet set1 = new BarDataSet(yVals1, "BarDataSet");
+		BarData data2 = new BarData(set1);
+		data2.setBarWidth(0.9f); // set custom bar width
+		barChart.setData(data2);*/
+
+		BarDataSet set;
+
+		if (barChart.getData() != null &&
+				barChart.getData().getDataSetCount() > 0)
+		{
+			set = (BarDataSet) barChart.getData().getDataSetByIndex(0);
+			set.setValues(yVals1);
+			mChart.getData().notifyDataChanged();
+			mChart.notifyDataSetChanged();
+		}
+		else
+		{
+			set = new BarDataSet(yVals1, "Sinus Function");
+			set.setColor(Color.rgb(240, 120, 124));
+		}
+
+		BarData data = new BarData(set);
+		data.setValueTextSize(10f);
+		data.setDrawValues(false);
+		data.setBarWidth(0.8f);
+
+		barChart.setData(data);
+
 	}
 
 	@Override
