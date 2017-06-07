@@ -1,21 +1,15 @@
 package com.fmcg.adapter;
 
-import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ZoomButton;
 
 import com.fmcg.Dotsoft.R;
 import com.fmcg.models.RouteDetailsData;
@@ -28,7 +22,6 @@ public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAd
 {
 
 	private List<RouteDetailsData> stList;
-
 	public RouteCheckListAdapter(List<RouteDetailsData> students)
 	{
 		this.stList = students;
