@@ -78,15 +78,15 @@
                     android:orientation="horizontal"
                     android:weightSum="2">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_below="@+id/chartlayout"
                         android:layout_gravity="left"
                         android:layout_weight="1"
-                        android:background="@drawable/rect_bg_ligth_black"
                         android:gravity="center_vertical"
                         android:padding="5dp">
+
 
                         <com.github.mikephil.charting.charts.PieChart
                             android:id="@+id/chart1"
@@ -94,16 +94,82 @@
                             android:layout_height="200dp"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-
-
                             />
-                    </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/chart1"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/differenceLay"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_margin="@dimen/five"
+                                    android:src="@drawable/sales_ratio_color"/>
+
+                                <TextView
+                                    android:id="@+id/salesValue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+
+                                    android:layout_gravity="center_vertical"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Target Ratio"
+
+                                    android:textColor="@color/HeaderColor"
+                                    android:textSize="8sp"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/differenceLay"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp"
+                                    android:layout_margin="@dimen/five"
+                                    android:src="@drawable/ratio_total_color"/>
+
+                                <TextView
+                                    android:id="@+id/difference"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+
+                                    android:layout_gravity="center_vertical"
+                                    android:gravity="center_vertical"
+                                    android:padding="5dp"
+                                    android:text="Sales Ratio"
+
+                                    android:textColor="@color/HeaderColor"
+                                    android:textSize="8sp"/>
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/grey"/>
 
                     <LinearLayout
                         android:id="@+id/layout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+
                         android:orientation="vertical">
 
 
@@ -111,24 +177,31 @@
                             android:id="@+id/targetAmount"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:background="@drawable/rect_bg_ligth_black"
-                            android:gravity="center_vertical|center_horizontal"
+                            android:layout_marginLeft="5dp"
+                            android:gravity="center_vertical"
                             android:padding="5dp"
                             android:text="@string/totalcount"
                             android:textColor="@color/HeaderColor"
-                            android:textSize="15sp"/>
+                            android:textStyle="bold"
+                            android:textSize="16sp"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@color/grey"/>
 
                         <TextView
                             android:id="@+id/salesAmount"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
+                            android:layout_marginLeft="5dp"
                             android:layout_marginTop="2dp"
-                            android:background="@drawable/rect_bg_ligth_black"
-                            android:gravity="center_vertical|center_horizontal"
+                            android:gravity="center_vertical"
                             android:padding="5dp"
                             android:text="@string/today_count"
+                            android:textStyle="bold"
                             android:textColor="@color/HeaderColor"
-                            android:textSize="15sp"/>
+                            android:textSize="16sp"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -138,8 +211,7 @@
                     android:layout_height="220dp"
                     android:layout_below="@+id/chartlayout"
 
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
 
                     android:background="@drawable/rect_bg_ligth_black"
                     >
@@ -151,9 +223,13 @@
                         android:gravity="center_vertical|center_horizontal"
                         android:padding="5dp"
                         android:text="@string/month"
+                        android:textStyle="bold"
 
                         android:textColor="@color/HeaderColor"
-                        android:textSize="15sp"/>
+                        android:textSize="16sp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"/>
 
 
                     <com.github.mikephil.charting.charts.BarChart
@@ -161,7 +237,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="fill_parent"
                         android:layout_below="@+id/month"
-                        android:paddingBottom="@dimen/ten"
+                        android:layout_marginBottom="10dp"
                         />
                 </RelativeLayout>
             </LinearLayout>

@@ -46,7 +46,8 @@ public class HttpAdapter
 	public static final String AREANAME = BASE_URL + "GetShopsDetailsByArea?AreaId=0";
 	public static final String GETAREADETAILS_BY_ROUTE = BASE_URL + "GetAreaDetailsByRoute";
 	public static final String CATERGORY = BASE_URL + "usp_GetCategoryDropDown";
-	public static final String FEEDBACK = BASE_URL + "InsertFeedback?EmployeeId=4&FeedbackMessages=hello";
+	//public static final String FEEDBACK = BASE_URL + "InsertFeedback?EmployeeId=4&FeedbackMessages=hello";
+	public static final String FEEDBACK = BASE_URL + "InsertFeedback";
 	public static final String ORDERBOOK = BASE_URL + "Saveorderbooking";
 	public static final String GET_ORDERNUMBER = BASE_URL + "GetOrderNumber";
 	public static final String GET_INVOICENUMBER = BASE_URL + "GetInvoiceNumber";
@@ -59,11 +60,21 @@ public class HttpAdapter
 
 	public static final String SHOP_NAMES_DROPDOWN = BASE_URL + "GetShopDetailsDropDown";
 
+
+	//Shop Creation
+	public static final String SHOP_CREATION_URL = BASE_URL + "RegisterShop";
+	//http://202.143.96.20/Orderstest/api/Services/
+
 	////////Dashboard Details
 	public static final String GET_DASHBOARD_TARGET_AMOUNT = BASE_URL + "GetDashboardTargetAmount";
 	public static final String GET_DASHBOARD_SALES_AMOUNT = BASE_URL + "GetDashboardSalesAmount";
 	public static final String GET_DASHBOARD_SALES_RATIO = BASE_URL + "GetDashboardTotalSalesRatio";
 	public static final String GET_DASHBOARD_SALES_MONTH = BASE_URL + "GetDashboardTotalSalesBymonth";
+
+	//Route Details Bind services
+	public static final String GET_ROUTE_DETAILS_WITH_ROUTEID = BASE_URL + "GetRouteDetailsByEmpRouteIds";
+	public static final String GET_ROUTE_ACCEPT_BY_EMP = BASE_URL + "GetRouteAcceptByEmployee";
+
 
 
 //CancelOrderNumber
@@ -182,6 +193,7 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(FEEDBACK, METHOD_POST, jsonString);
+		//?EmployeeId=4&FeedbackMessages=hello
 	}
 
 	public static void getShopDetailsDP(NetworkOperationListener listener, Object tag, String value)
@@ -340,6 +352,24 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(GET_DASHBOARD_SALES_MONTH + "?EmployeeId=" + empolyeeId, METHOD_GET, "NONE");
+	}
+
+	//Selected Route No Details
+	public static void getrouteDetails(NetworkOperationListener listener, Object tag, String empolyeeId, String RouteId)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(GET_ROUTE_DETAILS_WITH_ROUTEID + "?EmployeeId=" + empolyeeId + "&RouteId=" + RouteId, METHOD_GET, "NONE");
+	}
+
+	//Route Accepted Service
+	public static void routeAccept(NetworkOperationListener listener, Object tag, String EmpRouteId)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + EmpRouteId, METHOD_GET, "NONE");
 	}
 
 }

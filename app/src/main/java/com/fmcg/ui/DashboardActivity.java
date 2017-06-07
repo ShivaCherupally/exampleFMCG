@@ -52,6 +52,7 @@ import com.fmcg.util.SharedPrefsUtil;
 import com.fmcg.util.Util;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -246,7 +247,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 		}
 
-
 		mydayPlan.setOnClickListener(this);
 		shop.setOnClickListener(this);
 		mylocation.setOnClickListener(this);
@@ -434,13 +434,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		pieDataset.setSliceSpace(2);
 		pieDataset.setValueTextSize(9);
 
+
 		//add color to data set
 		ArrayList<Integer> colors = new ArrayList<>();
 //		colors.add(Color.GRAY);
 //		colors.add(Color.BLUE);
 //		colors.add(Color.RED);
 		colors.add(Color.parseColor("#3366cc"));
-		colors.add(Color.parseColor("#ffad33"));
+		colors.add(Color.parseColor("#ffad33")); //3366cc
 		colors.add(Color.GREEN);
 
 		colors.add(Color.CYAN);
@@ -460,6 +461,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		pieData.setValueFormatter(new PercentFormatter());
 		mChart.setData(pieData);
 		mChart.invalidate();
+
+
+		Description des = mChart.getDescription();
+		des.setEnabled(false);
+
+		Legend l = mChart.getLegend();
+		l.setEnabled(false);
 
 		mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener()
 		{
@@ -555,6 +563,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		Legend legend = barChart.getLegend();
 		legend.setEnabled(false);
 
+		Description des = barChart.getDescription();
+		des.setEnabled(false);
+
 		BarDataSet set1;
 		if (MonthName != null && !MonthName.isEmpty())
 		{
@@ -567,6 +578,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			set1 = new BarDataSet(yVals1, "");
 			set1.setColors(ColorTemplate.MATERIAL_COLORS);
 		}
+
+		ArrayList<Integer> colors = new ArrayList<>();
+//		colors.add(Color.GRAY);
+//		colors.add(Color.BLUE);
+//		colors.add(Color.RED);
+		colors.add(Color.parseColor("#ffad33")); //3366cc
+		colors.add(Color.parseColor("#3366cc"));
+		colors.add(Color.GREEN);
+
+		colors.add(Color.CYAN);
+		colors.add(Color.YELLOW);
+		colors.add(Color.MAGENTA);
+		set1.setColors(colors);
 
 
 		ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
@@ -762,7 +786,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //							long TargetAmount = jsonobj.getLong("TargetAmount");
 							if (TargetAmount != 0.0000)
 							{
-								targetAmount.setText("Target Amount : " + TargetAmount + "");
+								targetAmount.setText("\u20B9" + " " + TargetAmount + System.getProperty("line.separator") + "Target Amount ");
 							}
 						}
 						catch (Exception e)
@@ -781,7 +805,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //							long SalesAmount = jsonobj.getLong("SalesAmount");
 							if (SalesAmount != 0.0000)
 							{
-								salesAmount.setText("Sales Amount : " + SalesAmount + "");
+								salesAmount.setText("\u20B9" + " " + SalesAmount + System.getProperty("line.separator") + "Sales Amount ");
+//								salesAmount.setText("First line of text" + System.getProperty("line.separator") + "Linija 2");
+
+								//<string name="Rs">\u20B9</string>
 							}
 						}
 						catch (Exception e)
@@ -1350,6 +1377,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	private void orderBookingActivity()
 	{
 		String PLAN_ACCEPTED = SharedPrefsUtil.getStringPreference(mContext, "PLAN_STARTED");
+		String ORDER_ACCEPTED = SharedPrefsUtil.getStringPreference(mContext, "ORDER_ACCEPTED");
+		//
 		if (!PLAN_ACCEPTED.isEmpty() && PLAN_ACCEPTED != null)
 		{
 			if (PLAN_ACCEPTED.equals("ACCEPTED"))
@@ -1359,12 +1388,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			}
 			else
 			{
-				Toast.makeText(mContext, "Please Accept My Day Plan", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext, "Please Accept My Daily Program", Toast.LENGTH_SHORT).show();
 			}
 		}
 		else
 		{
-			Toast.makeText(mContext, "Please Accept My Day Plan", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, "Please Accept My Daily Program", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -1382,12 +1411,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			}
 			else
 			{
-				Toast.makeText(mContext, "Please Accept My Day Plan", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext, "Please Accept My Daily Program", Toast.LENGTH_SHORT).show();
 			}
 		}
 		else
 		{
-			Toast.makeText(mContext, "Please Accept My Day Plan", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, "Please Accept My Daily Program", Toast.LENGTH_SHORT).show();
 		}
 	}
 

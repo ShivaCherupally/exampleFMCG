@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -37,6 +38,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.*;
 import android.widget.TableRow;
 
@@ -60,6 +62,7 @@ import com.fmcg.permission.DangerousPermResponseCallBack;
 import com.fmcg.permission.DangerousPermissionResponse;
 import com.fmcg.permission.DangerousPermissionUtils;
 import com.fmcg.util.SharedPrefsUtil;
+import com.fmcg.util.Util;
 import com.google.gson.Gson;
 
 import org.apache.http.HttpEntity;
@@ -96,6 +99,7 @@ import static com.fmcg.util.Common.orderNUmberString;
 
 public class Order extends AppCompatActivity implements View.OnClickListener, NetworkOperationListener
 {
+	public static Activity orderBookActivity;
 	public SharedPreferences sharedPreferences;
 	Dialog alertDialog;
 	public List<PaymentDropDown> paymentDP;
@@ -175,6 +179,14 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 	public static final String ALLOW_KEY = "ALLOWED";
 	public static final String CAMERA_PREF = "camera_pref";
 
+	///Dailog
+	private Dialog promoDialog;
+	private ImageView close_popup;
+	RadioGroup select_option_radio_grp;
+	Button alert_submit;
+	boolean check1 = false;
+	boolean check2 = false;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -188,6 +200,9 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 		//initializing the variables
 		activity = Order.this;
 		mContext = Order.this;
+
+		orderBookActivity = Order.this;
+
 		tableLayout = (TableLayout) findViewById(R.id.tableRow1);
 
 		orderStatus_sp = (Spinner) findViewById(R.id.order_type_dp);
@@ -1095,7 +1110,8 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 					{
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
 						Toast.makeText(mContext, "Successfully Uploaded.", Toast.LENGTH_SHORT).show();
-						refreshActivity();
+						dailogBoxAfterSubmit();
+//						refreshActivity();
 					}
 					else
 					{
@@ -1764,6 +1780,81 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 		capture.setImageBitmap(null);
 		capture.setImageBitmap(captured_img_bitMap);
 		//captured_img_str = BitMapToString(captured_img_bitMap);
+	}
+
+	private void dailogBoxAfterSubmit()
+	{
+		promoDialog = new Dialog(this);
+		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		promoDialog.setCancelable(false);
+		promoDialog.setContentView(R.layout.dailog_for_acceptance);
+		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
+		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
+		select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
+
+		promoDialog.show();
+
+		select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+		{
+			@Override
+			public void onCheckedChanged(final RadioGroup radioGroup, final int i)
+			{
+				switch (i)
+				{
+					case R.id.orderBook:
+						check1 = true;
+						break;
+					case R.id.inovice:
+						check2 = true;
+						break;
+
+
+				}
+			}
+
+
+		});
+
+		close_popup.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				if (promoDialog != null)
+				{
+					promoDialog.dismiss();
+					Util.hideSoftKeyboard(mContext, v);
+				}
+			}
+		});
+
+		alert_submit.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				if (check1)
+				{
+
+					Intent in = new Intent(Order.this, Order.class);
+					Util.killorderBook();
+					startActivity(in);
+				}
+				else if (check2)
+				{
+					Intent inten = new Intent(Order.this, Invoice.class);
+					Util.killorderBook();
+					startActivity(inten);
+				}
+				else
+				{
+					Toast.makeText(mContext, "Please Select Order Book or Invoice", Toast.LENGTH_SHORT).show();
+				}
+
+			}
+		});
+
 	}
 }
 

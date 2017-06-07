@@ -1,10 +1,13 @@
 package com.fmcg.ui;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.*;
 import android.widget.TableRow;
 
@@ -34,6 +38,7 @@ import com.fmcg.network.HttpAdapter;
 import com.fmcg.network.NetworkOperationListener;
 import com.fmcg.network.NetworkResponse;
 import com.fmcg.util.SharedPrefsUtil;
+import com.fmcg.util.Util;
 import com.fmcg.util.Utility;
 import com.google.gson.Gson;
 
@@ -78,6 +83,7 @@ import static com.fmcg.util.Common.orderNUmberString;
 
 public class Invoice extends AppCompatActivity implements View.OnClickListener, NetworkOperationListener
 {
+	public static Activity invoiceActivity;
 	public SharedPreferences sharedPreferences;
 	Dialog alertDialog;
 	public List<PaymentDropDown> paymentDP;
@@ -144,12 +150,22 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	ArrayList<String> orderNosTitle = new ArrayList<String>();
 	String selected_orderId = "";
 
+	///Dailog
+	private Dialog promoDialog;
+	private ImageView close_popup;
+	RadioGroup select_option_radio_grp;
+	Button alert_submit;
+	boolean check1 = false;
+	boolean check2 = false;
+
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.order_invoice);
 		mContext = Invoice.this;
+		invoiceActivity = Invoice.this;
 		sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -1052,13 +1068,15 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
 						Toast.makeText(mContext, "Successfully Uploaded.", Toast.LENGTH_SHORT).show();
 						//com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Successfully Uploaded..", "OK");
-						Intent i = new Intent(Invoice.this, Invoice.class);
-						startActivity(i);
+						/*Intent i = new Intent(Invoice.this, Invoice.class);
+						startActivity(i);*/
+						dailogBoxAfterSubmit();
 					}
 					else
 					{
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
 						Toast.makeText(mContext, "UnSuccessfully Uploaded.", Toast.LENGTH_SHORT).show();
+						dailogBoxAfterSubmit();
 						//	com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Failed Uploaded", "OK");
 						/*Intent i = new Intent(Order.this, Order.class);
 						startActivity(i);*/
@@ -1412,5 +1430,80 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 
 		return ret;
+	}
+
+	private void dailogBoxAfterSubmit()
+	{
+		promoDialog = new Dialog(this);
+		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		promoDialog.setCancelable(false);
+		promoDialog.setContentView(R.layout.dailog_for_acceptance);
+		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
+		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
+		select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
+
+		promoDialog.show();
+
+		select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+		{
+			@Override
+			public void onCheckedChanged(final RadioGroup radioGroup, final int i)
+			{
+				switch (i)
+				{
+					case R.id.orderBook:
+						check1 = true;
+						break;
+					case R.id.inovice:
+						check2 = true;
+						break;
+
+
+				}
+			}
+
+
+		});
+
+		close_popup.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				if (promoDialog != null)
+				{
+					promoDialog.dismiss();
+					Util.hideSoftKeyboard(mContext, v);
+				}
+			}
+		});
+
+		alert_submit.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				if (check1)
+				{
+
+					Intent in = new Intent(Invoice.this, Order.class);
+					Util.killInvoice();
+					startActivity(in);
+				}
+				else if (check2)
+				{
+					Intent inten = new Intent(Invoice.this, Invoice.class);
+					Util.killInvoice();
+					startActivity(inten);
+				}
+				else
+				{
+					Toast.makeText(mContext, "Please Select Order Book or Invoice", Toast.LENGTH_SHORT).show();
+				}
+
+			}
+		});
+
 	}
 }

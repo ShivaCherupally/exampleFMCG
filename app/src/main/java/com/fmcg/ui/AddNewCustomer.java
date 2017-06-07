@@ -1,5 +1,7 @@
 package com.fmcg.ui;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -26,9 +30,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +59,7 @@ import com.fmcg.util.AlertDialogManager;
 import com.fmcg.util.Common;
 import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
+import com.fmcg.util.Util;
 import com.fmcg.util.Utility;
 import com.fmcg.util.Validation;
 import com.google.android.gms.common.ConnectionResult;
@@ -85,6 +94,7 @@ public class AddNewCustomer extends AppCompatActivity implements
                                                       View.OnClickListener, GoogleApiClient.ConnectionCallbacks,
                                                       LocationListener, GoogleApiClient.OnConnectionFailedListener, NetworkOperationListener, AdapterView.OnItemSelectedListener
 {
+	public static Activity addCustomeractivity;
 	SharedPreferences sharedPreferences;
 
 	public List<GetZoneDetails> zoneDetailsDP;
@@ -146,12 +156,21 @@ public class AddNewCustomer extends AppCompatActivity implements
 	String selected_paymentNameId = "";
 
 
+	///Dailog
+	private Dialog promoDialog;
+	private ImageView close_popup;
+	RadioGroup select_option_radio_grp;
+	Button alert_submit;
+	boolean check1 = false;
+	boolean check2 = false;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.drawerview);
 		mContext = AddNewCustomer.this;
+		addCustomeractivity = AddNewCustomer.this;
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -338,6 +357,82 @@ public class AddNewCustomer extends AppCompatActivity implements
 		return map;
 	}
 
+
+	private void dailogBoxAfterSubmit()
+	{
+		promoDialog = new Dialog(this);
+		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		promoDialog.setCancelable(false);
+		promoDialog.setContentView(R.layout.dailog_for_acceptance);
+		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
+		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
+		select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
+
+		promoDialog.show();
+
+		select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+		{
+			@Override
+			public void onCheckedChanged(final RadioGroup radioGroup, final int i)
+			{
+				switch (i)
+				{
+					case R.id.orderBook:
+						check1 = true;
+						break;
+					case R.id.inovice:
+						check2 = true;
+						break;
+
+
+				}
+			}
+
+
+		});
+
+		close_popup.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				if (promoDialog != null)
+				{
+					promoDialog.dismiss();
+					Util.hideSoftKeyboard(mContext, v);
+				}
+			}
+		});
+
+		alert_submit.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				if (check1)
+				{
+
+					Intent in = new Intent(AddNewCustomer.this, Order.class);
+					Util.killAddNewCoustmer();
+					startActivity(in);
+				}
+				else if (check2)
+				{
+					Intent inten = new Intent(AddNewCustomer.this, Invoice.class);
+					Util.killAddNewCoustmer();
+					startActivity(inten);
+				}
+				else
+				{
+					Toast.makeText(mContext, "Please Select Order Book or Invoice", Toast.LENGTH_SHORT).show();
+				}
+
+			}
+		});
+
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -430,7 +525,8 @@ public class AddNewCustomer extends AppCompatActivity implements
 		// Create a new HttpClient and Post Header
 		String responseBody = null;
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost("http://202.143.96.20/Orderstest/api/Services/RegisterShop");
+//		HttpPost httppost = new HttpPost("http://202.143.96.20/Orderstest/api/Services/RegisterShop");
+		HttpPost httppost = new HttpPost(HttpAdapter.SHOP_CREATION_URL);
 		try
 		{
 			String currentDate = DateUtil.currentDate();
@@ -456,6 +552,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 			nameValuePairs.add(new BasicNameValuePair("DateTime", DateUtil.currentDate()));
 			nameValuePairs.add(new BasicNameValuePair("Createdby", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId")));
 			nameValuePairs.add(new BasicNameValuePair("EmailID", emailId.getText().toString()));
+			nameValuePairs.add(new BasicNameValuePair("Pincode", pin.getText().toString()));
 			Log.e("params", nameValuePairs.toString());
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
@@ -1021,13 +1118,15 @@ public class AddNewCustomer extends AppCompatActivity implements
 						//AlertDialogManager.showAlertOnly(AddNewCustomer.this, "BrightUdyog", "Shop Created Successfully" /*result.getString("Message")*/, "Ok");
 //						if (result.getString("Message").equalsIgnoreCase(""))
 						Toast.makeText(AddNewCustomer.this, "Shop Created Successfully", Toast.LENGTH_SHORT).show();
-						refreshActivity();
+//						refreshActivity();
+						dailogBoxAfterSubmit();
 					}
 					else
 					{
 						Toast.makeText(AddNewCustomer.this, "Shop Creation Failed", Toast.LENGTH_SHORT).show();
+						dailogBoxAfterSubmit();
 //						Toast.makeText(AddNewCustomer.this, "Shop Created Successfully", Toast.LENGTH_SHORT).show();
-						refreshActivity();
+//						refreshActivity();
 					}
 				}
 				catch (JSONException e)

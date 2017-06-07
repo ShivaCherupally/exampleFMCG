@@ -76,5 +76,15 @@
 
     <string name="sales_summary">Sales Summary</string>
 
+    <string name="routeName">Route Name</string>
+    <string name="purpose">Purpose</string>
+    <string name="routestartDate">Route Start Date</string>
+    <string name="routeEndDate">Route End Date</string>
+    <string name="targetType">TargetType</string>
+    <string name="targetAmount">Target Amount</string>
+
+
+
+
 
 </resources>

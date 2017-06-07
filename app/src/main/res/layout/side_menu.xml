@@ -129,17 +129,7 @@
                 android:textStyle="bold"/>
 
 
-            <TextView
-                android:id="@+id/shop_update"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/ic_menu_monthly_report"
-                android:drawablePadding="5dp"
-                android:padding="8dp"
-                android:text="Update Shop Details"
-                android:textSize="15sp"
-                android:textStyle="bold"/>
+
 
             <TextView
                 android:id="@+id/add_new_customer"
@@ -150,6 +140,18 @@
                 android:drawablePadding="5dp"
                 android:padding="8dp"
                 android:text="Add New Customer"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/shop_update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/ic_menu_monthly_report"
+                android:drawablePadding="5dp"
+                android:padding="8dp"
+                android:text="Update Customer"
+
                 android:textSize="15sp"
                 android:textStyle="bold"/>
 

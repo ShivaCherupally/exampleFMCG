@@ -150,6 +150,9 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 
 	String GPSL = "";
 
+	boolean SHOP_DETAILS_ACCESS = false;
+	boolean SHOP_DETAILS_WITH_ROUTE_ACCESS = false;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -474,7 +477,6 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 //					zone_sp.setSelection(zoneId);
 					zone_sp.setSelection(getIndex(zone_sp, zoneName, _zoneNamesData));
 					selected_zoneId = String.valueOf(zoneId);
-
 					if (_zoneNamesData.size() != 0)
 					{
 						for (int i = 0; i < _zoneNamesData.size(); i++)
@@ -488,7 +490,6 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 						}
 					}
 				}
-
 
 
 				//Route Name Drop down
@@ -509,6 +510,8 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 							}
 						}
 					}
+
+					SHOP_DETAILS_ACCESS = true;
 				}
 
 				//Area Name Drop down
@@ -562,11 +565,21 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 					shop_address.setText(Address + "");
 				}
 
-				//PinCode
-				/*if (PinCode != null && !PinCode.isEmpty() && !PinCode.equalsIgnoreCase("null"))
+
+				try
 				{
-					pin.setText(PinCode + "");
-				}*/
+					String PinCode = jsnobj.getString("Pincode");
+					if (PinCode != null && !PinCode.isEmpty() && !PinCode.equalsIgnoreCase("null"))
+					{
+						pin.setText(PinCode + "");
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+				//PinCode
+				/**/
 				//Religion Drop Down selection
 				if (ReligionId != 0)
 				{
@@ -1034,13 +1047,29 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
 			{
+
+				/*if (SHOP_DETAILS_ACCESS)
+				{
+					if (position != 0)
+					{
+						selected_zoneId = _zoneNamesData.get(position - 1).getShopId();
+						SHOP_DETAILS_WITH_ROUTE_ACCESS = true;
+					}
+				}
+				else
+				{*/
 				if (position != 0)
 				{
+					boolean selected = true;
 //					zoneNameDropdown = _zoneNamesData.get(position - 1).getShopId();
 					selected_zoneId = _zoneNamesData.get(position - 1).getShopId();
 					selected_roueId = "";
 					HttpAdapter.getRouteDetails(UpdateShopDetailsActvity.this, "routeCode", selected_zoneId);
+					SHOP_DETAILS_ACCESS = false;
 				}
+//				}
+
+
 			}
 
 			@Override
@@ -1088,12 +1117,24 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
 			{
+				/*if (SHOP_DETAILS_ACCESS)
+				{
+					if (position != 0)
+					{
+						routeNameDropDown = _routeCodesData.get(position - 1).getShopId();
+						SHOP_DETAILS_ACCESS = false;
+					}
+				}
+				else
+				{*/
 				if (position != 0)
 				{
 					routeNameDropDown = _routeCodesData.get(position - 1).getShopId();
 					selected_roueId = _routeCodesData.get(position - 1).getShopId(); //3
 					HttpAdapter.getAreaDetailsByRoute(UpdateShopDetailsActvity.this, "areaNameDP", routeNameDropDown);
+					SHOP_DETAILS_ACCESS = false;
 				}
+//				}
 			}
 
 			@Override
@@ -1346,25 +1387,6 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 
 			// Add your data
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			/*nameValuePairs.add(new BasicNameValuePair("ShopName", shopname.getText().toString()));
-			nameValuePairs.add(new BasicNameValuePair("ShopDescription", "shopDescription"));
-			nameValuePairs.add(new BasicNameValuePair("OwnerName", ownername.getText().toString()));
-			nameValuePairs.add(new BasicNameValuePair("Address", shop_address.getText().toString()));
-			//nameValuePairs.add(new BasicNameValuePair("Pincode", pin.getText().toString()));
-			nameValuePairs.add(new BasicNameValuePair("Latitude", lat.getText().toString()));
-			nameValuePairs.add(new BasicNameValuePair("Longitude", lang.getText().toString()));
-			nameValuePairs.add(new BasicNameValuePair("PhoneNumber", phone.getText().toString()));
-			nameValuePairs.add(new BasicNameValuePair("MobileNumber", mobile.getText().toString()));
-			nameValuePairs.add(new BasicNameValuePair("GPSL", "0"));
-			nameValuePairs.add(new BasicNameValuePair("LocationName", locationName.getText().toString()));
-			//nameValuePairs.add(new BasicNameValuePair("PaymentMode", payment.getText().toString()));
-			nameValuePairs.add(new BasicNameValuePair("ZoneId", selected_zoneId));
-			nameValuePairs.add(new BasicNameValuePair("RouteId", routeCode));
-			nameValuePairs.add(new BasicNameValuePair("ShopTypeId", shopTypeDropdown));
-			nameValuePairs.add(new BasicNameValuePair("ReligionID", religionDropdown));
-			nameValuePairs.add(new BasicNameValuePair("PaymentTermId", paymentDropDown));
-			nameValuePairs.add(new BasicNameValuePair("AreaId", areaDropDwn));
-			nameValuePairs.add(new BasicNameValuePair("Active", "Y"));*/
 			nameValuePairs.add(new BasicNameValuePair("shopId", selected_ShopId));
 			nameValuePairs.add(new BasicNameValuePair("ShopName", shopname.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("ShopDescription", "Good"));

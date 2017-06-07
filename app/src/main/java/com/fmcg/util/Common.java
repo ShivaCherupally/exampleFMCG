@@ -13,8 +13,12 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -317,5 +321,13 @@ public class Common {
 
     public static String urlDecoder(String url) throws UnsupportedEncodingException {
         return URLDecoder.decode(url, "UTF-8");
+    }
+
+    void setTextWithSpan(TextView textView, String text, String spanText, StyleSpan style) {
+        SpannableStringBuilder sb = new SpannableStringBuilder(text);
+        int start = text.indexOf(spanText);
+        int end = start + spanText.length();
+        sb.setSpan(style, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        textView.setText(sb);
     }
 }

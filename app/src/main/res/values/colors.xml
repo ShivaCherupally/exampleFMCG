@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#4CB050</color>
     <color name="colorPrimaryDark">#4CB050</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#4CB050</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="green">#4CB050</color>
@@ -10,6 +10,7 @@
     <color name="empty">#00000000</color>
     <color name="grey">#B0BEC5</color>
     <color name="HeaderColor">#4e4e4e</color>
+    <color name="lightgrey">#E4E4E4</color>
 
     <color name="violet">#7096D7</color>
     <color name="contentcolor">#083d5d</color>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:id="@+id/rlInner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+
+        >
+
+        <CheckBox
+            android:id="@+id/chkSelected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+
+
+            />
+
+        <LinearLayout
+            android:id="@+id/laydata"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/chkSelected"
+
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvZoneName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/eventName"
+                android:text="---"
+                android:textColor="@color/HeaderColor"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:id="@+id/tvRouteName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="---"
+                android:textColor="@color/HeaderColor"
+                android:textSize="17sp"/>
+
+            <TextView
+                android:id="@+id/tvTargetAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/eventName"
+                android:layout_marginTop="5dp"
+                android:text="---"
+                android:textColor="@color/HeaderColor"
+                android:textSize="17sp"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/rlInner"
+        android:background="@color/grey"/>
+</RelativeLayout>

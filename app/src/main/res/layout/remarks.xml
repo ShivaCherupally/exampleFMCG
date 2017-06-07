@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <EditText
@@ -20,10 +20,12 @@
             android:layout_height="150dp"
             android:layout_gravity="center"
             android:background="@drawable/rectangle_request"
+            android:cursorVisible="true"
             android:gravity="start"
             android:hint="Remarks"
             android:inputType="text|textCapSentences"
             android:padding="8sp"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:textSize="17sp"/>
 
         <TextView
