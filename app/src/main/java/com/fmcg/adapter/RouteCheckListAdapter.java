@@ -17,11 +17,11 @@ import com.fmcg.models.RouteDetailsData;
 import java.util.List;
 
 
-
 public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAdapter.ViewHolder>
 {
 
 	private List<RouteDetailsData> stList;
+
 	public RouteCheckListAdapter(List<RouteDetailsData> students)
 	{
 		this.stList = students;
@@ -76,7 +76,7 @@ public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAd
 		                boldStyle);*/
 
 
-	//	viewHolder.tvZoneName.setText(Html.fromHtml(zoneName));
+		//	viewHolder.tvZoneName.setText(Html.fromHtml(zoneName));
 
 		viewHolder.chkSelected.setChecked(stList.get(position).isSelected());
 
@@ -91,7 +91,7 @@ public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAd
 				RouteDetailsData contact = (RouteDetailsData) cb.getTag();
 				contact.setSelected(cb.isChecked());
 				stList.get(pos).setSelected(cb.isChecked());
-				Toast.makeText(v.getContext(), "Clicked on Checkbox: " + cb.getText() + " is " + cb.isChecked(), Toast.LENGTH_LONG).show();
+				//Toast.makeText(v.getContext(), "Clicked on Checkbox: " + cb.getText() + " is " + cb.isChecked(), Toast.LENGTH_LONG).show();
 			}
 		});
 

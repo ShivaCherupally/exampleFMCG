@@ -721,7 +721,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 			try
 			{
 				JSONObject mJson = new JSONObject(response.getResponseString());
-			//Payment Terms Name Dropdown
+				//Payment Terms Name Dropdown
 				if (response.getTag().equals("payment"))
 				{
 					if (mJson.getString("Message").equals("SuccessFull"))
@@ -1825,6 +1825,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
+					refreshActivity();
 				}
 			}
 		});

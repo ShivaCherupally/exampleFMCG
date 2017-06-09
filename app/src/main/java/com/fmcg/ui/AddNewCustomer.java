@@ -368,8 +368,8 @@ public class AddNewCustomer extends AppCompatActivity implements
 		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
 		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
 		select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
-
 		promoDialog.show();
+
 
 		select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
 		{
@@ -401,6 +401,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
+					refreshActivity();
 				}
 			}
 		});
@@ -412,7 +413,6 @@ public class AddNewCustomer extends AppCompatActivity implements
 			{
 				if (check1)
 				{
-
 					Intent in = new Intent(AddNewCustomer.this, Order.class);
 					Util.killAddNewCoustmer();
 					startActivity(in);

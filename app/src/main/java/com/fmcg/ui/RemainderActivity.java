@@ -10,7 +10,7 @@
 //import android.widget.Button;
 //import android.widget.TextView;
 //
-//import com.fmcg.adapter.RemainderAdapter;
+//import RemainderAdapter;
 //import com.fmcg.database.RemainderDataBase;
 //import com.fmcg.models.RemainderData;
 //

@@ -189,6 +189,8 @@
             </intent-filter>
         </receiver>
 
+        <service android:name="com.fmcg.ui.RemainderService"/>
+
 
     </application>
 

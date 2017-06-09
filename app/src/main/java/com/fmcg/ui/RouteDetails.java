@@ -30,27 +30,23 @@ import com.fmcg.Dotsoft.util.Common;
 import com.fmcg.adapter.RouteCheckListAdapter;
 import com.fmcg.models.GetRouteDetails;
 import com.fmcg.models.RouteDetailsData;
-import com.fmcg.models.RouteDetailsModel;
 import com.fmcg.models.ShopNamesData;
 import com.fmcg.network.HttpAdapter;
 import com.fmcg.network.NetworkOperationListener;
 import com.fmcg.network.NetworkResponse;
 import com.fmcg.util.AlertDialogManager;
-import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
 import com.fmcg.util.Util;
-import com.fmcg.util.Utility;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class RouteDetails extends AppCompatActivity implements NetworkOperationListener
@@ -175,6 +171,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 
 		HttpAdapter.getRouteDetailsByEmployee(RouteDetails.this, "RouteDetailsModel", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
 
+
 	}
 
 	private void dailogBoxAfterSubmit()
@@ -187,9 +184,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
 		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
 		select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
-
 		promoDialog.show();
-
 		select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
 		{
 			@Override
@@ -202,7 +197,6 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 						break;
 					case R.id.inovice:
 						check2 = true;
-
 						break;
 
 
@@ -221,6 +215,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
+					refreshActivity();
 				}
 			}
 		});
@@ -261,6 +256,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 	private void acceptedSubmitd()
 	{
 		String data = "";
+		JSONArray selectedrouteNos = new JSONArray();
 		List<RouteDetailsData> stList = ((RouteCheckListAdapter) mAdapter).getStudentist();
 		if (stList.size() != 0)
 		{
@@ -271,25 +267,43 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				{
 					data = data + "\n" + String.valueOf(singleStudent.getRouteId()).toString();
 					employeeRoutId = String.valueOf(singleStudent.getRouteId());
-				}
+					selectedrouteNos.put(String.valueOf(singleStudent.getRouteId()).toString());
 
-				if (employeeRoutId != null && !employeeRoutId.isEmpty())
-				{
-					HttpAdapter.routeAccept(RouteDetails.this, "acceptRoute", employeeRoutId);
 				}
 				else
 				{
-					Toast.makeText(mContext, "Please Select Route Number", Toast.LENGTH_SHORT).show();
+					/*final List<RouteDetailsData> objs = stList;
+					objs.remove(singleStudent.getRouteId());*/
 				}
 			}
-			if (!data.isEmpty() && data != null)
+			if (employeeRoutId != null && !employeeRoutId.isEmpty())
+			{
+				String selcetdRoutesStr = selectedrouteNos.toString();
+				Log.e("selcetdRoutesJSONARRay", selcetdRoutesStr + "");
+				selcetdRoutesStr = selcetdRoutesStr.replace("[", "");
+				selcetdRoutesStr = selcetdRoutesStr.replace("]", "");
+				selcetdRoutesStr = selcetdRoutesStr.replaceAll("\"", "");
+				selcetdRoutesStr = selcetdRoutesStr.replaceAll("\"", "");
+
+				Log.e("selcetdRoutesStr", selcetdRoutesStr + "");
+
+//				String jsonString = new Gson().toJson(insertRouteIds(selcetdRoutesStr));
+//				Log.d("jsonString", jsonString);
+				HttpAdapter.routeAccept(RouteDetails.this, "acceptRoute", selcetdRoutesStr);
+			}
+			else
+			{
+				Toast.makeText(mContext, "Please Select Route Number", Toast.LENGTH_SHORT).show();
+			}
+
+			/*if (!data.isEmpty() && data != null)
 			{
 				Toast.makeText(RouteDetails.this, "Selected RouteId : \n" + data, Toast.LENGTH_LONG).show();
 			}
 			else
 			{
 				Toast.makeText(RouteDetails.this, "Please select at least one route number.", Toast.LENGTH_LONG).show();
-			}
+			}*/
 
 		}
 		else
@@ -652,5 +666,25 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		Intent intent = new Intent(this, DashboardActivity.class);
 		startActivity(intent);
 		finish();
+	}
+
+	/*public static JSONArray remove(final int idx, final JSONArray from, RouteDetailsData singleStudent)
+	{
+		final List<JSONObject> objs = singleStudent(from);
+		objs.remove(idx);
+		final JSONArray ja = new JSONArray();
+		for (final JSONObject obj : objs)
+		{
+			ja.put(obj);
+		}
+
+		return ja;
+	}*/
+
+	public static Map<String, String> insertRouteIds(String selectedRouteids)
+	{
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("EmployeeRouteId", selectedRouteids);
+		return map;
 	}
 }

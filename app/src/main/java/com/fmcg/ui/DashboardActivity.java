@@ -1,6 +1,7 @@
 
 package com.fmcg.ui;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -151,6 +152,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	TextView targetAmount, salesAmount, month;
 	String MonthName = "";
 
+	Activity mactivity;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -165,9 +168,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		salesAmount = (TextView) findViewById(R.id.salesAmount);
 		month = (TextView) findViewById(R.id.month);
 
+		mactivity = DashboardActivity.this;
+
 		//setSupportActionBar(toolbar);
 		mContext = DashboardActivity.this;
 		remanderDateAndTimeCheck();
+		startService(new Intent(getBaseContext(), RemainderService.class));
+//		startService(mactivity);
 		//pieChart1GraphAccess();
 //		pieChart2GraphAccess();
 		//barGraphDataGet();
@@ -321,6 +328,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 
 		}
+	}
+
+	public void startService(View view)
+	{
+		startService(new Intent(getBaseContext(), RemainderService.class));
+	}
+
+	// Method to stop the service
+	public void stopService(View view)
+	{
+		stopService(new Intent(getBaseContext(), RemainderService.class));
 	}
 
 
@@ -1599,7 +1617,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	@Override
 	protected void onResume()
 	{
-		remanderDateAndTimeCheck();
+		//remanderDateAndTimeCheck();
+		startService(new Intent(getBaseContext(), RemainderService.class));
 		super.onResume();
+	}
+
+	@Override
+	protected void onPause()
+	{
+		startService(new Intent(getBaseContext(), RemainderService.class));
+		super.onPause();
 	}
 }
