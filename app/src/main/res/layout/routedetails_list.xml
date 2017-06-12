@@ -23,6 +23,7 @@
         android:visibility="gone"
         />
 
+
     <LinearLayout
         android:id="@+id/acceptLLID"
         android:layout_width="match_parent"
@@ -32,21 +33,54 @@
         android:background="@color/white"
         android:clickable="true"
         android:descendantFocusability="beforeDescendants"
-        android:focusableInTouchMode="true">
+        android:focusableInTouchMode="true"
+        >
 
         <TextView
             android:id="@+id/accepttxt"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-
             android:background="@drawable/submit_rectangle"
+
+
             android:gravity="center"
-
-
             android:text="@string/accept"
+
+
             android:textColor="@color/white"
             android:textSize="16sp"
+            android:visibility="gone"
             />
+
+        <Button
+            android:id="@+id/acceptBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentBottom="true"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="#4CB050"
+            android:clickable="true"
+            android:text="@string/accept_txt"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/resetBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentBottom="true"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="#4CB050"
+            android:clickable="true"
+            android:text="@string/reset_txt"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
     </LinearLayout>
 
 </RelativeLayout>

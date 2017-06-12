@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/bottomHRLID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="10dp"
+        android:background="@color/empty"
+        android:gravity="center_vertical"
+
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/bookList"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+
+            android:background="@drawable/orderbook_rectangle"
+            android:gravity="center"
+
+
+            android:text="@string/order_list"
+            android:textAllCaps="false"
+
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            />
+
+        <Button
+            android:id="@+id/invoiceList"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="30dp"
+
+            android:background="@drawable/orderbook_rectangle"
+            android:gravity="center"
+
+
+            android:text="@string/invoice_list"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            />
+    </LinearLayout>
 </LinearLayout>

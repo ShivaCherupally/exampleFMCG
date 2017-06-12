@@ -2,6 +2,7 @@ package com.fmcg.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +65,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 	ArrayList<ShopNamesData> _routeNamesData = new ArrayList<ShopNamesData>();
 	ArrayList<String> routenostitle = new ArrayList<String>();
 	String selected_routeId = "";
+	private Button acceptBtn, resetBtn;
 
 
 	////Route Number 
@@ -82,9 +86,12 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 	private Dialog promoDialog;
 	private ImageView close_popup;
 	RadioGroup select_option_radio_grp;
+	RadioButton orderBook, inovice;
 	Button alert_submit;
 	boolean check1 = false;
 	boolean check2 = false;
+
+	ProgressDialog progressDailog;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -96,6 +103,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		mContext = RouteDetails.this;
 		routeActiviy = RouteDetails.this;
 
+		progressDailog = new ProgressDialog(RouteDetails.this);
 		/*employeeName = (TextView) findViewById(R.id.employee_name);
 		routeName = (TextView) findViewById(R.id.routeNametxt);
 		routeDate = (TextView) findViewById(R.id.route_date);
@@ -118,6 +126,10 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		noPlantxt = (TextView) findViewById(R.id.noPlantxt);
 		accepttxt = (TextView) findViewById(R.id.accepttxt);
 
+		acceptBtn = (Button) findViewById(R.id.acceptBtn);
+		resetBtn = (Button) findViewById(R.id.resetBtn);
+
+
 //		sublayout = (LinearLayout) findViewById(R.id.sublayout);
 //		sublayout.setVisibility(View.GONE);
 //		byDefaultSelctRouteNo();
@@ -126,34 +138,86 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		acceptLLID = (LinearLayout) findViewById(R.id.acceptLLID);
 		acceptLLID.setVisibility(View.VISIBLE);
 		String accepted = SharedPrefsUtil.getStringPreference(mContext, "PLAN_STARTED");
-		/*if (accepted != null && !accepted.isEmpty())
+		if (accepted != null && !accepted.isEmpty())
 		{
-			if (accepted.equals("ACCEPTED"))
+			/*String avalible_list_str = SharedPrefsUtil.getStringPreference(mContext, "AVAILABLE_LIST");
+			Log.e("AVAILABLE_LIST", avalible_list_str);
+
+			convertStringToArraylist(avalible_list_str);
+			System.out.println(myList);
+
+			for (int i = 0; i < myList.size(); i++)
+			{
+				RouteDetailsData singleStudent = myList.get(i);
+				if (singleStudent.isSelected() == true)
+				{
+					//data = data + "\n" + String.valueOf(singleStudent.getRouteId()).toString();
+					//employeeRoutId = String.valueOf(singleStudent.getRouteId());
+					selectedrouteNos.put(String.valueOf(singleStudent.getRouteId()).toString());
+				}
+				else
+				{
+					*//*final List<RouteDetailsData> objs = stList;
+					objs.remove(singleStudent.getRouteId());*//*
+				}*/
+			//}
+
+			/*if (accepted.equals("ACCEPTED"))
 			{
 				accepttxt.setText("Accepted");
-			}
+			}*/
+			HttpAdapter.getRouteDetailsByEmployee(RouteDetails.this, "RouteDetailsModel", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
 		}
 		else
 		{
-			accepttxt.setText("Accept");
-		}*/
+			HttpAdapter.getRouteDetailsByEmployee(RouteDetails.this, "RouteDetailsModel", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
+			//accepttxt.setText("Accept");
+		}
 
 
-		accepttxt.setOnClickListener(new View.OnClickListener()
+		/*accepttxt.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(final View v)
 			{
+				acceptedSubmitd();
+			}
+		});*/
+
+		/*acceptLLID.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				progressDailog.setMessage("Please wait...");
+				progressDailog.setIndeterminate(false);
+				progressDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+				progressDailog.setCancelable(false);
+				progressDailog.show();
+				acceptedSubmitd();
+			}
+		});*/
+
+		acceptBtn.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				progressDailog.setMessage("Please wait...");
+				progressDailog.setIndeterminate(false);
+				progressDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+				progressDailog.setCancelable(false);
+				progressDailog.show();
 				acceptedSubmitd();
 			}
 		});
 
-		acceptLLID.setOnClickListener(new View.OnClickListener()
+		resetBtn.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(final View v)
 			{
-				acceptedSubmitd();
+				refreshActivity();
 			}
 		});
 
@@ -169,7 +233,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		}
 
 
-		HttpAdapter.getRouteDetailsByEmployee(RouteDetails.this, "RouteDetailsModel", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
+//		HttpAdapter.getRouteDetailsByEmployee(RouteDetails.this, "RouteDetailsModel", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
 
 
 	}
@@ -180,12 +244,18 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		promoDialog.setCancelable(false);
-		promoDialog.setContentView(R.layout.dailog_for_acceptance);
+		promoDialog.setContentView(R.layout.popup_starttrip);
 		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
-		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
-		select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
+		alert_submit = (Button) promoDialog.findViewById(R.id.alert_startTrip);
 		promoDialog.show();
-		select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+
+		/*select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
+		orderBook = (RadioButton) promoDialog.findViewById(R.id.orderBook);
+		inovice = (RadioButton) promoDialog.findViewById(R.id.inovice);
+		orderBook.setVisibility(View.GONE);
+		inovice.setVisibility(View.GONE);*/
+
+		/*select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
 		{
 			@Override
 			public void onCheckedChanged(final RadioGroup radioGroup, final int i)
@@ -204,7 +274,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 			}
 
 
-		});
+		});*/
 
 		close_popup.setOnClickListener(new View.OnClickListener()
 		{
@@ -215,6 +285,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
+					SharedPrefsUtil.setStringPreference(mContext, "PLAN_STARTED", "ACCEPTED");
 					refreshActivity();
 				}
 			}
@@ -225,7 +296,11 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 			@Override
 			public void onClick(final View v)
 			{
-				if (check1)
+				SharedPrefsUtil.setStringPreference(mContext, "PLAN_STARTED", "ACCEPTED");
+				Intent in = new Intent(RouteDetails.this, GetShopsByRoute.class);
+				Util.killRouteDetails();
+				startActivity(in);
+				/*if (check1)
 				{
 					SharedPrefsUtil.setStringPreference(mContext, "ORDER_ACCEPTED", "ACTIVE");
 					SharedPrefsUtil.setStringPreference(mContext, "INVOICE_ACCEPTED", "");
@@ -246,7 +321,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				else
 				{
 					Toast.makeText(mContext, "Please Select Order Book or Invoice", Toast.LENGTH_SHORT).show();
-				}
+				}*/
 
 			}
 		});
@@ -255,46 +330,54 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 
 	private void acceptedSubmitd()
 	{
-		String data = "";
-		JSONArray selectedrouteNos = new JSONArray();
-		List<RouteDetailsData> stList = ((RouteCheckListAdapter) mAdapter).getStudentist();
-		if (stList.size() != 0)
+		try
 		{
-			for (int i = 0; i < stList.size(); i++)
-			{
-				RouteDetailsData singleStudent = stList.get(i);
-				if (singleStudent.isSelected() == true)
-				{
-					data = data + "\n" + String.valueOf(singleStudent.getRouteId()).toString();
-					employeeRoutId = String.valueOf(singleStudent.getRouteId());
-					selectedrouteNos.put(String.valueOf(singleStudent.getRouteId()).toString());
+			String data = "";
+			JSONArray selectedrouteNos = new JSONArray();
+			List<RouteDetailsData> stList = ((RouteCheckListAdapter) mAdapter).getStudentist();
 
-				}
-				else
+			String alreadyAccessList = Arrays.toString(stList.toArray());
+			Log.e("availlist", alreadyAccessList);
+			SharedPrefsUtil.setStringPreference(mContext, "AVAILABLE_LIST", alreadyAccessList);
+
+			if (stList.size() != 0)
+			{
+				for (int i = 0; i < stList.size(); i++)
 				{
+					RouteDetailsData singleStudent = stList.get(i);
+					if (singleStudent.isSelected() == true)
+					{
+						data = data + "\n" + String.valueOf(singleStudent.getRouteId()).toString();
+						employeeRoutId = String.valueOf(singleStudent.getRouteId());
+						selectedrouteNos.put(String.valueOf(singleStudent.getRouteId()).toString());
+
+					}
+					else
+					{
 					/*final List<RouteDetailsData> objs = stList;
 					objs.remove(singleStudent.getRouteId());*/
+					}
 				}
-			}
-			if (employeeRoutId != null && !employeeRoutId.isEmpty())
-			{
-				String selcetdRoutesStr = selectedrouteNos.toString();
-				Log.e("selcetdRoutesJSONARRay", selcetdRoutesStr + "");
-				selcetdRoutesStr = selcetdRoutesStr.replace("[", "");
-				selcetdRoutesStr = selcetdRoutesStr.replace("]", "");
-				selcetdRoutesStr = selcetdRoutesStr.replaceAll("\"", "");
-				selcetdRoutesStr = selcetdRoutesStr.replaceAll("\"", "");
+				if (employeeRoutId != null && !employeeRoutId.isEmpty())
+				{
+					String selcetdRoutesStr = selectedrouteNos.toString();
+					Log.e("selcetdRoutesJSONARRay", selcetdRoutesStr + "");
+					selcetdRoutesStr = selcetdRoutesStr.replace("[", "");
+					selcetdRoutesStr = selcetdRoutesStr.replace("]", "");
+					selcetdRoutesStr = selcetdRoutesStr.replaceAll("\"", "");
+					selcetdRoutesStr = selcetdRoutesStr.replaceAll("\"", "");
 
-				Log.e("selcetdRoutesStr", selcetdRoutesStr + "");
+					Log.e("selcetdRoutesStr", selcetdRoutesStr + "");
 
 //				String jsonString = new Gson().toJson(insertRouteIds(selcetdRoutesStr));
 //				Log.d("jsonString", jsonString);
-				HttpAdapter.routeAccept(RouteDetails.this, "acceptRoute", selcetdRoutesStr);
-			}
-			else
-			{
-				Toast.makeText(mContext, "Please Select Route Number", Toast.LENGTH_SHORT).show();
-			}
+					HttpAdapter.routeAccept(RouteDetails.this, "acceptRoute", selcetdRoutesStr);
+				}
+				else
+				{
+					progressDailog.dismiss();
+					Toast.makeText(mContext, "Please Select Route Number", Toast.LENGTH_SHORT).show();
+				}
 
 			/*if (!data.isEmpty() && data != null)
 			{
@@ -305,11 +388,19 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				Toast.makeText(RouteDetails.this, "Please select at least one route number.", Toast.LENGTH_LONG).show();
 			}*/
 
+			}
+			else
+			{
+				progressDailog.dismiss();
+			}
 		}
-		else
+		catch (Exception e)
 		{
 
 		}
+
+
+
 
 
 
@@ -346,6 +437,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					{
 						if (mJson.getString("Data").equals("null"))
 						{
+							progressDailog.dismiss();
 //							sublayout.setVisibility(View.GONE);
 							///acceptLLID.setVisibility(View.GONE);
 							noPlantxt.setVisibility(View.VISIBLE);
@@ -377,8 +469,8 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					{
 						if (mJson.getString("Message").equals("SuccessFull"))
 						{
+							progressDailog.dismiss();
 							Toast.makeText(mContext, "My Day Plan Successfully Accepted", Toast.LENGTH_SHORT).show();
-
 							dailogBoxAfterSubmit();
 
 //							accepttxt.setText("Accepted");
@@ -387,7 +479,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					}
 					catch (Exception e)
 					{
-
+						progressDailog.dismiss();
 					}
 				}
 				else if (response.getTag().equals("routeDetails"))
@@ -517,8 +609,10 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					String ZoneName = "";
 					String RouteNumber = "";
 					String TargetAmount = "";
+					String RouteAcceptFlag = "";
+					boolean isChecked = false;
 					JSONObject jObj = jsonArray.getJSONObject(i);
-					int RouteId = jObj.getInt("RouteId");
+					int RouteId = jObj.getInt("EmployeeRouteId"); //EmployeeRouteId
 					if (jObj.getString("ZoneName") != null && !jObj.getString("ZoneName").equalsIgnoreCase("null"))
 					{
 						ZoneName = jObj.getString("ZoneName");
@@ -534,7 +628,29 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 						//"Purpose" -> "Order and Billing"
 						TargetAmount = jObj.getString("Purpose");
 					}
-					_routeDetailsData.add(new RouteDetailsData(RouteId, ZoneName, RouteNumber, TargetAmount, false));
+
+					if (jObj.getString("RouteAcceptFlag") != null)
+					{
+						//"Purpose" -> "Order and Billing"
+						RouteAcceptFlag = jObj.getString("RouteAcceptFlag");
+					}
+
+					//RouteAcceptFlag
+//					if ()
+					if (RouteAcceptFlag != null && !RouteAcceptFlag.equalsIgnoreCase("null"))
+					{
+						if (RouteAcceptFlag.equalsIgnoreCase("Y"))
+						{
+							isChecked = true;
+						}
+						else
+						{
+							isChecked = false;
+						}
+
+					}
+					_routeDetailsData.add(new RouteDetailsData(RouteId, ZoneName, RouteNumber, TargetAmount, isChecked));
+
 				}
 
 				adapterAssigning(_routeDetailsData);
@@ -543,6 +659,8 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 			{
 				noPlantxt.setVisibility(View.VISIBLE);
 				acceptLLID.setVisibility(View.GONE);
+				acceptBtn.setVisibility(View.GONE);
+				resetBtn.setVisibility(View.GONE);
 			}
 
 		}
@@ -563,11 +681,15 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 			mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 			mAdapter = new RouteCheckListAdapter(_routeDetailsData);
 			mRecyclerView.setAdapter(mAdapter);
+			acceptLLID.setVisibility(View.VISIBLE);
+			acceptBtn.setVisibility(View.VISIBLE);
+			resetBtn.setVisibility(View.VISIBLE);
 		}
 		else
 		{
 			noPlantxt.setVisibility(View.VISIBLE);
 			acceptLLID.setVisibility(View.GONE);
+			acceptBtn.setVisibility(View.GONE);
 		}
 
 	}
@@ -686,5 +808,15 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("EmployeeRouteId", selectedRouteids);
 		return map;
+	}
+
+	public ArrayList<Character> convertStringToArraylist(String str)
+	{
+		ArrayList<Character> charList = new ArrayList<Character>();
+		for (int i = 0; i < str.length(); i++)
+		{
+			charList.add(str.charAt(i));
+		}
+		return charList;
 	}
 }

@@ -700,9 +700,11 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 		description2.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description2.setTextSize(15);
 		description2.setPadding(10, 10, 10, 10);
+		description2.setVisibility(View.GONE);
 		row.addView(description2);
 		description2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
 		                                                       TableRow.LayoutParams.WRAP_CONTENT));
+
 
 
 		tableLayout.addView(row, new TableLayout.LayoutParams(

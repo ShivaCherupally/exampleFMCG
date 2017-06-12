@@ -625,9 +625,12 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 			description2.setText(orderSummary.get(i).GST);
 			description2.setTextSize(15);
 			//description2.setPadding(15,0,0,0);
+			description2.setVisibility(View.GONE);
 			row.addView(description2);
+
 			description2.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
 			                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
+
 
 
 			tableLayout.addView(row, new TableLayout.LayoutParams(
@@ -1475,6 +1478,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
+					refreshActivity();
 				}
 			}
 		});
@@ -1505,5 +1509,12 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 			}
 		});
 
+	}
+
+	private void refreshActivity()
+	{
+		Intent i = getIntent();
+		finish();
+		startActivity(i);
 	}
 }

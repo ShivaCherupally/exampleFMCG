@@ -21,8 +21,12 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akexorcist.googledirection.DirectionCallback;
 import com.akexorcist.googledirection.GoogleDirection;
@@ -31,10 +35,14 @@ import com.akexorcist.googledirection.model.Direction;
 import com.akexorcist.googledirection.model.Step;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.fmcg.Dotsoft.R;
+import com.fmcg.models.GetShops;
 import com.fmcg.models.GetShopsArray;
+import com.fmcg.models.ShopNamesData;
 import com.fmcg.network.HttpAdapter;
 import com.fmcg.network.NetworkOperationListener;
 import com.fmcg.network.NetworkResponse;
+import com.fmcg.util.SharedPrefsUtil;
+import com.fmcg.util.Utility;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
@@ -66,6 +74,7 @@ import java.util.Timer;
 public class GetShopsByRoute extends AppCompatActivity
 		implements OnMapReadyCallback, View.OnClickListener, DirectionCallback, NetworkOperationListener, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
+	public static GetShopsByRoute startTripActivity;
 	public Timer timer;
 	public TextView endTrip;
 	public static long startTime, endTime, duration;
@@ -86,8 +95,19 @@ public class GetShopsByRoute extends AppCompatActivity
 			Manifest.permission.ACCESS_FINE_LOCATION,
 			Manifest.permission.ACCESS_COARSE_LOCATION
 	};
+	Context mContext;
+
 	public static final int TIME_INTERVAL = 10000;
 	MapFragment mapFragment;
+	Spinner routeDrpdwn, areaDrpdwn;
+
+	ArrayList<String> routeNametitle = new ArrayList<String>();
+	ArrayList<ShopNamesData> _routeCodesData = new ArrayList<ShopNamesData>(); //Route Drop Down
+	String selected_roueId = "";
+
+	ArrayList<ShopNamesData> _areaNamesData = new ArrayList<ShopNamesData>(); //Area Drop down
+	ArrayList<String> areaNamestitle = new ArrayList<String>();
+	String selected_areaNameId = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -95,9 +115,27 @@ public class GetShopsByRoute extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.google_maps);
 
+		mContext = GetShopsByRoute.this;
+		routeDrpdwn = (Spinner) findViewById(R.id.routeDrpdwn);
+		areaDrpdwn = (Spinner) findViewById(R.id.areaDrpdwn);
+
+
+		selectRouteNameBind();
+		selectAreaNameBind();
+
+		if (Utility.isOnline(mContext))
+		{
+			HttpAdapter.getRoutedetails(GetShopsByRoute.this, "routeNoDropDown", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
+		}
+		else
+		{
+			Toast.makeText(getApplicationContext(), "No Internet Connetction", Toast.LENGTH_SHORT).show();
+		}
+
 		endTrip = (TextView) findViewById(R.id.endtrip);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
+		startTripActivity = GetShopsByRoute.this;
 
 		bounds = new LatLngBounds.Builder();
 		mapFragment = (MapFragment) getFragmentManager()
@@ -122,6 +160,24 @@ public class GetShopsByRoute extends AppCompatActivity
 		}
 		startTimer();
 		endTrip.setOnClickListener(this);
+
+
+	}
+
+	private void selectRouteNameBind()
+	{
+		routeNametitle.add("Select Route No");
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNametitle);
+		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		routeDrpdwn.setAdapter(dataAdapter_areaName);
+	}
+
+	private void selectAreaNameBind()
+	{
+		areaNamestitle.add("Select Area Name");
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		areaDrpdwn.setAdapter(dataAdapter_areaName);
 	}
 
 	@Override
@@ -253,7 +309,7 @@ public class GetShopsByRoute extends AppCompatActivity
 			map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 			// Zoom in the Google Map
 			map.animateCamera(CameraUpdateFactory.zoomTo(15));
-			HttpAdapter.getShops(this, "getshops", "DTOPAT");
+			//HttpAdapter.getShops(this, "getshops", "DTOPAT");
 		}
 		catch (Exception e)
 		{
@@ -307,6 +363,48 @@ public class GetShopsByRoute extends AppCompatActivity
 
 			try
 			{
+				JSONObject mJson = new JSONObject(response.getResponseString());
+				Log.e("response", mJson.toString());
+				//register
+				if (response.getTag().equals("routeNoDropDown"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						JSONArray jsonArray = mJson.getJSONArray("Data");
+						routeNoSpinnerAdapter(jsonArray);
+					}
+				}
+				else if (response.getTag().equals("areaNameDropDown"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						JSONArray jsonArray = mJson.getJSONArray("Data");
+						areaNameSpinnerAdapter(jsonArray);
+					}
+
+				}
+				else if (response.getTag().equals("getAllShopDetails"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						/*JSONArray jsonArray = mJson.getJSONArray("Data");
+						allShopdetails(jsonArray);*/
+						JSONObject result = new JSONObject(response.getResponseString());
+						JSONArray shopsData = result.getJSONArray("Data");
+						allShopdetails(shopsData);
+					}
+
+				}
+
+			}
+			catch (Exception e)
+			{
+				Log.e("error", e.toString());
+			}
+
+
+			/*try
+			{
 				JSONObject result = new JSONObject(response.getResponseString());
 				JSONArray shopsData = result.getJSONArray("Data");
 				Log.d("latlang", String.valueOf(shopsData));
@@ -343,13 +441,14 @@ public class GetShopsByRoute extends AppCompatActivity
 			catch (JSONException e)
 			{
 				e.printStackTrace();
-			}
-			catch (NumberFormatException e)
+			}*/
+			/*catch (NumberFormatException e)
 			{
 				e.printStackTrace();
-			}
+			}*/
 		}
 	}
+
 
 	private void googleMapszoom()
 	{
@@ -438,6 +537,178 @@ public class GetShopsByRoute extends AppCompatActivity
 	{
 
 	}
+
+
+	private void routeNoSpinnerAdapter(JSONArray jsonArray)
+	{
+		try
+		{
+			_routeCodesData.clear();
+			routeNametitle.clear();
+			_routeCodesData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
+			{
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				String shopId = jsnobj.getString("RouteId");
+				String shopNamee = jsnobj.getString("RouteName");
+				_routeCodesData.add(new ShopNamesData(shopId, shopNamee));
+			}
+			routeNametitle.add("Route Name");
+			if (_routeCodesData.size() > 0)
+			{
+				for (int i = 0; i < _routeCodesData.size(); i++)
+				{
+					routeNametitle.add(_routeCodesData.get(i).getShopName());
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		//Routedetails adapter
+		ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNametitle);
+		dataAdapter_routeName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		routeDrpdwn.setAdapter(dataAdapter_routeName);
+
+		routeDrpdwn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+			{
+				/*if (SHOP_DETAILS_ACCESS)
+				{
+					if (position != 0)
+					{
+						routeNameDropDown = _routeCodesData.get(position - 1).getShopId();
+						SHOP_DETAILS_ACCESS = false;
+					}
+				}
+				else
+				{*/
+				if (position != 0)
+				{
+					selected_roueId = _routeCodesData.get(position - 1).getShopId(); //3
+					HttpAdapter.getAreaNamesByRouteId(GetShopsByRoute.this, "areaNameDropDown", selected_roueId);
+				}
+//				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+
+			}
+		});
+	}
+
+	private void areaNameSpinnerAdapter(final JSONArray jsonArray)
+	{
+		try
+		{
+			_areaNamesData.clear();
+			areaNamestitle.clear();
+			_areaNamesData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
+			{
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				String shopId = jsnobj.getString("AreaId");
+				String shopNamee = jsnobj.getString("AreaName");
+				_areaNamesData.add(new ShopNamesData(shopId, shopNamee));
+			}
+			areaNamestitle.add("Select Area Name");
+			if (_areaNamesData.size() > 0)
+			{
+				for (int i = 0; i < _areaNamesData.size(); i++)
+				{
+					areaNamestitle.add(_areaNamesData.get(i).getShopName());
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		areaDrpdwn.setAdapter(dataAdapter_areaName);
+		areaDrpdwn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+			{
+				if (position != 0)
+				{
+					selected_areaNameId = _areaNamesData.get(position - 1).getShopId();
+					HttpAdapter.getShopDetailsByAreaId(GetShopsByRoute.this, "getAllShopDetails", selected_areaNameId);
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+
+			}
+		});
+	}
+
+	private void allShopdetails(final JSONArray shopsData)
+	{
+		try
+		{
+			try
+			{
+				PolylineOptions polyLineOptions = new PolylineOptions();
+				for (int i = 0; i < shopsData.length(); i++)
+				{
+					JSONObject statuss = shopsData.getJSONObject(i);
+					GetShopsArray getShopsArray = new Gson().fromJson(statuss.toString(), GetShopsArray.class);
+					points = new ArrayList<LatLng>();
+
+					LatLng latLng = new LatLng(Double.parseDouble(getShopsArray.Latitude), Double.parseDouble(getShopsArray.Longitude));
+					points.add(latLng);
+					Log.d("latlang", String.valueOf(latLng));
+					MarkerOptions markerOptions = new MarkerOptions();
+
+					// Setting latitude and longitude of the marker position
+					markerOptions.position(latLng);
+
+					// Setting titile of the infowindow of the marker
+					markerOptions.title(getShopsArray.ShopName);
+					bounds.include(latLng);
+					googleMap.addMarker(markerOptions);
+					polyLineOptions.addAll(points);
+
+
+
+				/*	List<Step> stepList = direction.getRouteList().get(0).getLegList().get(0).getStepList();
+					ArrayList<PolylineOptions> polylineOptionList = DirectionConverter.createTransitPolyline(this, stepList, 5, Color.RED, 3, Color.BLUE);
+					for (PolylineOptions polylineOption : polylineOptionList)
+					{
+						googleMap.addPolyline(polylineOption);
+					}*/
+
+				}
+
+				polyLineOptions.width(10);
+				polyLineOptions.color(Color.RED);
+				googleMap.addPolyline(polyLineOptions);
+				googleMapszoom();
+				requestDirection();
+			}
+			catch (Exception e)
+			{
+
+			}
+		}
+		catch (NumberFormatException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)

@@ -108,7 +108,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 {
 	SharedPreferences sharedPreferences;
-	TextView mydayPlan, shop, maps, getshops, mylocation, new_customer, endTrip, remarks, logout, order, invoice, userName, shop_update, remainder;
+	TextView mydayPlan, shop, maps, getshops, mylocation, new_customer, endTrip, remarks, logout, order, invoice, userName, shop_update, remainder,
+			viewList, pendingBills;
 	DrawerLayout drawer;
 	Toolbar toolbar;
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -226,6 +227,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		shop_update = (TextView) view.findViewById(R.id.shop_update);
 		remainder = (TextView) view.findViewById(R.id.remainder);
 
+		viewList = (TextView) view.findViewById(R.id.viewList);
+		pendingBills = (TextView) view.findViewById(R.id.pendingBills);
+
+
 		userName = (TextView) view.findViewById(R.id.userName);
 		try
 		{
@@ -266,6 +271,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		invoice.setOnClickListener(this);
 		shop_update.setOnClickListener(this);
 		remainder.setOnClickListener(this);
+		viewList.setOnClickListener(this);
+		pendingBills.setOnClickListener(this);
 
 		navigationView.setNavigationItemSelectedListener(this);
 
@@ -690,6 +697,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			Util.killRemainderList();
 			startActivity(remarks);
 		}
+		else if (v.getId() == R.id.viewList)
+		{
+			Intent remarks = new Intent(DashboardActivity.this, ViewListActivity.class);
+			Util.killRemainderList();
+			startActivity(remarks);
+		}
+		else if (v.getId() == R.id.pendingBills)
+		{
+			Intent remarks = new Intent(DashboardActivity.this, RemainderListActivity.class);
+			Util.killRemainderList();
+			startActivity(remarks);
+		}
+
+
 
 		else if (v.getId() == R.id.logout)
 		{

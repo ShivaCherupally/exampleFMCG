@@ -7,6 +7,8 @@
     <string name="login">Login</string>
     <string name="routecd">RouteCD</string>
     <string name="shop_name">ShopName</string>
+    <string name="view_list">View List</string>
+    <string name="pending_bills">Pending Bills</string>
     <string name="owner">OwnerName</string>
     <string name="shop_address">ShopAddress</string>
     <string name="pin">Pincode</string>
@@ -47,6 +49,7 @@
     <string name="isOrder">isOrder</string>
     <string name="accept">Accept</string>
     <string name="noPlan">No Plan Assigned for you</string>
+    <string name="noDataavail">No Data Available</string>
 
     <string name="zone_code">Zone Code</string>
     <string name="route_code">Route Code</string>
@@ -82,6 +85,23 @@
     <string name="routeEndDate">Route End Date</string>
     <string name="targetType">TargetType</string>
     <string name="targetAmount">Target Amount</string>
+
+
+    <string name="order_list">Order Book List</string>
+    <string name="invoice_list">Invoice List</string>
+
+    <string name="orderno">Order No</string>
+    <string name="orderdate">Order Date</string>
+    <string name="shopname">Shop Name</string>
+    <string name="statuss">Status</string>
+    <string name="no_of_prducts">No.of Products</string>
+    <string name="sub_total">Sub Total</string>
+    <string name="tax_amount">Tax Amount</string>
+    <string name="total_amount">Total Amount</string>
+
+
+    <string name="accept_txt">Accept</string>
+    <string name="reset_txt">Reset</string>
 
 
 

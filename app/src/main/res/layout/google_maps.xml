@@ -1,36 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/sublayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+
+            android:background="@drawable/rect_bg_black"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/routeDrpdwn"
+                style="@style/spinner_bg_style"
+                android:layout_width="fill_parent"
+                android:layout_height="45dp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="8dp"
+
+            android:background="@drawable/rect_bg_black"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/areaDrpdwn"
+                style="@style/spinner_bg_style"
+                android:layout_width="fill_parent"
+                android:layout_height="45dp"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/sublayout"
         android:orientation="vertical">
 
         <FrameLayout
             android:id="@+id/framelayouts"
             android:layout_width="match_parent"
+            android:layout_marginTop="3dp"
             android:layout_height="match_parent">
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
             <TextView
                 android:id="@+id/endtrip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:layout_margin="20dp"
                 android:background="@drawable/submit_rectangle"
                 android:gravity="end"
-                android:layout_gravity="end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:text="@string/endTrip"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:visibility="gone"/>
 
         </FrameLayout>
     </LinearLayout>
-</LinearLayout>
+
+</RelativeLayout>

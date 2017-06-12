@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.fmcg.ui.AddNewCustomer;
 import com.fmcg.ui.AddRemainderActivity;
+import com.fmcg.ui.GetShopsByRoute;
 import com.fmcg.ui.Invoice;
 import com.fmcg.ui.Order;
 import com.fmcg.ui.RemainderListActivity;
@@ -244,6 +245,14 @@ public class Util
 			RouteDetails.routeActiviy.finish();
 		}
 	}
+	public static void killStartTrip()
+	{
+		if (GetShopsByRoute.startTripActivity != null)
+		{
+			GetShopsByRoute.startTripActivity.finish();
+		}
+	}
+
 
 
 	public static void killAddNewCoustmer()

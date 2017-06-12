@@ -128,7 +128,7 @@
 
         <activity
             android:name="com.fmcg.ui.RouteDetails"
-            android:label="Route Details"
+            android:label="My Day Program"
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden|adjustResize">
@@ -152,6 +152,20 @@
         <activity
             android:name="com.fmcg.ui.RemainderListActivity"
             android:label="Remainder"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity
+            android:name="com.fmcg.ui.OrderBookList"
+            android:label="List"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity
+            android:name="com.fmcg.ui.ViewListActivity"
+            android:label="View List"
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden|adjustResize"/>

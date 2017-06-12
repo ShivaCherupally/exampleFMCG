@@ -230,5 +230,28 @@ public class DateUtil
 		return currentTime;
 	}
 
+	public static String serverSentDateChange(String serverDate)
+	{
+		String changeFormatDate = "";
+		try
+		{
+			SimpleDateFormat simDf = new SimpleDateFormat("yyyy-MM-dd");
+			Date yourDate = simDf.parse(serverDate);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(yourDate);
+			calendar.get(Calendar.YEAR); //Day of the Year :)
+			calendar.get(Calendar.DATE); //Day of the day :)
+			int orderMonth = calendar.get(Calendar.MONTH) + 1;
+			changeFormatDate = calendar.get(Calendar.DATE) + "-" + orderMonth + "-" + calendar.get(Calendar.YEAR);
+			Log.e("changedate", changeFormatDate + "");
+
+		}
+		catch (Exception e)
+		{
+
+		}
+		return changeFormatDate;
+	}
+
 
 }
