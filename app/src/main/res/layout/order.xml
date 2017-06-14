@@ -517,6 +517,19 @@
                         android:hint="Payment Terms Name"
                         android:singleLine="true"/>
                 </LinearLayout>
+                <TextView
+                    android:id="@+id/paymentSelected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:padding="3dp"
+                    android:visibility="gone"
+
+                    android:gravity="center_vertical"
+                    android:text="Selecte Payment Status"
+                    android:textColor="@color/HeaderColor"
+                    android:textSize="17sp"/>
 
                 <EditText
                     android:id="@+id/Remarks_et"

@@ -295,6 +295,7 @@ public class GetShopsByRoute extends AppCompatActivity
 					.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
 			{
 			}
+
 			googleMap = map;
 			//map.setMyLocationEnabled(true);
 			map.setTrafficEnabled(true);
@@ -317,6 +318,37 @@ public class GetShopsByRoute extends AppCompatActivity
 		}
 
 
+	}
+
+	private void currentLocationAccessWithNavigationMarker(GoogleMap map)
+	{
+		try
+		{
+//DO WHATEVER YOU WANT WITH GOOGLEMAP
+			if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat
+					.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+			{
+			}
+			googleMap = map;
+			//map.setMyLocationEnabled(true);
+			map.setTrafficEnabled(true);
+			map.setIndoorEnabled(true);
+			map.setBuildingsEnabled(true);
+			map.getUiSettings().setZoomControlsEnabled(true);
+			sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
+			LocationManager locationManagerCt = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			locationCt = locationManagerCt.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+			LatLng latLng = new LatLng(locationCt.getLatitude(), locationCt.getLongitude());
+			markerName = googleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.navigation)));
+			map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+			// Zoom in the Google Map
+			map.animateCamera(CameraUpdateFactory.zoomTo(15));
+			//HttpAdapter.getShops(this, "getshops", "DTOPAT");
+		}
+		catch (Exception e)
+		{
+			Log.e("error", e.toString() + "");
+		}
 	}
 
 	public void requestDirection()
@@ -659,6 +691,8 @@ public class GetShopsByRoute extends AppCompatActivity
 		{
 			try
 			{
+				googleMap.clear();
+				currentLocationAccessWithNavigationMarker(googleMap);
 				PolylineOptions polyLineOptions = new PolylineOptions();
 				for (int i = 0; i < shopsData.length(); i++)
 				{
@@ -666,9 +700,33 @@ public class GetShopsByRoute extends AppCompatActivity
 					GetShopsArray getShopsArray = new Gson().fromJson(statuss.toString(), GetShopsArray.class);
 					points = new ArrayList<LatLng>();
 
-					LatLng latLng = new LatLng(Double.parseDouble(getShopsArray.Latitude), Double.parseDouble(getShopsArray.Longitude));
+					Log.e("lat", getShopsArray.Latitude + "shiv");
+					Log.e("long", getShopsArray.Longitude + "Shivaa");
+
+					if (getShopsArray.Longitude != null && !getShopsArray.Longitude.isEmpty())
+					{
+						if (getShopsArray.Longitude != null && !getShopsArray.Longitude.isEmpty())
+						{
+							LatLng latLng = new LatLng(Double.parseDouble(getShopsArray.Latitude), Double.parseDouble(getShopsArray.Longitude));
+							points.add(latLng);
+							Log.e("latlang", String.valueOf(latLng));
+							MarkerOptions markerOptions = new MarkerOptions();
+
+							// Setting latitude and longitude of the marker position
+							markerOptions.position(latLng);
+
+							// Setting titile of the infowindow of the marker
+							markerOptions.title(getShopsArray.ShopName);
+							bounds.include(latLng);
+							googleMap.addMarker(markerOptions);
+							polyLineOptions.addAll(points);
+						}
+
+					}
+
+					/*LatLng latLng = new LatLng(Double.parseDouble(getShopsArray.Latitude), Double.parseDouble(getShopsArray.Longitude));
 					points.add(latLng);
-					Log.d("latlang", String.valueOf(latLng));
+					Log.e("latlang", String.valueOf(latLng));
 					MarkerOptions markerOptions = new MarkerOptions();
 
 					// Setting latitude and longitude of the marker position
@@ -678,7 +736,7 @@ public class GetShopsByRoute extends AppCompatActivity
 					markerOptions.title(getShopsArray.ShopName);
 					bounds.include(latLng);
 					googleMap.addMarker(markerOptions);
-					polyLineOptions.addAll(points);
+					polyLineOptions.addAll(points);*/
 
 
 
@@ -699,6 +757,7 @@ public class GetShopsByRoute extends AppCompatActivity
 			}
 			catch (Exception e)
 			{
+				Log.e("error", e.toString() + "");
 
 			}
 		}

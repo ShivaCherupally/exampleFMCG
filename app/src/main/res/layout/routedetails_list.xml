@@ -34,6 +34,7 @@
         android:clickable="true"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
+        android:orientation="horizontal"
         >
 
         <TextView

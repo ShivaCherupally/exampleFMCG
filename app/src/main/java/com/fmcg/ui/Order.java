@@ -20,6 +20,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -36,6 +37,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -74,6 +76,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.message.LineFormatter;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -110,7 +113,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 	public List<GetZoneDetails> zoneDetailsDP;
 	public List<GetAreaDetails> areaDetailsDP;
 	public List<GetRouteDetails> routeDetailsDP;
-	public List<GetProductCategory> list;
+	public final List<GetProductCategory> list = new ArrayList<GetProductCategory>();
 	private List<GetRouteDropDown> routeDp;
 
 	private List<String> paymentDP_str;
@@ -128,7 +131,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 
 	public Spinner shopName_sp, orderStatus_sp, category_sp, payment_sp, zone_sp, routeName_sp, areaName_sp, routecd;
 	public CheckBox isShopClosed, ordered, invoice;
-	public TextView uploadImage, shopClosed, orderDate, submit, tvDisplayDate, orderNumInvoice;
+	public TextView uploadImage, shopClosed, orderDate, submit, tvDisplayDate, orderNumInvoice, paymentSelected;
 	private EditText remarksET;
 	private LinearLayout list_li;
 	private DatePicker dpResult;
@@ -187,6 +190,9 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 	boolean check1 = false;
 	boolean check2 = false;
 
+
+	//Payment Selection
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -224,6 +230,9 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 		//orderDate = (TextView)findViewById(R.id.order_date);
 		submit = (TextView) findViewById(R.id.submit);
 
+
+		paymentSelected = (TextView) findViewById(R.id.paymentSelected);
+		paymentSelected.setVisibility(View.GONE);
 		remarksET = (EditText) findViewById(R.id.Remarks_et);
 
 		list_li = (LinearLayout) findViewById(R.id.items_li);
@@ -242,7 +251,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 		zoneDetailsDP = new ArrayList<>();
 		areaDetailsDP = new ArrayList<>();
 		routeDetailsDP = new ArrayList<>();
-		list = new ArrayList<>();
+		//list = new ArrayList<>();
 		routeDp = new ArrayList<>();
 
 		paymentDP_str = new ArrayList<>();
@@ -706,7 +715,6 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 		                                                       TableRow.LayoutParams.WRAP_CONTENT));
 
 
-
 		tableLayout.addView(row, new TableLayout.LayoutParams(
 				TableLayout.LayoutParams.MATCH_PARENT,
 				TableLayout.LayoutParams.WRAP_CONTENT));
@@ -753,6 +761,29 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 								if (position != 0)
 								{
 									paymentDropDown = paymentDP.get(position - 1).PaymentTermsId;
+
+									Log.e("paymentId", paymentDropDown);
+//									Log.e("paymentname", paymentDP.get(position - 1).PaymentName);
+									String paymentSelected = paymentDP.get(position - 1).PaymentName;
+									Log.e("paymentSelected", paymentSelected);
+
+									if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
+									{
+										if (paymentSelected.equalsIgnoreCase("Credit-days"))
+										{
+											//dailogBoxforPaymentSelection("Credit-days");
+										}
+										else if (paymentSelected.equalsIgnoreCase("Days to Cheque"))
+										{
+											//dailogBoxforPaymentSelection("Days to Cheque");
+										}
+										else
+										{
+
+										}
+									}
+
+
 								}
 							}
 
@@ -908,15 +939,23 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 						category_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 						{
 							@Override
-							public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+							public void onItemSelected(AdapterView<?> parent, View view, final int positionvalue, long id)
 							{
-								productCategoryId = String.valueOf(position);
-								if (position != 0)
+								try
 								{
-									// productNameDropDown = productDP.get(position).ProductId;
-									list.add(productDP.get(position - 1));
-									displayTableView(list);
+									productCategoryId = String.valueOf(positionvalue);
+									if (positionvalue != 0)
+									{
+										// productNameDropDown = productDP.get(position).ProductId;
+										list.add(productDP.get(positionvalue - 1));
+										displayTableView(list);
+									}
 								}
+								catch (Exception e)
+								{
+
+								}
+
 							}
 
 							@Override
@@ -1384,7 +1423,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 		private String beforeTextChanged = "";
 		private String onTextChanged = "";
 
-		private int position;
+		private final int position;
 
 		public ProductCategoryTableRow(final Context context, final GetProductCategory productCategory, int index)
 		{
@@ -1429,14 +1468,14 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 				taskdate.setTextSize(15);
 				taskdate.setText(mProductCategory.ProductName);
 				taskdate.setPadding(0, 0, 0, 10);
-				taskdate.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.36f));
+				taskdate.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.36f));
 				addView(taskdate);
 
 				TextView title = new TextView(mContext);
 				title.setText(mProductCategory.ProductPrice);
 				title.setTextSize(15);
-				title.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-				                                                TableRow.LayoutParams.WRAP_CONTENT));
+				title.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				                                       LayoutParams.WRAP_CONTENT));
 				addView(title);
 
 				quantityETID = new EditText(mContext);
@@ -1447,8 +1486,8 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 				quantityETID.setFocusableInTouchMode(true);
 				quantityETID.setTextSize(15);
 				quantityETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				quantityETID.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-				                                                       TableRow.LayoutParams.WRAP_CONTENT));
+				quantityETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				                                              LayoutParams.WRAP_CONTENT));
 				quantityETID.addTextChangedListener(mTextWatcher);
 				addView(quantityETID);
 
@@ -1473,8 +1512,8 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 				fresETID.setFocusableInTouchMode(true);
 				fresETID.setTextSize(15);
 				fresETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				fresETID.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-				                                                   TableRow.LayoutParams.WRAP_CONTENT));
+				fresETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				                                          LayoutParams.WRAP_CONTENT));
 				fresETID.addTextChangedListener(mTextWatcherFres);
 				addView(fresETID);
 
@@ -1483,16 +1522,70 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 				description.setText(mProductCategory.VAT);
 				description.setTextSize(15);
 				//description.setPadding(15,0,0,0);
-				description.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-				                                                      TableRow.LayoutParams.WRAP_CONTENT));
+				description.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				                                             LayoutParams.WRAP_CONTENT));
 				addView(description);
 
 				TextView description2 = new TextView(mContext);
 				description2.setText(mProductCategory.GST);
 				description2.setTextSize(15);
-				description2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-				                                                       TableRow.LayoutParams.WRAP_CONTENT));
+				description2.setVisibility(GONE);
+				description2.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				                                              LayoutParams.WRAP_CONTENT));
 				addView(description2);
+
+				ImageView deleteimg = new ImageView(mContext);
+//				deleteimg.setImageResource(getResources().getDrawable(R.drawable.delete));
+//				deleteimg.setPadding(0, 10, 0, 0);
+				deleteimg.setImageResource(R.drawable.delete);
+
+				deleteimg.setMaxWidth(28);
+				deleteimg.setMaxHeight(28);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+				{
+					deleteimg.setForegroundGravity(Gravity.CENTER_VERTICAL);
+				}
+//				deleteimg.setLayoutParams(new TableRow.LayoutParams(24,
+//				                                                    TableRow.LayoutParams.WRAP_CONTENT));
+				deleteimg.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//				deleteimg.gr
+				addView(deleteimg);
+				deleteimg.setOnClickListener(new OnClickListener()
+				{
+					@Override
+					public void onClick(final View v)
+					{
+						try
+						{
+							int temposition = position + 1;
+							TableRow row = (TableRow) tableLayout.getChildAt(temposition);
+							tableLayout.removeView(row);
+							productDP.remove(position - 1);
+							storedProductCategories.remove(position - 1);
+							list.remove(position - 1);
+
+
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+						}
+
+//						notifyDataSetChanged();
+						//notifyAll();
+						/*int childCount = tableLayout.getChildCount();
+						// Remove all rows except the first one
+						if (childCount > position)
+						{
+//							tableLayout.removeViews(position, childCount - position);
+//							int ll = position;
+							tableLayout.removeViews(0, position);
+						}*/
+						/*storedProductCategories.get(position).getQuantity();
+						tableLayout.removeView(position);*/
+					}
+				});
+
 			}
 			catch (Exception e)
 			{
@@ -1859,5 +1952,92 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 		});
 
 	}
+
+	/*private void dailogBoxforPaymentSelection(final String type)
+	{
+		promoDialog = new Dialog(this);
+		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		promoDialog.setCancelable(false);
+		promoDialog.setContentView(R.layout.pop_up_dailog_for_payment_selection);
+		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
+		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
+		final EditText creditdays = (EditText) promoDialog.findViewById(R.id.creditdays);
+		final LinearLayout creditDaysLayout = (LinearLayout) promoDialog.findViewById(R.id.creditDaysLayout);
+
+		final DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
+
+		promoDialog.show();
+
+		if (type.equalsIgnoreCase("Days to Cheque"))
+		{
+			creditDaysLayout.setVisibility(View.GONE);
+			datePicker.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			datePicker.setVisibility(View.GONE);
+			creditDaysLayout.setVisibility(View.VISIBLE);
+		}
+
+		close_popup.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				if (promoDialog != null)
+				{
+					promoDialog.dismiss();
+					Util.hideSoftKeyboard(mContext, v);
+					paymentTermsId = "";
+					payment_sp.setSelection(0);
+//					refreshActivity();
+				}
+			}
+		});
+
+		alert_submit.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				if (type.equalsIgnoreCase("Days to Cheque"))
+				{
+					String daysCredits = creditdays.getText().toString();
+					if (daysCredits != null && !daysCredits.isEmpty())
+					{
+						paymentSelected.setText(getCurrentDate() + "");
+						paymentSelected.setVisibility(View.VISIBLE);
+					}
+				}else {
+					String daysCredits = creditdays.getText().toString();
+					if (daysCredits != null && !daysCredits.isEmpty())
+					{
+						paymentSelected.setText(daysCredits + "");
+						paymentSelected.setVisibility(View.VISIBLE);
+					}
+				}
+
+				promoDialog.dismiss();
+				Util.hideSoftKeyboard(mContext, v);
+
+
+			}
+		});
+
+
+		datePicker.
+
+
+
+	}
+	public String getCurrentDate () {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Current Date: ");
+		builder.append((picker.getMonth() + 1) + "/");//month is 0 based
+		builder.append(picker.getDayOfMonth() + "/");
+		builder.append(picker.getYear());
+		return builder.toString();
+	}*/
 }
 

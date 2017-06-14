@@ -136,7 +136,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 
 
 		acceptLLID = (LinearLayout) findViewById(R.id.acceptLLID);
-		acceptLLID.setVisibility(View.VISIBLE);
+		acceptLLID.setVisibility(View.GONE);
 		String accepted = SharedPrefsUtil.getStringPreference(mContext, "PLAN_STARTED");
 		if (accepted != null && !accepted.isEmpty())
 		{
@@ -354,6 +354,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					}
 					else
 					{
+						acceptLLID.setVisibility(View.VISIBLE);
 					/*final List<RouteDetailsData> objs = stList;
 					objs.remove(singleStudent.getRouteId());*/
 					}
@@ -681,12 +682,12 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 			mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 			mAdapter = new RouteCheckListAdapter(_routeDetailsData);
 			mRecyclerView.setAdapter(mAdapter);
-			acceptLLID.setVisibility(View.VISIBLE);
-			acceptBtn.setVisibility(View.VISIBLE);
-			resetBtn.setVisibility(View.VISIBLE);
+			acceptLLID.setVisibility(View.GONE);
+			checkRouteNosChecking();
 		}
 		else
 		{
+
 			noPlantxt.setVisibility(View.VISIBLE);
 			acceptLLID.setVisibility(View.GONE);
 			acceptBtn.setVisibility(View.GONE);
@@ -766,6 +767,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
 		dataAdapter_routeName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		routeNoSpnr.setAdapter(dataAdapter_routeName);
+
 		sublayout.setVisibility(View.GONE);
 	}
 
@@ -816,7 +818,59 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		for (int i = 0; i < str.length(); i++)
 		{
 			charList.add(str.charAt(i));
+
 		}
 		return charList;
+	}
+
+	private void checkRouteNosChecking()
+	{
+		try
+		{
+			String data = "";
+			JSONArray selectedrouteNos = new JSONArray();
+			List<RouteDetailsData> stList = ((RouteCheckListAdapter) mAdapter).getStudentist();
+
+			String alreadyAccessList = Arrays.toString(stList.toArray());
+			Log.e("availlist", alreadyAccessList);
+			SharedPrefsUtil.setStringPreference(mContext, "AVAILABLE_LIST", alreadyAccessList);
+
+			if (stList.size() != 0)
+			{
+				for (int i = 0; i < stList.size(); i++)
+				{
+					RouteDetailsData singleStudent = stList.get(i);
+					if (singleStudent.isSelected() == true)
+					{
+						data = data + "\n" + String.valueOf(singleStudent.getRouteId()).toString();
+						employeeRoutId = String.valueOf(singleStudent.getRouteId());
+						selectedrouteNos.put(String.valueOf(singleStudent.getRouteId()).toString());
+						SharedPrefsUtil.setStringPreference(mContext, "PLAN_STARTED", "ACCEPTED");
+					}
+					else
+					{
+						acceptLLID.setVisibility(View.VISIBLE);
+					}
+				}
+				if (employeeRoutId != null && !employeeRoutId.isEmpty())
+				{
+					String selcetdRoutesStr = selectedrouteNos.toString();
+					Log.e("selcetdRoutesJSONARRay", selcetdRoutesStr + "");
+					selcetdRoutesStr = selcetdRoutesStr.replace("[", "");
+					selcetdRoutesStr = selcetdRoutesStr.replace("]", "");
+					selcetdRoutesStr = selcetdRoutesStr.replaceAll("\"", "");
+					selcetdRoutesStr = selcetdRoutesStr.replaceAll("\"", "");
+					Log.e("selcetdRoutesStr", selcetdRoutesStr + "");
+				}
+				else
+				{
+					Toast.makeText(mContext, "Please Select Route Number", Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+		catch (Exception e)
+		{
+
+		}
 	}
 }

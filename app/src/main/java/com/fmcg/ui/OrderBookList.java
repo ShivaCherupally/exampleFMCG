@@ -58,8 +58,10 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 		setContentView(R.layout.order_or_invoice_list_activity);
 		order_or_invoiceActivity = OrderBookList.this;
 		mContext = OrderBookList.this;
+
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
 		nodata = (TextView) findViewById(R.id.nodata);
 		mRecyclerView = (RecyclerView) findViewById(R.id.orderorinvoiceRecyclerView);
@@ -72,10 +74,12 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 			if (ACCESS_LIST.equalsIgnoreCase("BOOK_LIST"))
 			{
 				HttpAdapter.getOrderBookList(OrderBookList.this, "Order_Book_List");
+				order_or_invoiceActivity.setTitle("Book List");
 			}
 			else
 			{
 				HttpAdapter.getInvoiceList(OrderBookList.this, "Invoice_List");
+				order_or_invoiceActivity.setTitle("Invoice List");
 			}
 		}
 
@@ -99,7 +103,7 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 			try
 			{
 				JSONObject mJson = new JSONObject(response.getResponseString());
-				Log.e("response", mJson.toString());
+				Log.e("responsebookInvoicelist", mJson.toString());
 
 				if (response.getTag().equals("Order_Book_List"))
 				{
