@@ -705,9 +705,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 		else if (v.getId() == R.id.pendingBills)
 		{
-			Intent remarks = new Intent(DashboardActivity.this, RemainderListActivity.class);
+			/*Intent remarks = new Intent(DashboardActivity.this, RemainderListActivity.class);
 			Util.killRemainderList();
-			startActivity(remarks);
+			startActivity(remarks);*/
 		}
 
 

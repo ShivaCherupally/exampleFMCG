@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.fmcg.Dotsoft.R;
@@ -37,11 +40,27 @@ public class Splashscreen extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splashscreen);
 		textViewId = (TextView) findViewById(R.id.textViewId);
+		context = Splashscreen.this;
+
 		//getActionBar().hide();
+		try
+		{
+			ActionBar actionBar = getSupportActionBar();
+			actionBar.hide();
+//			this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			textViewId.setTypeface(Typeface.createFromAsset(context.getAssets(), "OpenSans-Semibold.ttf"));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+
+//		getActionBar().setDisplayShowTitleEnabled(false);
 
 		sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
 		final String userLogin = sharedPreferences.getString("username", "");
-		context = Splashscreen.this;
+
 
 
 //		DateFormat dateInstance = SimpleDateFormat.getDateInstance();

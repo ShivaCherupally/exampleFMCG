@@ -2,6 +2,7 @@ package com.fmcg.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -27,6 +28,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -1953,7 +1955,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 
 	}
 
-	/*private void dailogBoxforPaymentSelection(final String type)
+	private void dailogBoxforPaymentSelection(final String type)
 	{
 		promoDialog = new Dialog(this);
 		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -1969,10 +1971,13 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 
 		promoDialog.show();
 
+
 		if (type.equalsIgnoreCase("Days to Cheque"))
 		{
 			creditDaysLayout.setVisibility(View.GONE);
-			datePicker.setVisibility(View.VISIBLE);
+			datePicker.setVisibility(View.GONE);
+			DialogFragment newFragment = new DatePickerFragment();
+			newFragment.show(getSupportFragmentManager(), "datePicker");
 		}
 		else
 		{
@@ -2006,10 +2011,18 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 					String daysCredits = creditdays.getText().toString();
 					if (daysCredits != null && !daysCredits.isEmpty())
 					{
-						paymentSelected.setText(getCurrentDate() + "");
-						paymentSelected.setVisibility(View.VISIBLE);
+//						paymentSelected.setText(getCurrentDate() + "");
+						String selectedDate = SharedPrefsUtil.getStringPreference(mContext, "SelectedDate");
+						if (!selectedDate.isEmpty() && selectedDate != null)
+						{
+							paymentSelected.setText(selectedDate);
+							paymentSelected.setVisibility(View.VISIBLE);
+						}
+
 					}
-				}else {
+				}
+				else
+				{
 					String daysCredits = creditdays.getText().toString();
 					if (daysCredits != null && !daysCredits.isEmpty())
 					{
@@ -2026,12 +2039,13 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 		});
 
 
-		datePicker.
-
+//		datePicker.
 
 
 	}
-	public String getCurrentDate () {
+
+	/*public String getCurrentDate()
+	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("Current Date: ");
 		builder.append((picker.getMonth() + 1) + "/");//month is 0 based
@@ -2039,5 +2053,35 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 		builder.append(picker.getYear());
 		return builder.toString();
 	}*/
+
+
+	public static class DatePickerFragment extends DialogFragment
+			implements DatePickerDialog.OnDateSetListener
+	{
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState)
+		{
+			// Use the current date as the default date in the picker
+			final Calendar c = Calendar.getInstance();
+			int year = c.get(Calendar.YEAR);
+			int month = c.get(Calendar.MONTH);
+			int day = c.get(Calendar.DAY_OF_MONTH);
+			DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, year, month, day);
+//			dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
+			dialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+			return dialog;
+		}
+
+		public void onDateSet(DatePicker view, int year, int month, int day)
+		{
+			Date date = new Date(year, month, day);
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM");
+			String sectiondate = simpleDateFormat.format(date.getTime()) + "-" + year;//simDf.format(c.getTime());
+//			paymentSelected.setText(sectiondate);
+			SharedPrefsUtil.setStringPreference(getContext(), "SelectedDate", sectiondate);
+			// Do something with the date chosen by the user
+		}
+	}
 }
 
