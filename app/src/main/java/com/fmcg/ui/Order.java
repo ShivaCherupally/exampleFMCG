@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -67,6 +68,7 @@ import com.fmcg.permission.DangerousPermissionResponse;
 import com.fmcg.permission.DangerousPermissionUtils;
 import com.fmcg.util.SharedPrefsUtil;
 import com.fmcg.util.Util;
+import com.google.android.gms.vision.text.Text;
 import com.google.gson.Gson;
 
 import org.apache.http.HttpEntity;
@@ -133,7 +135,8 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 
 	public Spinner shopName_sp, orderStatus_sp, category_sp, payment_sp, zone_sp, routeName_sp, areaName_sp, routecd;
 	public CheckBox isShopClosed, ordered, invoice;
-	public TextView uploadImage, shopClosed, orderDate, submit, tvDisplayDate, orderNumInvoice, paymentSelected;
+	public TextView uploadImage, shopClosed, orderDate, submit, tvDisplayDate, orderNumInvoice;
+	private static TextView paymentSelected;
 	private EditText remarksET;
 	private LinearLayout list_li;
 	private DatePicker dpResult;
@@ -194,6 +197,10 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 
 
 	//Payment Selection
+	EditText creditdays;
+	LinearLayout creditDaysLayout;
+	DatePicker dateselect;
+	Button dateaccept;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -773,15 +780,15 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 									{
 										if (paymentSelected.equalsIgnoreCase("Credit-days"))
 										{
-											//dailogBoxforPaymentSelection("Credit-days");
+											dailogBoxforPaymentSelection("Credit-days");
 										}
 										else if (paymentSelected.equalsIgnoreCase("Days to Cheque"))
 										{
-											//dailogBoxforPaymentSelection("Days to Cheque");
+											dailogBoxforPaymentSelection("Days to Cheque");
 										}
-										else
+										else if (paymentSelected.equalsIgnoreCase("Cheque"))
 										{
-
+											dailogBoxforPaymentSelection("Cheque");
 										}
 									}
 
@@ -1957,33 +1964,50 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 
 	private void dailogBoxforPaymentSelection(final String type)
 	{
-		promoDialog = new Dialog(this);
-		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		promoDialog.setCancelable(false);
-		promoDialog.setContentView(R.layout.pop_up_dailog_for_payment_selection);
-		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
-		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
-		final EditText creditdays = (EditText) promoDialog.findViewById(R.id.creditdays);
-		final LinearLayout creditDaysLayout = (LinearLayout) promoDialog.findViewById(R.id.creditDaysLayout);
-
-		final DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
-
-		promoDialog.show();
 
 
-		if (type.equalsIgnoreCase("Days to Cheque"))
+
+
+/*
+		if (type.equals("Days to Cheque"))
 		{
-			creditDaysLayout.setVisibility(View.GONE);
-			datePicker.setVisibility(View.GONE);
-			DialogFragment newFragment = new DatePickerFragment();
-			newFragment.show(getSupportFragmentManager(), "datePicker");
+			promoDialog.show();
+			paymentSelected.setText("");
+			creditDaysLayout.setVisibility(View.VISIBLE);
+			dateselect.setVisibility(View.GONE);
+			dateaccept.setVisibility(View.GONE);
+//			dateselect.setVisibility(View.GONE);
+//			DialogFragment newFragment = new DatePickerFragment();
+//			newFragment.show(getSupportFragmentManager(), "datePicker");
 		}
 		else
 		{
-			datePicker.setVisibility(View.GONE);
-			creditDaysLayout.setVisibility(View.VISIBLE);
+			paymentSelected.setText("");
+			dateselect.setVisibility(View.GONE);
+			dateaccept.setVisibility(View.GONE);
+			creditDaysLayout.setVisibility(View.GONE);
+			DialogFragment newFragment = new DatePickerFragmentDailog();
+			newFragment.show(getSupportFragmentManager(), "datePicker");
+
+		}*/
+
+		if (type.equals("Days to Cheque"))
+		{
+			daysAccess();
+//			DialogFragment newFragment = new DatePickerFragmentDailog();
+//			newFragment.show(getSupportFragmentManager(), "datePicker");
+
 		}
+		else if (type.equals("Cheque"))
+		{
+			DialogFragment newFragment = new DatePickerFragmentDailog();
+			newFragment.show(getSupportFragmentManager(), "datePicker");
+		}
+		else if (type.equals("Credit-days"))
+		{
+			daysAccess();
+		}
+
 
 		close_popup.setOnClickListener(new View.OnClickListener()
 		{
@@ -2006,33 +2030,19 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 			@Override
 			public void onClick(final View v)
 			{
-				if (type.equalsIgnoreCase("Days to Cheque"))
+				//Days to Cheque
+				/*String Days = "Days to Cheque";
+				if (type.equals(Days))
+				{*/
+				String daysCredits = creditdays.getText().toString();
+				if (daysCredits != null && !daysCredits.isEmpty())
 				{
-					String daysCredits = creditdays.getText().toString();
-					if (daysCredits != null && !daysCredits.isEmpty())
-					{
-//						paymentSelected.setText(getCurrentDate() + "");
-						String selectedDate = SharedPrefsUtil.getStringPreference(mContext, "SelectedDate");
-						if (!selectedDate.isEmpty() && selectedDate != null)
-						{
-							paymentSelected.setText(selectedDate);
-							paymentSelected.setVisibility(View.VISIBLE);
-						}
-
-					}
+					paymentSelected.setText(daysCredits + " Days" + "");
+					paymentSelected.setVisibility(View.VISIBLE);
 				}
-				else
-				{
-					String daysCredits = creditdays.getText().toString();
-					if (daysCredits != null && !daysCredits.isEmpty())
-					{
-						paymentSelected.setText(daysCredits + "");
-						paymentSelected.setVisibility(View.VISIBLE);
-					}
-				}
-
 				promoDialog.dismiss();
 				Util.hideSoftKeyboard(mContext, v);
+//				}
 
 
 			}
@@ -2042,6 +2052,27 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 //		datePicker.
 
 
+	}
+
+	private void daysAccess()
+	{
+		promoDialog = new Dialog(this);
+		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		promoDialog.setCancelable(false);
+		promoDialog.setContentView(R.layout.pop_up_dailog_for_payment_selection);
+		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
+		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
+		creditdays = (EditText) promoDialog.findViewById(R.id.creditdays);
+		creditDaysLayout = (LinearLayout) promoDialog.findViewById(R.id.creditDaysLayout);
+
+		dateselect = (DatePicker) promoDialog.findViewById(R.id.dateselect);
+		dateaccept = (Button) promoDialog.findViewById(R.id.dateaccept);
+		promoDialog.show();
+		paymentSelected.setText("");
+		creditDaysLayout.setVisibility(View.VISIBLE);
+		dateselect.setVisibility(View.GONE);
+		dateaccept.setVisibility(View.GONE);
 	}
 
 	/*public String getCurrentDate()
@@ -2055,7 +2086,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 	}*/
 
 
-	public static class DatePickerFragment extends DialogFragment
+	public static class DatePickerFragmentDailog extends DialogFragment
 			implements DatePickerDialog.OnDateSetListener
 	{
 
@@ -2078,10 +2109,18 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 			Date date = new Date(year, month, day);
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM");
 			String sectiondate = simpleDateFormat.format(date.getTime()) + "-" + year;//simDf.format(c.getTime());
-//			paymentSelected.setText(sectiondate);
+			paymentSelected.setText("");
+			paymentSelected.setVisibility(View.VISIBLE);
+			paymentSelected.setText(sectiondate);
+
 			SharedPrefsUtil.setStringPreference(getContext(), "SelectedDate", sectiondate);
 			// Do something with the date chosen by the user
+
 		}
+
+
 	}
+
+
 }
 

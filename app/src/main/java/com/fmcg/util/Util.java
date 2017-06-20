@@ -1,6 +1,7 @@
 package com.fmcg.util;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -13,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -27,6 +29,7 @@ import com.fmcg.ui.AddRemainderActivity;
 import com.fmcg.ui.GetShopsByRoute;
 import com.fmcg.ui.Invoice;
 import com.fmcg.ui.Order;
+import com.fmcg.ui.PendingListActivity;
 import com.fmcg.ui.RemainderListActivity;
 import com.fmcg.ui.Remarks;
 import com.fmcg.ui.RouteDetails;
@@ -46,6 +49,8 @@ public class Util
 	public static TextView callnow;
 	public static TextView cancel, calltext;
 	public static ProgressDialog mProgressDialog;
+	public static Context mContext;
+	public static Activity pendingListactvity;
 
 	public static void hideSoftKeyboard(Context context, View currentFocusedView)
 	{
@@ -254,6 +259,15 @@ public class Util
 	}
 
 
+	public static void killPendingListActivity()
+	{
+		if (pendingListactvity != null)
+		{
+			pendingListactvity.finish();
+		}
+	}
+
+
 
 	public static void killAddNewCoustmer()
 	{
@@ -279,6 +293,15 @@ public class Util
 		}
 	}
 
+
+	public static Context commonHeaderandActivity(final AppCompatActivity activity)
+	{
+		activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		activity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+		mContext = activity;
+		pendingListactvity = activity;
+		return  mContext;
+	}
 
 	public static String toTitleCase(String str)
 	{

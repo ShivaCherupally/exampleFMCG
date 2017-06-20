@@ -8,7 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -54,6 +57,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -433,51 +437,6 @@ public class GetShopsByRoute extends AppCompatActivity
 			{
 				Log.e("error", e.toString());
 			}
-
-
-			/*try
-			{
-				JSONObject result = new JSONObject(response.getResponseString());
-				JSONArray shopsData = result.getJSONArray("Data");
-				Log.d("latlang", String.valueOf(shopsData));
-				PolylineOptions polyLineOptions = new PolylineOptions();
-				for (int i = 0; i < 6; i++)
-				{
-					JSONObject statuss = shopsData.getJSONObject(i);
-					GetShopsArray getShopsArray = new Gson().fromJson(statuss.toString(), GetShopsArray.class);
-					points = new ArrayList<LatLng>();
-
-					LatLng latLng = new LatLng(Double.parseDouble(getShopsArray.Latitude), Double.parseDouble(getShopsArray.Longitude));
-					points.add(latLng);
-					Log.d("latlang", String.valueOf(latLng));
-					MarkerOptions markerOptions = new MarkerOptions();
-
-					// Setting latitude and longitude of the marker position
-					markerOptions.position(latLng);
-
-					// Setting titile of the infowindow of the marker
-					markerOptions.title(getShopsArray.ShopName);
-					bounds.include(latLng);
-					googleMap.addMarker(markerOptions);
-					polyLineOptions.addAll(points);
-
-				}
-
-				polyLineOptions.width(10);
-				polyLineOptions.color(Color.RED);
-				googleMap.addPolyline(polyLineOptions);
-				googleMapszoom();
-				requestDirection();
-
-			}
-			catch (JSONException e)
-			{
-				e.printStackTrace();
-			}*/
-			/*catch (NumberFormatException e)
-			{
-				e.printStackTrace();
-			}*/
 		}
 	}
 
@@ -585,7 +544,7 @@ public class GetShopsByRoute extends AppCompatActivity
 				String shopNamee = jsnobj.getString("RouteName");
 				_routeCodesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			routeNametitle.add("Route Name");
+			routeNametitle.add("Select Route Name");
 			if (_routeCodesData.size() > 0)
 			{
 				for (int i = 0; i < _routeCodesData.size(); i++)
@@ -715,42 +674,39 @@ public class GetShopsByRoute extends AppCompatActivity
 							// Setting latitude and longitude of the marker position
 							markerOptions.position(latLng);
 
+							/*Drawable circleDrawable = getResources().getDrawable(R.drawable.popup_close);
+							BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);*/
+
 							// Setting titile of the infowindow of the marker
 							markerOptions.title(getShopsArray.ShopName);
+							polyLineOptions.width(8);
+
+							if (getShopsArray.Active != null && !getShopsArray.Active.equalsIgnoreCase("null"))
+							{
+								if (getShopsArray.Active.equalsIgnoreCase("Y"))
+								{
+									polyLineOptions.color(Color.RED);
+									Drawable circleDrawable = getResources().getDrawable(R.drawable.greenlocator);
+									BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+									markerOptions.icon(markerIcon);
+								}
+								else
+								{
+									polyLineOptions.color(Color.RED);
+//									markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
+								}
+							}
+							else
+							{
+//								markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
+							}
 							bounds.include(latLng);
 							googleMap.addMarker(markerOptions);
-							polyLineOptions.addAll(points);
+							polyLineOptions.addAll(points).color(Color.BLACK).width(5);;
 						}
-
 					}
-
-					/*LatLng latLng = new LatLng(Double.parseDouble(getShopsArray.Latitude), Double.parseDouble(getShopsArray.Longitude));
-					points.add(latLng);
-					Log.e("latlang", String.valueOf(latLng));
-					MarkerOptions markerOptions = new MarkerOptions();
-
-					// Setting latitude and longitude of the marker position
-					markerOptions.position(latLng);
-
-					// Setting titile of the infowindow of the marker
-					markerOptions.title(getShopsArray.ShopName);
-					bounds.include(latLng);
-					googleMap.addMarker(markerOptions);
-					polyLineOptions.addAll(points);*/
-
-
-
-				/*	List<Step> stepList = direction.getRouteList().get(0).getLegList().get(0).getStepList();
-					ArrayList<PolylineOptions> polylineOptionList = DirectionConverter.createTransitPolyline(this, stepList, 5, Color.RED, 3, Color.BLUE);
-					for (PolylineOptions polylineOption : polylineOptionList)
-					{
-						googleMap.addPolyline(polylineOption);
-					}*/
-
 				}
 
-				polyLineOptions.width(10);
-				polyLineOptions.color(Color.RED);
 				googleMap.addPolyline(polyLineOptions);
 				googleMapszoom();
 				requestDirection();
@@ -788,6 +744,16 @@ public class GetShopsByRoute extends AppCompatActivity
 		Intent intent = new Intent(this, DashboardActivity.class);
 		startActivity(intent);
 		finish();
+	}
+
+	private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable)
+	{
+		Canvas canvas = new Canvas();
+		Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+		canvas.setBitmap(bitmap);
+		drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+		drawable.draw(canvas);
+		return BitmapDescriptorFactory.fromBitmap(bitmap);
 	}
 }
 

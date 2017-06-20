@@ -596,6 +596,12 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				e.printStackTrace();
 			}
 		}
+		else
+		{
+			progressDailog.dismiss();
+			Toast.makeText(mContext, "Failed to accept..", Toast.LENGTH_SHORT).show();
+		}
+
 	}
 
 	private void routeListDetails(final JSONArray jsonArray)
@@ -643,6 +649,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 						if (RouteAcceptFlag.equalsIgnoreCase("Y"))
 						{
 							isChecked = true;
+//							isChecked = false;
 						}
 						else
 						{
@@ -864,7 +871,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				}
 				else
 				{
-					Toast.makeText(mContext, "Please Select Route Number", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(mContext, "Please Select Route Number", Toast.LENGTH_SHORT).show();
 				}
 			}
 		}

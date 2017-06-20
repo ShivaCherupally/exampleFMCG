@@ -22,6 +22,7 @@
     <string name="Location">LocationName</string>
     <string name="createdby">CreatedBy</string>
     <string name="submit">Submit</string>
+    <string name="pay">Pay</string>
     <string name="no">non</string>
     <string name="dashboard">Dashboard</string>
     <string name="home">Home</string>
@@ -102,6 +103,12 @@
 
     <string name="accept_txt">Accept</string>
     <string name="reset_txt">Reset</string>
+
+    <string name="pendingbill_details">Pending Bill Detail :</string>
+    <string name="shopname_txt">Shop Name</string>
+    <string name="amounttxt">Amount </string>
+    <string name="payamount">Pay Amount</string>
+
 
 
 

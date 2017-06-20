@@ -700,16 +700,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		else if (v.getId() == R.id.viewList)
 		{
 			Intent remarks = new Intent(DashboardActivity.this, ViewListActivity.class);
-			Util.killRemainderList();
+			Util.killPendingListActivity();
 			startActivity(remarks);
 		}
 		else if (v.getId() == R.id.pendingBills)
 		{
-			/*Intent remarks = new Intent(DashboardActivity.this, RemainderListActivity.class);
-			Util.killRemainderList();
-			startActivity(remarks);*/
+			Intent remarks = new Intent(DashboardActivity.this, PendingListActivity.class);
+			Util.killAddRemainder();
+			startActivity(remarks);
 		}
-
 
 
 		else if (v.getId() == R.id.logout)
@@ -809,12 +808,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	public void operationCompleted(NetworkResponse response)
 	{
 		Common.disMissDialog();
-		Log.e("response", response.getResponseString());
+//		Log.e("response", response.getResponseString());
 		if (response.getStatusCode() == 200)
 		{
 			try
 			{
 				JSONObject mJson = new JSONObject(response.getResponseString());
+				Log.e("response", mJson.toString());
 				if (response.getTag().equals("TargetAmount"))
 				{
 					if (mJson.getString("Message").equals("SuccessFull"))
@@ -823,10 +823,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 						{
 							double TargetAmount = mJson.getDouble("Data");
 //							long TargetAmount = jsonobj.getLong("TargetAmount");
-							if (TargetAmount != 0.0000)
-							{
-								targetAmount.setText("\u20B9" + " " + TargetAmount + System.getProperty("line.separator") + "Target Amount ");
-							}
+//							if (TargetAmount != 0.0000)
+//							{
+							targetAmount.setText("\u20B9" + " " + String.format("%.2f", TargetAmount) + System.getProperty("line.separator") + "Target Amount ");
+//							}
 						}
 						catch (Exception e)
 						{
@@ -841,14 +841,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 						try
 						{
 							double SalesAmount = mJson.getDouble("Data");
+							Log.e("salesamount", String.valueOf(SalesAmount));
 //							long SalesAmount = jsonobj.getLong("SalesAmount");
-							if (SalesAmount != 0.0000)
-							{
-								salesAmount.setText("\u20B9" + " " + SalesAmount + System.getProperty("line.separator") + "Sales Amount ");
+							/*if (SalesAmount != 0.0000)
+							{*/
+							salesAmount.setText("\u20B9" + " " + String.format("%.2f", SalesAmount) + System.getProperty("line.separator") + "Sales Amount ");
 //								salesAmount.setText("First line of text" + System.getProperty("line.separator") + "Linija 2");
 
-								//<string name="Rs">\u20B9</string>
-							}
+							//<string name="Rs">\u20B9</string>
+//							}
 						}
 						catch (Exception e)
 						{

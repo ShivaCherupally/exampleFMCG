@@ -82,10 +82,14 @@ public class HttpAdapter
 	public static final String GET_INVOICE_LIST = BASE_URL + "GetInvoiceDetails?InvoiceNumber=0";
 	//http://202.143.96.20/Orderstest/api/Services/GetInvoiceDetails?InvoiceNumber=0
 
-	//Star Trip Serbvices
+	//Star Trip Services
 	public static final String GET_ROUTE_DROPDOWN = BASE_URL + "GetRouteDetailsByEmpRouteIds";
 	public static final String GET_AREA_NAME = BASE_URL + "GetAreaDetailsByRoute";
 	public static final String GET_SHOP_DETAILS = BASE_URL + "GetShopsDetailsByArea";
+
+	//Pending Bill List Services
+	public static final String PENDING_BILL_DETAILS = BASE_URL + "GetShopsDetailsByArea";
+	public static final String PAY_DONE = BASE_URL + "GetShopsDetailsByArea";
 
 
 //CancelOrderNumber
@@ -389,7 +393,7 @@ public class HttpAdapter
 		// TODO Auto-generated method stub
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
-		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + selectedRouteids, METHOD_GET, "NONE");
+		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + selectedRouteids, METHOD_POST, "NONE");
 	}
 
 	public static void getOrderBookList(NetworkOperationListener listener, Object tag)
@@ -435,6 +439,16 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(GET_SHOP_DETAILS + "?AreaId=" + value, METHOD_GET, "NONE");
+	}
+
+
+	//////Pending Bill Details
+	public static void getPedingbillgDetailsByCustomerId(NetworkOperationListener listener, Object tag, String value)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(PENDING_BILL_DETAILS + "?AreaId=" + value, METHOD_GET, "NONE");
 	}
 
 }
