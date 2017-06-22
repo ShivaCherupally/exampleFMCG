@@ -68,6 +68,7 @@ import com.fmcg.permission.DangerousPermissionResponse;
 import com.fmcg.permission.DangerousPermissionUtils;
 import com.fmcg.util.SharedPrefsUtil;
 import com.fmcg.util.Util;
+import com.fmcg.util.Utility;
 import com.google.android.gms.vision.text.Text;
 import com.google.gson.Gson;
 
@@ -101,6 +102,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
+
 import static com.fmcg.util.Common.orderNUmberString;
 
 
@@ -133,7 +136,9 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 			zoneNameDropdown, areaNameDropDown, routeNameDropDown, routeCode;
 
 
-	public Spinner shopName_sp, orderStatus_sp, category_sp, payment_sp, zone_sp, routeName_sp, areaName_sp, routecd;
+	public Spinner shopName_sp, orderStatus_sp, category_sp, payment_sp, routeName_sp, areaName_sp, routecd, zone_sp;
+//	public MaterialSpinner zone_sp;
+
 	public CheckBox isShopClosed, ordered, invoice;
 	public TextView uploadImage, shopClosed, orderDate, submit, tvDisplayDate, orderNumInvoice;
 	private static TextView paymentSelected;
@@ -221,9 +226,11 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 		tableLayout = (TableLayout) findViewById(R.id.tableRow1);
 
 		orderStatus_sp = (Spinner) findViewById(R.id.order_type_dp);
+
 		category_sp = (Spinner) findViewById(R.id.product_category);
 		payment_sp = (Spinner) findViewById(R.id.payment_terms_name);
 		shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
+
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
 		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
 		areaName_sp = (Spinner) findViewById(R.id.areaName_spinner);
@@ -246,12 +253,23 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 
 		list_li = (LinearLayout) findViewById(R.id.items_li);
 
-		HttpAdapter.getPayment(Order.this, "payment");
-		HttpAdapter.getOrderStatus(Order.this, "orderStatus");
-		HttpAdapter.getProductCategoryDP(Order.this, "productCategoryName");
-		HttpAdapter.getZoneDetailsDP(Order.this, "zoneName");
-		HttpAdapter.getRoute(Order.this, "routeCode");
-		HttpAdapter.GetOrderNumber(Order.this, "GetOrderNumber");
+		if (Utility.isOnline(mContext))
+		{
+			HttpAdapter.getPayment(Order.this, "payment");
+			HttpAdapter.getOrderStatus(Order.this, "orderStatus");
+			HttpAdapter.getProductCategoryDP(Order.this, "productCategoryName");
+			HttpAdapter.getZoneDetailsDP(Order.this, "zoneName");
+			HttpAdapter.getRoute(Order.this, "routeCode");
+			HttpAdapter.GetOrderNumber(Order.this, "GetOrderNumber");
+		}
+		else
+		{
+
+			Toast.makeText(mContext, "Please check internet connection", Toast.LENGTH_SHORT).show();
+//			zone_sp.setPrompt("Select Zone Namee");
+
+		}
+
 
 		paymentDP = new ArrayList<>();
 		shopsDP = new ArrayList<>();
@@ -1990,6 +2008,18 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 			newFragment.show(getSupportFragmentManager(), "datePicker");
 
 		}*/
+		promoDialog = new Dialog(this);
+		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		promoDialog.setCancelable(false);
+		promoDialog.setContentView(R.layout.pop_up_dailog_for_payment_selection);
+		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
+		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
+		creditdays = (EditText) promoDialog.findViewById(R.id.creditdays);
+		creditDaysLayout = (LinearLayout) promoDialog.findViewById(R.id.creditDaysLayout);
+
+		dateselect = (DatePicker) promoDialog.findViewById(R.id.dateselect);
+		dateaccept = (Button) promoDialog.findViewById(R.id.dateaccept);
 
 		if (type.equals("Days to Cheque"))
 		{
@@ -2056,18 +2086,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 
 	private void daysAccess()
 	{
-		promoDialog = new Dialog(this);
-		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		promoDialog.setCancelable(false);
-		promoDialog.setContentView(R.layout.pop_up_dailog_for_payment_selection);
-		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
-		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
-		creditdays = (EditText) promoDialog.findViewById(R.id.creditdays);
-		creditDaysLayout = (LinearLayout) promoDialog.findViewById(R.id.creditDaysLayout);
 
-		dateselect = (DatePicker) promoDialog.findViewById(R.id.dateselect);
-		dateaccept = (Button) promoDialog.findViewById(R.id.dateaccept);
 		promoDialog.show();
 		paymentSelected.setText("");
 		creditDaysLayout.setVisibility(View.VISIBLE);

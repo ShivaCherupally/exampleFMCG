@@ -2,20 +2,6 @@
 package com.fmcg.network;
 
 import android.util.Log;
-import android.view.View;
-
-
-import com.google.gson.Gson;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import cz.msebera.android.httpclient.NameValuePair;
 
 public class HttpAdapter
 {
@@ -53,7 +39,11 @@ public class HttpAdapter
 	public static final String ORDERBOOK = BASE_URL + "Saveorderbooking";
 	public static final String GET_ORDERNUMBER = BASE_URL + "GetOrderNumber";
 	public static final String GET_INVOICENUMBER = BASE_URL + "GetInvoiceNumber";
+
 	public static final String INVOICE_SUBMIT = BASE_URL + "SaveInvoice";
+	public static final String CANCEL_ORDER_NUMBER = BASE_URL + "CancelOrderNumber";
+
+
 	public static final String INVOICE_CANCEL = BASE_URL + "CancelOrderNumber";
 	public static final String ORDER_TOTAL_AMOUNT = BASE_URL + "GetOrderNumberAmount";
 
