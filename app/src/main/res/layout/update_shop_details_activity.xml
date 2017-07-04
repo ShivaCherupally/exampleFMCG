@@ -27,6 +27,7 @@
                 android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
+
                 <Spinner
                     android:id="@+id/shop_type_dp"
                     style="@style/spinner_bg_style"
@@ -42,6 +43,21 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/availZonenametxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:background="@color/empty"
+                    android:hint="@string/select_zone"
+                    android:maxLines="1"
+                    android:padding="8dp"
+                    android:textColor="@color/HeaderColor"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="17sp"
+                    android:visibility="gone"
+                    />
 
                 <Spinner
                     android:id="@+id/zone_name_spinner"
@@ -90,6 +106,21 @@
                     android:layout_gravity="center"
                     android:hint="@string/routecd"
                     android:singleLine="true"/>
+
+                <EditText
+                    android:id="@+id/availRoutetxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:background="@color/empty"
+                    android:hint="@string/select_route"
+                    android:maxLines="1"
+                    android:padding="8dp"
+                    android:textColor="@color/HeaderColor"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="17sp"
+                    android:visibility="gone"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -99,6 +130,20 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edittext_whites"
                 android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/availAreatxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:background="@color/empty"
+                    android:hint="@string/select_area"
+                    android:maxLines="1"
+                    android:padding="8dp"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="17sp"
+                    android:visibility="gone"
+                    />
 
                 <Spinner
                     android:id="@+id/area_name"
@@ -303,8 +348,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:hint="@string/ph"
                 android:imeOptions="actionDone"

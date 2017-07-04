@@ -100,9 +100,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
-import fr.ganfra.materialspinner.MaterialSpinner;
 
 import static com.fmcg.util.Common.orderNUmberString;
 

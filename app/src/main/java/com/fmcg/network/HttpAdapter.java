@@ -81,6 +81,18 @@ public class HttpAdapter
 	public static final String PENDING_BILL_DETAILS = BASE_URL + "GetShopsDetailsByArea";
 	public static final String PAY_DONE = BASE_URL + "GetShopsDetailsByArea";
 
+	//Order Delete
+	public static final String DELETE_ORDER = BASE_URL + "DeleteOrders";
+	//http://202.143.96.20/Orderstest/api/Services/DeleteOrders?OrderId=6&UserId=4
+
+	//Order Edit
+	public static final String EDIT_ORDER = BASE_URL + "GetOrderDetailsByOrderId";
+	//Order Summary
+	public static final String ORDER_PRODCTCATEGORY_SUMMARY = BASE_URL + "GetOrderSummaryByOrderNumber";
+
+	public static final String UPDATE_ORDERBOOK = BASE_URL + "Updateorderbooking";
+
+
 
 //CancelOrderNumber
 	//http://202.143.96.20/Orderstest/Api/Services/GetRouteDataAgent?AgentCode
@@ -441,4 +453,49 @@ public class HttpAdapter
 		operation.execute(PENDING_BILL_DETAILS + "?AreaId=" + value, METHOD_GET, "NONE");
 	}
 
+
+	//////Pending Bill Details
+	public static void orderDelete(NetworkOperationListener listener, Object tag, String params)
+	{
+		// TODO Auto-generated method stub
+		/*NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+//		operation.execute(DELETE_ORDER + "?OrderId=" + orderId + "?UserId=" + userId, METHOD_POST, "NONE");
+		operation.execute(DELETE_ORDER + "?OrderId=" + orderId + "?UserId=" + userId, METHOD_POST, "NONE");*/
+
+		Log.d("jsonrequest", params);
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(DELETE_ORDER, METHOD_POST, params);
+	}
+
+	//////Pending Bill Details
+	public static void orderEdit(NetworkOperationListener listener, Object tag, String orderId)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(EDIT_ORDER + "?OrderId=" + orderId, METHOD_GET, "NONE");
+	}
+
+
+
+	//////Pending Bill Details
+	public static void orderSummryProductCategory(NetworkOperationListener listener, Object tag, String orderNumber)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(ORDER_PRODCTCATEGORY_SUMMARY + "?OrderNumber=" + orderNumber, METHOD_GET, "NONE");
+	}
+
+	//Updateorderbooking
+	public static void updateOrderBooking(NetworkOperationListener listener, Object tag, String jsonString)
+	{
+		// TODO Auto-generated method stub
+		Log.d("jsonrequest", jsonString);
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(UPDATE_ORDERBOOK, METHOD_POST, jsonString);
+	}
 }

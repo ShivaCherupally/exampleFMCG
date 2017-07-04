@@ -34,6 +34,7 @@ public class Splashscreen extends AppCompatActivity
 	IntentFilter intentFilter;
 	TextView textViewId;
 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -60,6 +61,8 @@ public class Splashscreen extends AppCompatActivity
 
 		sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
 		final String userLogin = sharedPreferences.getString("username", "");
+
+
 
 
 

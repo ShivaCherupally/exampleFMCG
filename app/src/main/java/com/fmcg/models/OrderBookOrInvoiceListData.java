@@ -6,6 +6,7 @@ package com.fmcg.models;
 
 public class OrderBookOrInvoiceListData
 {
+	private int OrderId;
 	private int employeeId;
 	private int routeId;
 	private String orderNumber;
@@ -17,10 +18,13 @@ public class OrderBookOrInvoiceListData
 	private double taxAmount;
 	private double totalAmount;
 
-	public OrderBookOrInvoiceListData(final int employeeId, final int routeId, final String orderNumber, final String orderDate, final String shopName, final String status,
+
+	public OrderBookOrInvoiceListData(final int OrderId, int employeeId, final int routeId, final String orderNumber, final String orderDate, final String shopName,
+	                                  final String status,
 	                                  final int noOfProducts, final int subTotalAmount,
 	                                  final double taxAmount, final double totalAmount)
 	{
+		this.OrderId = OrderId;
 		this.employeeId = employeeId;
 		this.routeId = routeId;
 		this.orderNumber = orderNumber;
@@ -31,6 +35,16 @@ public class OrderBookOrInvoiceListData
 		this.subTotalAmount = subTotalAmount;
 		this.taxAmount = taxAmount;
 		this.totalAmount = totalAmount;
+	}
+
+	public int getOrderId()
+	{
+		return OrderId;
+	}
+
+	public void setOrderId(final int orderId)
+	{
+		OrderId = orderId;
 	}
 
 	public int getEmployeeId()

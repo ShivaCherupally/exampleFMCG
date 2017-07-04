@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.fmcg.ui.AddNewCustomer;
@@ -33,6 +34,12 @@ import com.fmcg.ui.PendingListActivity;
 import com.fmcg.ui.RemainderListActivity;
 import com.fmcg.ui.Remarks;
 import com.fmcg.ui.RouteDetails;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import me.srodrigo.androidhintspinner.HintAdapter;
+import me.srodrigo.androidhintspinner.HintSpinner;
 
 
 //import com.codefyne.mysrl.OffersListActivity;
@@ -51,6 +58,9 @@ public class Util
 	public static ProgressDialog mProgressDialog;
 	public static Context mContext;
 	public static Activity pendingListactvity;
+
+	public static HintSpinner<String> defaultHintSpinner;
+	private static List<String> defaults;
 
 	public static void hideSoftKeyboard(Context context, View currentFocusedView)
 	{
@@ -250,6 +260,7 @@ public class Util
 			RouteDetails.routeActiviy.finish();
 		}
 	}
+
 	public static void killStartTrip()
 	{
 		if (GetShopsByRoute.startTripActivity != null)
@@ -266,7 +277,6 @@ public class Util
 			pendingListactvity.finish();
 		}
 	}
-
 
 
 	public static void killAddNewCoustmer()
@@ -300,7 +310,7 @@ public class Util
 		activity.getSupportActionBar().setDisplayShowHomeEnabled(true);
 		mContext = activity;
 		pendingListactvity = activity;
-		return  mContext;
+		return mContext;
 	}
 
 	public static String toTitleCase(String str)
@@ -412,6 +422,47 @@ public class Util
 
 		return calculated;
 	}
+
+	public static void byDefaultSelectServerIdData(Spinner _spinner, String selectString, ArrayList<String> _textitle, Context mContext)
+	{
+//		_spinner.selectHint();
+		HintSpinner<String> hintSpinner = new HintSpinner<>(
+				_spinner,
+				// Default layout - You don't need to pass in any layout id, just your hint text and
+				// your list data
+				new HintAdapter<String>(mContext, selectString, _textitle),
+				new HintSpinner.Callback<String>()
+				{
+					@Override
+					public void onItemSelected(int position, String itemAtPosition)
+					{
+						// Here you handle the on item selected event (this skips the hint selected event)
+					}
+				});
+		hintSpinner.init();
+
+	}
+
+	public static void byDefaultSelectHintData(Spinner _spinner, String selectString, ArrayList<String> _textitle, Context mContext)
+	{
+		defaultHintSpinner = new HintSpinner<>(
+				_spinner,
+				// Default layout - You don't need to pass in any layout id, just your hint text and
+				// your list data
+				new HintAdapter<String>(mContext, selectString, _textitle),
+				new HintSpinner.Callback<String>()
+				{
+					@Override
+					public void onItemSelected(int position, String itemAtPosition)
+					{
+						// Here you handle the on item selected event (this skips the hint selected
+						// event)
+//						showSelectedItem(itemAtPosition);
+					}
+				});
+		defaultHintSpinner.init();
+	}
+
 
 }
 

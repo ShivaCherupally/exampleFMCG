@@ -1,6 +1,5 @@
 package com.fmcg.ui;
 
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,8 +19,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,8 +46,8 @@ import com.fmcg.network.NetworkOperationListener;
 import com.fmcg.network.NetworkResponse;
 import com.fmcg.util.AlertDialogManager;
 import com.fmcg.util.Common;
+import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
-import com.fmcg.util.Util;
 import com.fmcg.util.Utility;
 import com.fmcg.util.Validation;
 import com.google.android.gms.common.ConnectionResult;
@@ -78,13 +80,12 @@ import java.util.Map;
 
 
 /**
- * Created by RuchiTiwari on 5/23/2017.
  */
 
-public class UpdateShopDetailsActvity extends AppCompatActivity implements View.OnClickListener, LocationListener,
-                                                                           GoogleApiClient.OnConnectionFailedListener,
-                                                                           GoogleApiClient.ConnectionCallbacks,
-                                                                           NetworkOperationListener
+public class UpdateCustomerActivity extends AppCompatActivity implements View.OnClickListener, LocationListener,
+                                                                         GoogleApiClient.OnConnectionFailedListener,
+                                                                         GoogleApiClient.ConnectionCallbacks,
+                                                                         NetworkOperationListener
 {
 	SharedPreferences sharedPreferences;
 
@@ -105,7 +106,7 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 	private List<String> areaDp_str;
 
 
-	private String routeCode, religionDropdown, paymentDropDown, shopTypeDropdown, areaDropDwn, routeNameDropDown;
+	private String routeCode, religionDropdown, paymentDropDown, shopTypeDropdown, areaDropDwn;
 	TextView mydayPlan, shop, maps, getshops, mylocation, new_customer, endTrip, remarks, logout, order, invoice, userName, shop_update;
 	DrawerLayout drawer;
 	Toolbar toolbar;
@@ -120,7 +121,6 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 	public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 	Context mContext;
 	String UserId = "";
-
 
 	ArrayList<ShopNamesData> _shopNamesData = new ArrayList<ShopNamesData>(); //Shop Names Newly added
 	ArrayList<ShopNamesData> _zoneNamesData = new ArrayList<ShopNamesData>(); //Zone Drop down
@@ -147,14 +147,17 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 	String selected_religionNameId = "";
 	String selected_paymentNameId = "";
 
+	String selectedrouteName = "";
+
 	String GPSL = "";
 
 	boolean SHOP_DETAILS_ACCESS = false;
 	boolean SHOP_DETAILS_WITH_ROUTE_ACCESS = false;
-	//
-	String availableZoneName = "";
-	String availableRouteName = "";
-	String availableAreaName = "";
+	EditText availZonenametxt, availRoutetxt, availAreatxt;
+
+	boolean routeDropDownItemSeleted = false;
+	boolean areaDropDownItemSeleted = false;
+	int OrdersId;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -163,7 +166,7 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 		setContentView(R.layout.update_shop_details_activity);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
-		mContext = UpdateShopDetailsActvity.this;
+		mContext = UpdateCustomerActivity.this;
 
 		shopname = (EditText) findViewById(R.id.shopname);
 		ownername = (EditText) findViewById(R.id.ownername);
@@ -187,7 +190,13 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 		religion = (Spinner) findViewById(R.id.religion);
 		payment_sp = (Spinner) findViewById(R.id.payment_sp);
 
+
 		emailId = (EditText) findViewById(R.id.emailId);
+
+		availZonenametxt = (EditText) findViewById(R.id.availZonenametxt);
+		availRoutetxt = (EditText) findViewById(R.id.availRoutetxt);
+		availAreatxt = (EditText) findViewById(R.id.availAreatxt);
+
 
 		zoneDetailsDP = new ArrayList<>();
 		religionsDP = new ArrayList<>();
@@ -205,14 +214,14 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 		shopTypeDP_str = new ArrayList<>();
 		areaDp_str = new ArrayList<>();
 
-		defaultAreaNameSelect();
 
-		HttpAdapter.getZoneDetailsDP(UpdateShopDetailsActvity.this, "zoneName");
-		HttpAdapter.getRoute(UpdateShopDetailsActvity.this, "routeCode");
-		HttpAdapter.getReligion(UpdateShopDetailsActvity.this, "getReligion");
-		HttpAdapter.getPayment(UpdateShopDetailsActvity.this, "payment");
-		HttpAdapter.getShopDetailsDP(UpdateShopDetailsActvity.this, "shoptypeDP", "0");
+		//defaultAreaNameSelect();
 
+		HttpAdapter.getShopDetailsDP(UpdateCustomerActivity.this, "shoptypeDP", "0");
+		HttpAdapter.getZoneDetailsDP(UpdateCustomerActivity.this, "zoneName");
+//		HttpAdapter.getRoute(UpdateCustomerActivity.this, "routeCode");
+		HttpAdapter.getReligion(UpdateCustomerActivity.this, "getReligion");
+		HttpAdapter.getPayment(UpdateCustomerActivity.this, "payment");
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -240,6 +249,51 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 		                                  .setFastestInterval(1 * 1000); // 1 second, in milliseconds
 
 
+		availZonenametxt.setOnTouchListener(new View.OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(final View v, final MotionEvent event)
+			{
+				availZonenametxt.setVisibility(View.GONE);
+				zone_sp.setVisibility(View.VISIBLE);
+				zone_sp.hasFocusable();
+				zone_sp.performClick();
+				return false;
+			}
+		});
+
+
+		availRoutetxt.setOnTouchListener(new View.OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(final View v, final MotionEvent event)
+			{
+
+				availRoutetxt.setVisibility(View.GONE);
+				routecd.hasFocusable();
+				routecd.performClick();
+				routecd.setVisibility(View.VISIBLE);
+
+				return false;
+			}
+		});
+
+		availAreatxt.setOnTouchListener(new View.OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(final View v, final MotionEvent event)
+			{
+
+				availAreatxt.setVisibility(View.GONE);
+				areaName_sp.hasFocusable();
+				areaName_sp.performClick();
+				areaName_sp.setVisibility(View.VISIBLE);
+
+				return false;
+			}
+		});
+
+
 		submit.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
@@ -250,13 +304,6 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 				{
 					if (Utility.isOnline(mContext))
 					{
-						/*String jsonString = new Gson()
-								.toJson(registerShops(shopname.getText().toString(), "shopDescription", "1", routeCode, ownername.getText().toString(),
-								                      shop_address.getText().toString(),
-								                      mobile.getText().toString(),
-								                      phone.getText().toString(), lat.getText().toString(), lang.getText().toString(), "0", locationName.getText().toString(),
-								                      shopTypeDropdown, "1", "2016-01-01", createdby.getText().toString(), religionDropdown, paymentDropDown, "1"));
-						Log.d("jsonString", jsonString);*/
 						new CreateShopTask().execute();
 					}
 					else
@@ -356,7 +403,7 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 				}
 				//RouteNames DropDown
 				//Route Codes
-				else if (response.getTag().equals("routeCode"))
+				else if (response.getTag().equals("routeName")) //"routeName"
 				{
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
@@ -409,7 +456,6 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 				//shopName_spinner DropDown // Change after giving service
 				else if (response.getTag().equals("editShopDetails"))
 				{
-
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONObject jsonArray = mJson.getJSONObject("Data");
@@ -436,7 +482,6 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 	{
 		try
 		{
-
 			Log.e("response", jsnobj.toString() + "");
 			int shopId = jsnobj.getInt("ShopId");
 			String ShopCode = jsnobj.getString("ShopCode");
@@ -457,107 +502,61 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 			String ReligionName = jsnobj.getString("ReligionName");
 			int PaymentTermsId = jsnobj.getInt("PaymentTermsId");
 			String PaymentName = jsnobj.getString("PaymentName");
-
+			String routeName = jsnobj.getString("RouteName");
 			String emailIdStr = jsnobj.getString("EmailAddress");
 			String zoneName = jsnobj.getString("ZoneName");
-			String routeName = jsnobj.getString("RouteName");
 			String areaName = jsnobj.getString("AreaName");
-
-
-			availableZoneName = jsnobj.getString("ZoneName");
-			availableRouteName = jsnobj.getString("RouteName");
-			availableAreaName = jsnobj.getString("AreaName");
-
 			int zoneId = jsnobj.getInt("ZoneId");
+			int RouteId = jsnobj.getInt("RouteId");
+			int AreaId = jsnobj.getInt("AreaId");
 
-			int areaId = jsnobj.getInt("AreaId");
 
+			selected_zoneId = String.valueOf(zoneId);
+			selected_roueId = String.valueOf(RouteId);
+			selected_areaNameId = String.valueOf(AreaId);
 
-			try
+			placingAvailZoneName(Integer.parseInt(selected_zoneId));
+
+			/*if (zoneName != null && !zoneName.equalsIgnoreCase("null"))
 			{
-				//Zone Name Drop down
-				/*if (zoneId != 0)
-				{
-					zone_sp.setSelection(getIndex(zone_sp, zoneName, _zoneNamesData));
-					selected_zoneId = String.valueOf(zoneId);
-					if (_zoneNamesData.size() != 0)
-					{
-						for (int i = 0; i < _zoneNamesData.size(); i++)
-						{
-							String availName = _zoneNamesData.get(i).getShopName();
-							if (availName.equals(zoneName))
-							{
-								selected_zoneId = _zoneNamesData.get(i).getShopId();
-								Log.e("routeId", selected_zoneId + "");
-							}
-						}
-					}
-				}*/
-				if (availableZoneName != null && !availableZoneName.equalsIgnoreCase("null") && !availableZoneName.isEmpty())
-				{
-					//Util.byDefaultSelectServerIdData(zone_sp, availableZoneName, zoneNamestitle, mContext);
-					HttpAdapter.getRouteDetails(UpdateShopDetailsActvity.this, "routeCode", String.valueOf(zoneId));
-				}
+				availZonenametxt.setVisibility(View.VISIBLE);
+				availZonenametxt.setText(zoneName + "");
+				zone_sp.setSelection(getIndex(zone_sp, zoneName, _zoneNamesData));
+				zone_sp.setVisibility(View.GONE);
+				selected_zoneId = String.valueOf(zoneId);
+			}
+			else
+			{
+				zone_sp.setVisibility(View.VISIBLE);
+			}
 
-				//areaName
+			if (routeName != null && !routeName.equalsIgnoreCase("null"))
+			{
+				availRoutetxt.setVisibility(View.VISIBLE);
+				availRoutetxt.setText(routeName + "");
+				routeCode = String.valueOf(zoneId);
+				selected_roueId = routeCode;
+				routecd.setSelection(getIndex(routecd, routeName, _routeCodesData));
+				routecd.setVisibility(View.GONE);
 
+			}
+			else
+			{
+				routecd.setVisibility(View.VISIBLE);
+			}
 
-				//Route Name Drop down
-				if (availableRouteName != null && !availableRouteName.isEmpty() && !availableRouteName.equalsIgnoreCase("null"))
-				{
-					//routecd.setSelection(getIndex(routecd, routeName, _routeCodesData));
-					if (_routeCodesData.size() != 0)
-					{
-						for (int i = 0; i < _routeCodesData.size(); i++)
-						{
-							String availName = _routeCodesData.get(i).getShopName();
-							if (availName.equals(routeName))
-							{
-								routeCode = _routeCodesData.get(i).getShopId();
-								Log.e("routeId", routeCode + "");
-							}
-						}
-					}
-					if (availableRouteName != null && !availableRouteName.equalsIgnoreCase("null") && !availableRouteName.isEmpty())
-					{
-						//Util.byDefaultSelectHintData(routecd, availableRouteName, routeNamestitle, mContext);
-						HttpAdapter.getAreaDetailsByRoute(UpdateShopDetailsActvity.this, "areaNameDP", routeCode);
-					}
-				}
-				/*if (availableAreaName != null && !availableAreaName.equalsIgnoreCase("null") && !availableAreaName.isEmpty())
-				{
-					Util.byDefaultSelectHintData(areaName_sp, availableAreaName, areaNamestitle, mContext);
-				}*/
-				//routecd.setSelection(getSelectedIdWithAvailId(routecd, Integer.parseInt(routeCode), _routeCodesData));
-				///Util.byDefaultSelectServerIdData(routecd, routeName, routeNamestitle, mContext);
-					/*HintSpinner<String> hintSpinner = new HintSpinner<>(
-							routecd,
-							// Default layout - You don't need to pass in any layout id, just your hint text and
-							// your list data
-							new HintAdapter<String>(this, routeName, routeNamestitle),
-							new HintSpinner.Callback<String>()
-							{
-								@Override
-								public void onItemSelected(int position, String itemAtPosition)
-								{
-									// Here you handle the on item selected event (this skips the hint selected event)
-								}
-							});
-					hintSpinner.init();*/
-				SHOP_DETAILS_ACCESS = true;
+			if (areaName != null && !areaName.equalsIgnoreCase("null"))
+			{
+				availAreatxt.setVisibility(View.VISIBLE);
+				areaName_sp.setSelection(getIndex(areaName_sp, areaName, _areaNamesData));
+				availAreatxt.setText(areaName + "");
+				areaName_sp.setVisibility(View.GONE);
 
-
-				//Area Name Drop down
-			/*	if (areaId != 0)
-				{
-					areaName_sp.setSelection(areaId);
-				}*/
-				/*if (areaId != 0)
+				if (areaId != 0)
 				{
 					//areaName_sp.setSelection(areaId);
-					areaName_sp.setSelection(getIndex(areaName_sp, areaName, _areaNamesData));
+					//
 					selected_areaNameId = String.valueOf(areaId);
-
 					if (_areaNamesData.size() != 0)
 					{
 						for (int i = 0; i < _areaNamesData.size(); i++)
@@ -567,10 +566,21 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 							{
 								selected_areaNameId = _areaNamesData.get(i).getShopId();
 								Log.e("routeId", selected_areaNameId + "");
+
 							}
 						}
 					}
-				}*/
+				}
+			}
+			else
+			{
+				areaName_sp.setVisibility(View.VISIBLE);
+			}*/
+
+
+			try
+			{
+
 
 				//ShopName
 				{
@@ -601,11 +611,11 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 
 				try
 				{
-					String PinCode = jsnobj.getString("Pincode");
+					/*String PinCode = jsnobj.getString("Pincode");
 					if (PinCode != null && !PinCode.isEmpty() && !PinCode.equalsIgnoreCase("null"))
 					{
 						pin.setText(PinCode + "");
-					}
+					}*/
 				}
 				catch (Exception e)
 				{
@@ -672,7 +682,7 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 
 	public class CreateShopTask extends AsyncTask<String, String, String>
 	{
-		ProgressDialog pd = new ProgressDialog(UpdateShopDetailsActvity.this);
+		ProgressDialog pd = new ProgressDialog(UpdateCustomerActivity.this);
 
 		@Override
 		protected void onPreExecute()
@@ -705,15 +715,15 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 					Log.e("response", result.toString() + "");
 					if (result.getString("Status").equals("OK"))
 					{
-						//AlertDialogManager.showAlertOnly(UpdateShopDetailsActvity.this, "BrightUdyog", "Shop Created Successfully" /*result.getString("Message")*/, "Ok");
+						//AlertDialogManager.showAlertOnly(UpdateCustomerActivity.this, "BrightUdyog", "Shop Created Successfully" /*result.getString("Message")*/, "Ok");
 //						if (result.getString("Message").equalsIgnoreCase(""))
-						Toast.makeText(UpdateShopDetailsActvity.this, "Successfully Shop Details Updated..", Toast.LENGTH_SHORT).show();
+						Toast.makeText(UpdateCustomerActivity.this, "Successfully Shop Details Updated..", Toast.LENGTH_SHORT).show();
 						refreshActivity();
 					}
 					else
 					{
-						//Toast.makeText(UpdateShopDetailsActvity.this, "Shop Creation Failed", Toast.LENGTH_SHORT).show();
-						Toast.makeText(UpdateShopDetailsActvity.this, "Details Failed to Updated", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(UpdateCustomerActivity.this, "Shop Creation Failed", Toast.LENGTH_SHORT).show();
+						Toast.makeText(UpdateCustomerActivity.this, "Details Failed to Updated", Toast.LENGTH_SHORT).show();
 						refreshActivity();
 					}
 				}
@@ -1044,7 +1054,7 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 		return ret;
 	}
 
-	private void zoneSpinnerAdapter(JSONArray jsonArray)
+	/*private void zoneSpinnerAdapter(JSONArray jsonArray)
 	{
 		try
 		{
@@ -1058,39 +1068,14 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 				String shopNamee = jsnobj.getString("ZoneName");
 				_zoneNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-
-			if (availableZoneName.isEmpty())
-			{
-				zoneNamestitle.add("Select Zone Name");
-			}
-			else
-			{
-				zoneNamestitle.add(availableZoneName);
-			}
-
-
+			zoneNamestitle.add("Zone Name");
 			if (_zoneNamesData.size() > 0)
 			{
 				for (int i = 0; i < _zoneNamesData.size(); i++)
 				{
-					if (availableZoneName != null && !availableZoneName.isEmpty())
-					{
-
-						if (availableZoneName.equals(_zoneNamesData.get(i).getShopName()))
-						{
-							zoneNamestitle.add(_zoneNamesData.get(i).getShopName());
-						}
-
-					}
-					else
-					{
-						zoneNamestitle.add(_zoneNamesData.get(i).getShopName());
-					}
-
+					zoneNamestitle.add(_zoneNamesData.get(i).getShopName());
 				}
 			}
-
-
 		}
 		catch (Exception e)
 		{
@@ -1100,6 +1085,9 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, zoneNamestitle);
 		dataAdapter_zoneName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		zone_sp.setAdapter(dataAdapter_zoneName);
+
+
+
 		zone_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
@@ -1108,27 +1096,16 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 				if (position != 0)
 				{
 					selected_zoneId = _zoneNamesData.get(position - 1).getShopId();
-					availableRouteName = "";
-					availableAreaName = "";
-					HttpAdapter.getRouteDetails(UpdateShopDetailsActvity.this, "routeCode", selected_zoneId);
+					availRoutetxt.setVisibility(View.GONE);
+					availAreatxt.setVisibility(View.GONE);
+					routecd.setVisibility(View.VISIBLE);
+					areaName_sp.setVisibility(View.VISIBLE);
+					HttpAdapter.getRouteDetails(UpdateCustomerActivity.this, "routeCode", selected_zoneId);
+
 				}
 				else
 				{
-					if (availableZoneName != null && !availableZoneName.isEmpty())
-					{
-
-					}
-					else
-					{
-						if (!_zoneNamesData.get(position).getShopName().equals("Select Zone Name"))
-						{
-							selected_zoneId = _zoneNamesData.get(position).getShopId();
-							availableRouteName = "";
-							availableAreaName = "";
-							HttpAdapter.getRouteDetails(UpdateShopDetailsActvity.this, "routeCode", selected_zoneId);
-						}
-					}
-
+					selected_zoneId = "";
 				}
 //				}
 
@@ -1149,6 +1126,11 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 		{
 			_routeCodesData.clear();
 			routeNamestitle.clear();
+
+			_areaNamesData.clear();
+			areaNamestitle.clear();
+			defaultAreaNameSelect();
+
 			_routeCodesData = new ArrayList<ShopNamesData>();
 			for (int i = 0; i < jsonArray.length(); i++)
 			{
@@ -1157,39 +1139,14 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 				String shopNamee = jsnobj.getString("RouteName");
 				_routeCodesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-
-			if (availableRouteName.isEmpty())
-			{
-				routeNamestitle.add("Select Route No");
-//				Util.byDefaultSelectHintData(routecd, "Select Route No", routeNamestitle, mContext);
-			}
-			else
-			{
-				routeNamestitle.add(availableRouteName);
-			}
-
-
+			routeNamestitle.add("Route Name");
 			if (_routeCodesData.size() > 0)
 			{
 				for (int i = 0; i < _routeCodesData.size(); i++)
 				{
-					if (availableRouteName != null && !availableRouteName.isEmpty())
-					{
-						if (!_routeCodesData.get(i).getShopName().equals(availableRouteName))
-						{
-							routeNamestitle.add(_routeCodesData.get(i).getShopName());
-						}
-					}
-					else
-					{
-						routeNamestitle.add(_routeCodesData.get(i).getShopName());
-					}
-
-
+					routeNamestitle.add(_routeCodesData.get(i).getShopName());
 				}
 			}
-
-
 		}
 		catch (Exception e)
 		{
@@ -1200,37 +1157,19 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 		dataAdapter_routeName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		routecd.setAdapter(dataAdapter_routeName);
 
-
 		routecd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
 			{
-
-				try
+				if (position != 0)
 				{
-					if (position != 0)
-					{
-						routeNameDropDown = _routeCodesData.get(position - 1).getShopId();
-						selected_roueId = _routeCodesData.get(position - 1).getShopId(); //3
-						availableAreaName = "";
-						HttpAdapter.getAreaDetailsByRoute(UpdateShopDetailsActvity.this, "areaNameDP", routeNameDropDown);
-					}
-					else
-					{
-
-						if (!_routeCodesData.get(position).getShopName().equals("Select Route No"))
-						{
-							routeNameDropDown = _routeCodesData.get(position).getShopId();
-							selected_roueId = _routeCodesData.get(position).getShopId(); //3
-							availableAreaName = "";
-							HttpAdapter.getAreaDetailsByRoute(UpdateShopDetailsActvity.this, "areaNameDP", routeNameDropDown);
-						}
-					}
+					selected_roueId = _routeCodesData.get(position - 1).getShopId(); //3
+					HttpAdapter.getAreaDetailsByRoute(UpdateCustomerActivity.this, "areaNameDP", selected_roueId);
 				}
-				catch (Exception e)
+				else
 				{
-
+					selected_roueId = "";
 				}
 			}
 
@@ -1256,38 +1195,206 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 				String shopNamee = jsnobj.getString("AreaName");
 				_areaNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-
-			if (availableAreaName.isEmpty())
-			{
-				areaNamestitle.add("Select Area Name");
-				//Util.byDefaultSelectHintData(routecd, "Select Area Name", routeNamestitle, mContext);
-			}
-			else
-			{
-				areaNamestitle.add(availableAreaName);
-			}
-
+			areaNamestitle.add("Select Area Name");
 			if (_areaNamesData.size() > 0)
 			{
 				for (int i = 0; i < _areaNamesData.size(); i++)
 				{
-					if (availableAreaName != null && !availableAreaName.isEmpty() && !availableAreaName.equalsIgnoreCase("null"))
-					{
+					areaNamestitle.add(_areaNamesData.get(i).getShopName());
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
-						if (!_areaNamesData.get(i).getShopName().equals(availableAreaName))
-						{
-							areaNamestitle.add(_areaNamesData.get(i).getShopName());
-						}
-
-					}
-					else
-					{
-						areaNamestitle.add(_areaNamesData.get(i).getShopName());
-					}
-
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		areaName_sp.setAdapter(dataAdapter_areaName);
+		areaName_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+			{
+				if (position != 0)
+				{
+					availRoutetxt.setVisibility(View.GONE);
+					availAreatxt.setVisibility(View.GONE);
+					areaDropDwn = _areaNamesData.get(position - 1).getShopId();
+					selected_areaNameId = _areaNamesData.get(position - 1).getShopId();
+				}
+				else
+				{
+					selected_areaNameId = "";
 				}
 			}
 
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+
+			}
+		});
+	}*/
+
+	private void zoneSpinnerAdapter(JSONArray jsonArray)
+	{
+		try
+		{
+			_zoneNamesData.clear();
+			zoneNamestitle.clear();
+			_zoneNamesData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
+			{
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				String shopId = jsnobj.getString("ZoneId");
+				String shopNamee = jsnobj.getString("ZoneName");
+				_zoneNamesData.add(new ShopNamesData(shopId, shopNamee));
+			}
+			zoneNamestitle.add("Zone Name");
+			if (_zoneNamesData.size() > 0)
+			{
+				for (int i = 0; i < _zoneNamesData.size(); i++)
+				{
+					zoneNamestitle.add(_zoneNamesData.get(i).getShopName());
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, zoneNamestitle);
+		dataAdapter_zoneName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		zone_sp.setAdapter(dataAdapter_zoneName);
+
+
+		zone_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+			{
+				if (position != 0)
+				{
+					selected_zoneId = _zoneNamesData.get(position - 1).getShopId();
+					availRoutetxt.setVisibility(View.GONE);
+					availAreatxt.setVisibility(View.GONE);
+					routecd.setVisibility(View.VISIBLE);
+					areaName_sp.setVisibility(View.VISIBLE);
+					HttpAdapter.getRouteDetails(UpdateCustomerActivity.this, "routeName", selected_zoneId);
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+
+			}
+		});
+	}
+
+	private void routeNoSpinnerAdapter(JSONArray jsonArray)
+	{
+		try
+		{
+			_routeCodesData.clear();
+			routeNamestitle.clear();
+
+//			_areaNamesData.clear();
+//			areaNamestitle.clear();
+			//selectAreaNameBind();
+
+			_routeCodesData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
+			{
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				String shopId = jsnobj.getString("RouteId");
+				String shopNamee = jsnobj.getString("RouteName");
+				Log.e("RouteId + RouteName", shopId + shopNamee);
+				_routeCodesData.add(new ShopNamesData(shopId, shopNamee));
+			}
+			routeNamestitle.add("Select Route No");
+			if (_routeCodesData.size() > 0)
+			{
+				for (int i = 0; i < _routeCodesData.size(); i++)
+				{
+					routeNamestitle.add(_routeCodesData.get(i).getShopName());
+				}
+			}
+
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		//Routedetails adapter
+		ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
+		dataAdapter_routeName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		routecd.setAdapter(dataAdapter_routeName);
+
+		if (!routeDropDownItemSeleted)
+		{
+			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
+			placingAvailRouteNo(Integer.parseInt(selected_roueId));
+		}
+		else
+		{
+			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
+			areaName_sp.setVisibility(View.VISIBLE);
+		}
+
+
+		routecd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+			{
+				if (position != 0)
+				{
+					availRoutetxt.setVisibility(View.GONE);
+					availAreatxt.setVisibility(View.GONE);
+					routecd.setVisibility(View.VISIBLE);
+					areaName_sp.setVisibility(View.VISIBLE);
+
+					routeDropDownItemSeleted = true;
+					selected_roueId = _routeCodesData.get(position - 1).getShopId(); //3
+					HttpAdapter.getAreaDetailsByRoute(UpdateCustomerActivity.this, "areaNameDP", selected_roueId);
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+
+			}
+		});
+	}
+
+	private void areaNameSpinnerAdapter(final JSONArray jsonArray)
+	{
+		try
+		{
+			_areaNamesData.clear();
+			areaNamestitle.clear();
+			_areaNamesData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
+			{
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				String shopId = jsnobj.getString("AreaId");
+				String shopNamee = jsnobj.getString("AreaName");
+				_areaNamesData.add(new ShopNamesData(shopId, shopNamee));
+			}
+			areaNamestitle.add("Select Area Name");
+			if (_areaNamesData.size() > 0)
+			{
+				for (int i = 0; i < _areaNamesData.size(); i++)
+				{
+					areaNamestitle.add(_areaNamesData.get(i).getShopName());
+				}
+			}
 		}
 		catch (Exception e)
 		{
@@ -1298,6 +1405,18 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
 
+		if (!routeDropDownItemSeleted)
+		{
+			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
+			placingAvailAreaName(Integer.parseInt(selected_areaNameId));
+		}
+		else
+		{
+			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
+			areaName_sp.setVisibility(View.VISIBLE);
+		}
+
+
 		areaName_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
@@ -1305,7 +1424,8 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 			{
 				if (position != 0)
 				{
-					areaDropDwn = _areaNamesData.get(position - 1).getShopId();
+//					availRoutetxt.setVisibility(View.GONE);
+					availAreatxt.setVisibility(View.GONE);
 					selected_areaNameId = _areaNamesData.get(position - 1).getShopId();
 				}
 			}
@@ -1317,6 +1437,7 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 			}
 		});
 	}
+
 
 	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
 	{
@@ -1364,7 +1485,7 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 					{
 						shopTypeDropdown = _shoptypesData.get(position - 1).getShopId();
 						selected_ShopId = _shoptypesData.get(position - 1).getShopId();
-						HttpAdapter.shopEditDetails(UpdateShopDetailsActvity.this, "editShopDetails", selected_ShopId);
+						HttpAdapter.shopEditDetails(UpdateCustomerActivity.this, "editShopDetails", selected_ShopId);
 					}
 				}
 				catch (Exception e)
@@ -1522,17 +1643,42 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 			nameValuePairs.add(new BasicNameValuePair("GPSL", GPSL));
 			nameValuePairs.add(new BasicNameValuePair("LocationName", locationName.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("ZoneId", selected_zoneId));
-			nameValuePairs.add(new BasicNameValuePair("RouteId", routeCode));
+			nameValuePairs.add(new BasicNameValuePair("RouteId", selected_roueId));
 			nameValuePairs.add(new BasicNameValuePair("ShopTypeId", shopTypeDropdown));
 			nameValuePairs.add(new BasicNameValuePair("ReligionID", religionDropdown));
 			nameValuePairs.add(new BasicNameValuePair("PaymentTermId", paymentDropDown));
-			nameValuePairs.add(new BasicNameValuePair("AreaId", areaDropDwn));
+			nameValuePairs.add(new BasicNameValuePair("AreaId", selected_areaNameId));
 			nameValuePairs.add(new BasicNameValuePair("Active", "Y"));
-			nameValuePairs.add(new BasicNameValuePair("DateTime", updateDate));
+			nameValuePairs.add(new BasicNameValuePair("DateTime", DateUtil.currentDate()));
 			nameValuePairs.add(new BasicNameValuePair("Createdby", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId")));
 			nameValuePairs.add(new BasicNameValuePair("EmailID", emailId.getText().toString()));
-			Log.d("params", nameValuePairs.toString());
+			nameValuePairs.add(new BasicNameValuePair("Pincode", pin.getText().toString()));
+			Log.e("params", nameValuePairs.toString());
+			//[shopId=346, ShopName=Micro Soft, ShopDescription=Good, OwnerName=Micro , Address=Dilsukhnagar , Latitude=17.4951797, Longitude=78.4125424, PhoneNumber=040223344, MobileNumber=1234567890, GPSL=0, LocationName=Dilsukhnagar , ZoneId=2, RouteId=2, ShopTypeId=346, ReligionID=1, PaymentTermId=2, AreaId, Active=Y, DateTime=03-07-2017, Createdby=4, EmailID=sai@s.com, Pincode=508880]
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			/*List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+					nameValuePairs.add(new BasicNameValuePair("ShopName", shopname.getText().toString()));
+					nameValuePairs.add(new BasicNameValuePair("ShopDescription", "shopDescription"));
+					nameValuePairs.add(new BasicNameValuePair("OwnerName", ownername.getText().toString()));
+					nameValuePairs.add(new BasicNameValuePair("Address", shop_address.getText().toString()));
+					nameValuePairs.add(new BasicNameValuePair("Latitude", lat.getText().toString()));
+					nameValuePairs.add(new BasicNameValuePair("Longitude", lang.getText().toString()));
+					nameValuePairs.add(new BasicNameValuePair("PhoneNumber", phone.getText().toString()));
+					nameValuePairs.add(new BasicNameValuePair("MobileNumber", mobile.getText().toString()));
+					nameValuePairs.add(new BasicNameValuePair("GPSL", "0"));
+					nameValuePairs.add(new BasicNameValuePair("LocationName", locationName.getText().toString()));
+					nameValuePairs.add(new BasicNameValuePair("ZoneId", selected_zoneId));
+					nameValuePairs.add(new BasicNameValuePair("RouteId", selected_roueId));
+					nameValuePairs.add(new BasicNameValuePair("ShopTypeId", shopTypeDropdown));
+					nameValuePairs.add(new BasicNameValuePair("ReligionID", religionDropdown));
+					nameValuePairs.add(new BasicNameValuePair("PaymentTermId", paymentDropDown));
+					nameValuePairs.add(new BasicNameValuePair("AreaId", areaDropDwn));
+					nameValuePairs.add(new BasicNameValuePair("Active", "Y"));
+					nameValuePairs.add(new BasicNameValuePair("DateTime", DateUtil.currentDate()));
+					nameValuePairs.add(new BasicNameValuePair("Createdby", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId")));
+					nameValuePairs.add(new BasicNameValuePair("EmailID", emailId.getText().toString()));
+					nameValuePairs.add(new BasicNameValuePair("Pincode", pin.getText().toString()));*/
 
 			// Execute HTTP Post Request
 			HttpResponse response = httpclient.execute(httppost);
@@ -1631,45 +1777,148 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 		return searchIdIndex; // Not found
 	}
 
-	//////
-	private int getSelectedIdWithAvailId(Spinner spinner, int searchId, ArrayList<ShopNamesData> _availbleDropDownData)
+
+	private void placingAvailZoneName(final int zoneId)
 	{
-		int searchIdIndex = 0;
-		try
+		String zoneName = "";
+		if (zoneId != 0)
 		{
-			if (searchId != 0)
+			//zone_sp.setSelection(getIndex(zone_sp, zoneId, _zoneNamesData));
+			selected_zoneId = String.valueOf(zoneId);
+
+			HttpAdapter.getRouteDetails(UpdateCustomerActivity.this, "routeName", selected_zoneId);
+
+			if (_zoneNamesData.size() != 0)
 			{
-				for (int i = 0; i < spinner.getCount(); i++)
+				for (int i = 0; i < _zoneNamesData.size(); i++)
 				{
-					String avaliableListDataid = _availbleDropDownData.get(i).getShopId();
-					if (avaliableListDataid.equals(String.valueOf(searchId)))
+					String availZoneId = _zoneNamesData.get(i).getShopId();
+					if (availZoneId.equals(selected_zoneId))
 					{
-						searchIdIndex = i + 1;
-						Log.e("availbleId", _availbleDropDownData.get(i).getShopId() + "");
-						return searchIdIndex;
+						zoneName = _zoneNamesData.get(i).getShopName();
+						Log.e("routeId", selected_zoneId + "");
 					}
 				}
 			}
-			else
-			{
-				searchIdIndex = searchId;
-			}
-
-
-			/*if (searchId == 0)
-			{
-				searchIdIndex = -1;
-				return -1; // Not found
-			}
-			else
-			{*/
-//			}
 		}
-		catch (Exception e)
+
+		if (zoneName != null && !zoneName.equalsIgnoreCase("null") && !zoneName.isEmpty())
 		{
-			e.printStackTrace();
+			availZonenametxt.setVisibility(View.VISIBLE);
+			availZonenametxt.setText(zoneName + "");
+			zone_sp.setVisibility(View.GONE);
+			selected_zoneId = String.valueOf(zoneId);
+		}
+		else
+		{
+			zone_sp.setVisibility(View.VISIBLE);
+		}
+	}
+
+	private void placingAvailRouteNo(final int routeId)
+	{
+		String routeName = "";
+		if (routeId != 0)
+		{
+			selected_roueId = String.valueOf(routeId);
+			HttpAdapter.getAreaDetailsByRoute(UpdateCustomerActivity.this, "areaNameDP", selected_roueId);
+			if (_routeCodesData.size() != 0)
+			{
+				for (int i = 0; i < _routeCodesData.size(); i++)
+				{
+					String availRouteId = _routeCodesData.get(i).getShopId();
+					if (availRouteId.equals(selected_roueId))
+					{
+						routeName = _routeCodesData.get(i).getShopName();
+					}
+				}
+			}
+		}
+
+		if (routeName != null && !routeName.equalsIgnoreCase("null"))
+		{
+			availRoutetxt.setVisibility(View.VISIBLE);
+			availRoutetxt.setText(routeName + "");
+			//routeCode = String.valueOf(selected_roueId);
+//			selected_roueId = routeCode;
+			routecd.setVisibility(View.GONE);
 
 		}
-		return searchIdIndex; // Not found
+		else
+		{
+			routecd.setVisibility(View.VISIBLE);
+		}
 	}
+
+	private void placingAvailAreaName(final int areaId)
+	{
+		String areaName = "";
+		if (areaId != 0)
+		{
+			//	areaName_sp.setSelection(getIndex(areaName_sp, areaId, _areaNamesData));
+			selected_areaNameId = String.valueOf(areaId);
+
+//			HttpAdapter.getShopDetailsDP(UpdateCustomerActivity.this, "shopName", selected_areaNameId);
+
+
+			if (_areaNamesData.size() != 0)
+			{
+				for (int i = 0; i < _areaNamesData.size(); i++)
+				{
+					String availAreaId = _areaNamesData.get(i).getShopId();
+					Log.e("availAreaId", availAreaId);
+					if (availAreaId.equals(selected_areaNameId))
+					{
+						Log.e("selected_areaNameId", selected_areaNameId);
+						areaName = _areaNamesData.get(i).getShopName();
+					}
+				}
+			}
+		}
+
+		if (areaName != null && !areaName.equalsIgnoreCase("null") && !areaName.isEmpty())
+		{
+			availAreatxt.setVisibility(View.VISIBLE);
+			availAreatxt.setText(areaName + "");
+			areaName_sp.setVisibility(View.GONE);
+		}
+		else
+		{
+			areaName_sp.setVisibility(View.VISIBLE);
+		}
+	}
+
+	/*private void placingAvailShopName(final int ShopId)
+	{
+		String shopName = "";
+		if (ShopId != 0)
+		{
+//			shopName_sp.setSelection(getIndex(shopName_sp, ShopId, _shoptypesData));
+			selected_ShopId = String.valueOf(ShopId);//19
+			if (_shoptypesData.size() != 0)
+			{
+				for (int i = 0; i < _shoptypesData.size(); i++)
+				{
+					String availShopId = _shoptypesData.get(i).getShopId();
+					if (availShopId.equals(selected_ShopId))
+					{
+						shopName = _shoptypesData.get(i).getShopName();
+					}
+				}
+			}
+		}
+
+		if (shopName != null && !shopName.equalsIgnoreCase("null") && !shopName.isEmpty())
+		{
+			availShopnametxt.setVisibility(View.VISIBLE);
+			availShopnametxt.setText(shopName + "");
+			shopName_sp.setVisibility(View.GONE);
+		}
+		else
+		{
+			shopName_sp.setVisibility(View.VISIBLE);
+		}
+	}*/
 }
+
+

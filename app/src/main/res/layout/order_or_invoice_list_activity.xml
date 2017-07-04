@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
+                android:background="@color/white"
                 android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/swipeleftlabellayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_color"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/five">
+
+        <TextView
+            android:id="@+id/swipeLefttxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:text="@string/swipe_left_delete_order_list"
+            android:textColor="@color/ligthblue"
+            android:textSize="@dimen/text_thirteen" />
+
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/orderorinvoiceRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/swipeleftlabellayout"
         android:layout_marginTop="5dp"
+        android:background="@color/white"
         android:clipToPadding="false"/>
 
     <TextView

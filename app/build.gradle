@@ -35,10 +35,11 @@ dependencies {
         useLibrary 'org.apache.http.legacy'
     }
     compile 'com.google.code.gson:gson:2.5'
+    compile 'me.srodrigo:androidhintspinner:1.0.0'
     compile 'com.android.support:design:24.0.0'
     compile 'com.akexorcist:googledirectionlibrary:1.0.5'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile 'com.daimajia.swipelayout:library:1.2.0@aar'
-    compile 'com.github.ganfra:material-spinner:1.1.1'
+    //compile 'com.github.ganfra:material-spinner:1.1.1'
     compile project(':volley')
 }

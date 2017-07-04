@@ -1,6 +1,7 @@
 package com.fmcg.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -9,13 +10,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.models.OrderBookOrInvoiceListData;
 import com.fmcg.network.HttpAdapter;
+import com.fmcg.ui.Order;
 import com.fmcg.ui.OrderBookList;
+import com.fmcg.ui.RemainderListActivity;
 import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
 
@@ -30,10 +39,14 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 {
 	Context mContext;
 	private List<OrderBookOrInvoiceListData> _orderBookOrInvoiceListData;
+	private OrderBookList mActivity;
 
-	public OrderOrInvoiceListAdapter(List<OrderBookOrInvoiceListData> listdata)
+
+	public OrderOrInvoiceListAdapter(OrderBookList activity, List<OrderBookOrInvoiceListData> listdata)
 	{
+		mActivity = activity;
 		this._orderBookOrInvoiceListData = listdata;
+
 
 	}
 
@@ -42,6 +55,7 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 	public OrderOrInvoiceListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
 	{
 		mContext = parent.getContext();
+
 		// create a new view
 		View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(
 				R.layout.order_or_invice_item, null);
@@ -54,7 +68,7 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 	}
 
 	@Override
-	public void onBindViewHolder(OrderOrInvoiceListAdapter.ViewHolder viewHolder, final int position)
+	public void onBindViewHolder(final OrderOrInvoiceListAdapter.ViewHolder viewHolder, final int position)
 	{
 
 
@@ -69,9 +83,28 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 				}
 				else
 				{
+					viewHolder.editBtn.setVisibility(View.INVISIBLE);
+					viewHolder.closeRL.setVisibility(View.GONE);
+					viewHolder.deleteRL.setVisibility(View.GONE);
 					invoiceListData(viewHolder, position);
 				}
 			}
+
+			viewHolder.btnClose.setOnClickListener(onCloseListener(position, viewHolder));
+			viewHolder.btnDelete.setOnClickListener(onDeleteListener(position, viewHolder));
+
+			viewHolder.editBtn.setOnClickListener(onEditListener(position, viewHolder));
+
+
+			viewHolder.userdetailsframe.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(final View view)
+				{
+					viewHolder.oreder_invoiceViewDetailsLayout.setVisibility(View.VISIBLE);
+					viewHolder.expanded_frameLayout.setVisibility(View.VISIBLE);
+				}
+			});
 
 
 		}
@@ -197,6 +230,21 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 
 		public TextView ordernotxt, orderdatetxt, shopNametxt, statustxt, noofPrductstxt, subtotaltxt, taxamounttxt, totalamounttxt;
 		public TextView shopNameLabeltxt, noOfPrductLabeltxt, subTotalLabeltxt, taxAmountLabel;
+		public LinearLayout oreder_invoiceViewDetailsLayout;
+
+		private View btnDelete;
+		private View btnClose;
+		private RelativeLayout closeRL;
+		private RelativeLayout deleteRL;
+
+
+		private SwipeLayout swipeLayout;
+		private Button editBtn;
+
+		//View Details visible related
+		public FrameLayout userdetailsframe;  // Arrow click first time Visible
+		private FrameLayout expanded_frameLayout; // Arrow Close Icon invisible
+
 
 		public ViewHolder(View itemLayoutView)
 		{
@@ -218,6 +266,37 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 			taxAmountLabel = (TextView) itemLayoutView.findViewById(R.id.taxAmountLabel);
 			subTotalLabeltxt = (TextView) itemLayoutView.findViewById(R.id.subTotalLabeltxt);
 
+			oreder_invoiceViewDetailsLayout = (LinearLayout) itemLayoutView.findViewById(R.id.oreder_invoiceViewDetailsLayout);
+			oreder_invoiceViewDetailsLayout.setVisibility(View.GONE);
+
+			editBtn = (Button) itemLayoutView.findViewById(R.id.editBtn);
+
+			swipeLayout = (SwipeLayout) itemLayoutView.findViewById(R.id.swipe_layout);
+			btnDelete = itemLayoutView.findViewById(R.id.delete);
+			btnClose = itemLayoutView.findViewById(R.id.btnClose);
+			closeRL = (RelativeLayout) itemLayoutView.findViewById(R.id.closeRL);
+			deleteRL = (RelativeLayout) itemLayoutView.findViewById(R.id.deleteRL);
+
+
+
+			//View Details
+			userdetailsframe = (FrameLayout) itemLayoutView.findViewById(R.id.userdetailsframe);
+
+
+			expanded_frameLayout = (FrameLayout) itemLayoutView.findViewById(R.id.expanded_frameLayout);
+			expanded_frameLayout.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(final View v)
+				{
+					oreder_invoiceViewDetailsLayout.setVisibility(View.GONE);
+					expanded_frameLayout.setVisibility(View.GONE);
+				}
+			});
+
+
+			swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+
 
 		}
 
@@ -227,6 +306,60 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 	public List<OrderBookOrInvoiceListData> getStudentist()
 	{
 		return _orderBookOrInvoiceListData;
+	}
+
+
+	////////////
+	private View.OnClickListener onDeleteListener(final int position, final ViewHolder holder)
+	{
+		return new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+
+//				boolean userDelete = remainderDb.deleteRemainder(listData.get(position).getEventName());
+				/*if (userDelete)
+				{
+					Toast.makeText(mContext, "Order Successfully Deleted.. ", Toast.LENGTH_LONG).show();
+
+				}*/
+//				_orderBookOrInvoiceListData.remove(position);
+				holder.swipeLayout.close();
+				mActivity.updateAdapter(position);
+			}
+		};
+	}
+
+
+	private View.OnClickListener onCloseListener(final int position, final ViewHolder holder)
+	{
+		return new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				showEditDialog(position, holder);
+			}
+		};
+	}
+
+	private View.OnClickListener onEditListener(final int position, final ViewHolder holder)
+	{
+		return new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				holder.swipeLayout.close();
+				mActivity.editUpdateAdapter(position);
+			}
+		};
+	}
+
+	private void showEditDialog(final int position, final ViewHolder holder)
+	{
+		holder.swipeLayout.close();
 	}
 
 }

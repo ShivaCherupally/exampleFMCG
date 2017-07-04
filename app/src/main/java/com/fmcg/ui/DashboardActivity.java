@@ -169,6 +169,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		salesAmount = (TextView) findViewById(R.id.salesAmount);
 		month = (TextView) findViewById(R.id.month);
 
+		//normalTest();
+
 		mactivity = DashboardActivity.this;
 
 		//setSupportActionBar(toolbar);
@@ -277,6 +279,44 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		navigationView.setNavigationItemSelectedListener(this);
 
 	}
+
+//	private void normalTest()
+//	{
+//		String a = "10", b = null, c = "30", d = "40", e = "50", f = "60";
+//		try
+//		{
+//			if (a.equals("10"))
+//			{
+//				Toast.makeText(getApplicationContext(), "Success " + "state1", Toast.LENGTH_SHORT).show();
+//			}
+//			if (b.equals("10"))
+//			{
+//				Toast.makeText(getApplicationContext(), "Success " + "state2", Toast.LENGTH_SHORT).show();
+//			}
+//			if (a.equals("10"))
+//			{
+//				Toast.makeText(getApplicationContext(), "Success " + "state3", Toast.LENGTH_SHORT).show();
+//			}
+//		}
+//		catch (Exception ex)
+//		{
+//			if (c.equals("30"))
+//			{
+//				Toast.makeText(getApplicationContext(), "Success " + "state4", Toast.LENGTH_SHORT).show();
+//			}
+//		}
+//		finally
+//		{
+//			if (b.equals("40"))
+//			{
+//				Toast.makeText(getApplicationContext(), "Success " + "state5", Toast.LENGTH_SHORT).show();
+//			}
+//		}
+//		if (a.equals("10"))
+//		{
+//			Toast.makeText(getApplicationContext(), "Success " + "state6", Toast.LENGTH_SHORT).show();
+//		}
+//	}
 
 	private void remanderDateAndTimeCheck()
 	{
@@ -677,7 +717,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 		else if (v.getId() == R.id.shop_update)
 		{
-			Intent mylocation = new Intent(this, UpdateShopDetailsActvity.class);
+			Intent mylocation = new Intent(this, UpdateCustomerActivity.class);
 			startActivity(mylocation);
 		}
 		else if (v.getId() == R.id.add_new_customer)
