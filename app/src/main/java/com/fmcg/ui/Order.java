@@ -1687,6 +1687,8 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 
 			}
 		};
+
+
 	}
 
 	public String BitMapToString(Bitmap bitmap)

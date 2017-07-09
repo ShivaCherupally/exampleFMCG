@@ -34,6 +34,7 @@ import com.fmcg.ui.PendingListActivity;
 import com.fmcg.ui.RemainderListActivity;
 import com.fmcg.ui.Remarks;
 import com.fmcg.ui.RouteDetails;
+import com.fmcg.ui.UpdateOrderActvity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -284,6 +285,14 @@ public class Util
 		if (AddNewCustomer.addCustomeractivity != null)
 		{
 			AddNewCustomer.addCustomeractivity.finish();
+		}
+	}
+
+	public static void killupdateorderBook()
+	{
+		if (UpdateOrderActvity.orderBookActivity != null)
+		{
+			UpdateOrderActvity.orderBookActivity.finish();
 		}
 	}
 

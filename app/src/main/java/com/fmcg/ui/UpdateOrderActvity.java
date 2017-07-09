@@ -67,6 +67,7 @@ import com.fmcg.network.NetworkResponse;
 import com.fmcg.permission.DangerousPermResponseCallBack;
 import com.fmcg.permission.DangerousPermissionResponse;
 import com.fmcg.permission.DangerousPermissionUtils;
+import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
 import com.fmcg.util.Util;
 import com.fmcg.util.Utility;
@@ -113,63 +114,18 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	private List<String> routeDetailsDP_str;
 	private List<String> routeDp_str;
 
-	public String paymentDropDown, shopNameDropDown, orderStatusDropDown, productNameDropDown,
-			zoneNameDropdown, areaNameDropDown, routeNameDropDown, routeCode;
+	public String routeCode;
 
 
 	public Spinner shopName_sp, orderStatus_sp, category_sp, payment_sp, routeName_sp, areaName_sp, zone_sp;
-//	public MaterialSpinner zone_sp;
-
 	public CheckBox isShopClosed, ordered, invoice;
 	public TextView uploadImage, shopClosed, orderDate, submit, tvDisplayDate, orderNumInvoice;
 	private static TextView paymentSelected;
-	private EditText remarksET;
 	private LinearLayout list_li;
-	private DatePicker dpResult;
-	private ImageView capture;
-	private int year;
-	private int month;
-	private int day;
 	private TableLayout tableLayout;
-
-	String quantityItems;
-	//	EditText quantityETID;
 	int j;
-
-	private Activity activity;
-
-	boolean cameracaptured = false;
 	Context mContext;
-	String capturedImgaestr;
-
-	/*String ZoneId = "";
-	String RouteId = "";
-	String AreaId = "";
-	String ShopId = "";
-	String OrderStatusId = "";
-	String productCategoryId = "";
-	String paymentTermsId = "";*/
-
-	ArrayList<ShopNamesData> _shopNamesData = new ArrayList<ShopNamesData>();
-	ArrayList<String> shopNamestitle = new ArrayList<String>();
-
-	ArrayList<ShopNamesData> _routeNamesData = new ArrayList<ShopNamesData>();
 	ArrayList<String> routenostitle = new ArrayList<String>();
-
-	///Image Capture
-	private static final String IMAGE_DIRECTORY_NAME = "Hello Camera";
-	private File mCapturedImageFile;
-	private Bitmap capturedImage = null;
-	private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-	public static final int MEDIA_TYPE_IMAGE = 1;
-	private static int RESULT_LOAD_IMAGE = 1;
-	ArrayList<String> capturelist = new ArrayList<String>();
-	private static int CAMERA_REQUES_CODE = 101;
-	String captured_img_str;
-	public static final int MY_PERMISSIONS_REQUEST_CAMERA = 100;
-	public static final String ALLOW_KEY = "ALLOWED";
-	public static final String CAMERA_PREF = "camera_pref";
-
 	///Dailog
 	private Dialog promoDialog;
 	private ImageView close_popup;
@@ -184,7 +140,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	LinearLayout creditDaysLayout;
 	DatePicker dateselect;
 	Button dateaccept;
-
 
 	String OrderDeliveryDate = "";
 
@@ -238,9 +193,9 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		}
 
 		//initializing the variables
-		activity = UpdateOrderActvity.this;
 		mContext = UpdateOrderActvity.this;
 		orderBookActivity = UpdateOrderActvity.this;
+
 
 		tableLayout = (TableLayout) findViewById(R.id.tableLayout);
 		orderStatus_sp = (Spinner) findViewById(R.id.order_type_dp);
@@ -250,20 +205,15 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
 		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
 		areaName_sp = (Spinner) findViewById(R.id.areaName_spinner);
-		//routecd = (Spinner) findViewById(R.id.routecd);
 
 		isShopClosed = (CheckBox) findViewById(R.id.isClosed);
 		ordered = (CheckBox) findViewById(R.id.isOrder);
 		invoice = (CheckBox) findViewById(R.id.isInvoice);
-		capture = (ImageView) findViewById(R.id.capturedImage);
-		uploadImage = (TextView) findViewById(R.id.upLoadImage);
-		shopClosed = (TextView) findViewById(R.id.shopClosed);
 		orderNumInvoice = (TextView) findViewById(R.id.orderNumber_invoice);
 		submit = (TextView) findViewById(R.id.submit);
 
 		paymentSelected = (TextView) findViewById(R.id.paymentSelected);
 		paymentSelected.setVisibility(View.GONE);
-		remarksET = (EditText) findViewById(R.id.Remarks_et);
 
 		list_li = (LinearLayout) findViewById(R.id.items_li);
 
@@ -279,9 +229,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		zoneDetailsDP = new ArrayList<>();
 		areaDetailsDP = new ArrayList<>();
 		routeDetailsDP = new ArrayList<>();
-		//list = new ArrayList<>();
 		routeDp = new ArrayList<>();
-
 		paymentDP_str = new ArrayList<>();
 		shopNameDP_str = new ArrayList<>();
 		orderstatusDP_str = new ArrayList<>();
@@ -291,7 +239,8 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		routeDetailsDP_str = new ArrayList<>();
 		routeDp_str = new ArrayList<>();
 
-		defaultSpinnerHint();
+		selectZoneNameBind();
+
 		if (Utility.isOnline(mContext))
 		{
 			HttpAdapter.getPayment(UpdateOrderActvity.this, "payment");
@@ -303,21 +252,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		{
 			Toast.makeText(mContext, "Please check internet connection", Toast.LENGTH_SHORT).show();
 		}
-
-
-		//defaultSpinnerHint();
-		/*availZonenametxt.setOnTouchListener(new View.OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(final View v, final MotionEvent event)
-			{
-				availZonenametxt.setVisibility(View.GONE);
-				zone_sp.setVisibility(View.VISIBLE);
-				zone_sp.hasFocusable();
-				zone_sp.performClick();
-				return false;
-			}
-		});*/
 
 
 		availRoutetxt.setOnTouchListener(new View.OnTouchListener()
@@ -366,14 +300,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 
 		list_li.setOnClickListener(this);
 		submit.setOnClickListener(this);
-	}
 
-	private void defaultSpinnerHint()
-	{
-		selectZoneNameBind();
-		selectRouteNameBind();
-		selectAreaNameBind();
-		selectShopNameBind();
 	}
 
 	private void editOrderDetailsaccess(final String editBookListData)
@@ -389,13 +316,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 				HttpAdapter.orderSummryProductCategory(UpdateOrderActvity.this, "productCategoryItems", OrderNumber);
 			}
 			String OrderDate = editDatajsonObj.getString("OrderDate");
-			if (OrderDate != null && !OrderDate.equalsIgnoreCase("null"))
-			{
-			}
-
 			String ShopName = editDatajsonObj.getString("ShopName");
-
-
 			int NoOfProducts = editDatajsonObj.getInt("NoOfProducts");
 			int SubTotalAmount = editDatajsonObj.getInt("SubTotalAmount");
 			double TaxAmount = editDatajsonObj.getDouble("TaxAmount");
@@ -661,8 +582,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		tableLayout.setVisibility(View.VISIBLE);
 		tableLayout.removeAllViews();
 		headers();
-//		categeryListdataExisted();
-
 		storedProductCategories.clear();
 		storedProductCategories.addAll(productDP);
 
@@ -674,15 +593,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 					TableLayout.LayoutParams.MATCH_PARENT,
 					TableLayout.LayoutParams.WRAP_CONTENT));
 		}
-
-		/*for (int i = 0; i < productDP.size(); i++)
-		{
-			j = i;
-			UpdateOrderActvity.OrderSummary row = new UpdateOrderActvity.OrderSummary(this, productDP.get(i), i);
-			tableLayout.addView(row, new TableLayout.LayoutParams(
-					TableLayout.LayoutParams.MATCH_PARENT,
-					TableLayout.LayoutParams.WRAP_CONTENT));
-		}*/
 	}
 
 	@Override
@@ -706,6 +616,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 						}
 						catch (Exception e)
 						{
+							e.printStackTrace();
 						}
 					}
 				}
@@ -722,7 +633,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 						}
 					}
 				}
-				Log.e("Camera Captered", cameracaptured + "");
 				Calendar c = Calendar.getInstance();
 				SimpleDateFormat simDf = new SimpleDateFormat("dd-MM-yyyy");
 				try
@@ -733,42 +643,13 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 				{
 					e.printStackTrace();
 				}
-
 				Log.e("Ordering Date", OrderDeliveryDate + "");
-				String orderNumber = orderNumInvoice.getText().toString();
-				String IsShopClosed = "";
-				String ShopClosedImage = "";
-				if (cameracaptured)
-				{
-					IsShopClosed = "Y";
-					if (capturedImgaestr != null && !capturedImgaestr.isEmpty())
-					{
-						ShopClosedImage = "captured";// capturedImgaestr;
-					}
-					else
-					{
-						ShopClosedImage = "";
-					}
-				}
-				else
-				{
-					IsShopClosed = "N";
-					ShopClosedImage = "";
-				}
-				//String OrderDeliveryDate = or;
-				String IsOrdered = "Y";
-				String IsInvoice = "N";
-				String Remarks = remarksET.getText().toString();
+
 				String EmployeeId = "";
 				String employeeId = getStringPreference(mContext, "EmployeeId");
 				if (employeeId != null && !employeeId.isEmpty())
 				{
 					EmployeeId = employeeId;
-				}
-
-				if (Remarks == null || Remarks.isEmpty())
-				{
-					Remarks = "";
 				}
 
 				String jsonString = createJsonOrderSubmit(String.valueOf(OrdersId), selected_zoneId, selected_roueId,
@@ -798,62 +679,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
 						paymentNamesSpinnerAdapter(jsonArray);
-
-						/*paymentDP.clear();
-						paymentDP_str.clear();
-						paymentDP_str.add("Payment Terms Name");
-						for (int i = 0; i < jsonArray.length(); i++)
-						{
-							JSONObject obj = jsonArray.getJSONObject(i);
-							PaymentDropDown paymentDropDown = new Gson().fromJson(obj.toString(), PaymentDropDown.class);
-							paymentDP.add(paymentDropDown);
-							paymentDP_str.add(paymentDropDown.PaymentName);
-						}
-						//Payment adapter
-						ArrayAdapter<String> dataAdapter_payment = new ArrayAdapter<String>(this,
-						                                                                    android.R.layout.simple_spinner_item, paymentDP_str);
-						dataAdapter_payment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-						payment_sp.setAdapter(dataAdapter_payment);
-						payment_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-						{
-							@Override
-							public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-							{
-								paymentTermsId = String.valueOf(position);
-								if (position != 0)
-								{
-									paymentDropDown = paymentDP.get(position - 1).PaymentTermsId;
-									Log.e("paymentId", paymentDropDown);
-//									Log.e("paymentname", paymentDP.get(position - 1).PaymentName);
-									String paymentSelected = paymentDP.get(position - 1).PaymentName;
-									Log.e("paymentSelected", paymentSelected);
-
-									if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
-									{
-										if (paymentSelected.equalsIgnoreCase("Credit-days"))
-										{
-											dailogBoxforPaymentSelection("Credit-days");
-										}
-										else if (paymentSelected.equalsIgnoreCase("Days to Cheque"))
-										{
-											dailogBoxforPaymentSelection("Days to Cheque");
-										}
-										else if (paymentSelected.equalsIgnoreCase("Cheque"))
-										{
-											dailogBoxforPaymentSelection("Cheque");
-										}
-									}
-
-
-								}
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent)
-							{
-
-							}
-						});*/
 					}
 
 				}
@@ -873,41 +698,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
 						orderStatusSpinnerAdapter(jsonArray);
-						/*orderstatusDP.clear();
-						shopNameDP_str.clear();
-						orderstatusDP_str.add("Select Order Status");
-						for (int i = 0; i < jsonArray.length(); i++)
-						{
-							JSONObject obj = jsonArray.getJSONObject(i);
-							OrderStatusDropdown orderStatusDropdown = new Gson().fromJson(obj.toString(), OrderStatusDropdown.class);
-							orderstatusDP.add(orderStatusDropdown);
-							orderstatusDP_str.add(orderStatusDropdown.OrderStatusDescription);
-						}
-						//OrderStatus adapter
-						ArrayAdapter<String> dataAdapter_orderStatus = new ArrayAdapter<String>(this,
-						                                                                        android.R.layout.simple_spinner_item, orderstatusDP_str);
-						dataAdapter_orderStatus.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-						orderStatus_sp.setAdapter(dataAdapter_orderStatus);
-						orderStatus_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-						{
-							@Override
-							public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-							{
-								OrderStatusId = String.valueOf(position);
-								if (position != 0)
-								{
-									orderStatusDropDown = orderstatusDP.get(position - 1).OrderId;
-								}
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent)
-							{
-
-							}
-						});*/
 					}
-
 				}
 				//productCategory DropDown
 				else if (response.getTag().equals("productCategoryName"))
@@ -960,9 +751,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 
 							}
 						});
-
 					}
-
 				}
 				//ZoneDetails DropDown
 				else if (response.getTag().equals("zoneName"))
@@ -981,7 +770,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
 						areaNameSpinnerAdapter(jsonArray);
-						//HttpAdapter.getShopDetailsDP(UpdateOrderActvity.this, "shopName", areaNameDropDown);
 					}
 				}
 				//RouteDetails DropDown
@@ -1006,9 +794,8 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
 						Toast.makeText(mContext, "Update Failed..", Toast.LENGTH_SHORT).show();
 						Intent in = new Intent(UpdateOrderActvity.this, DashboardActivity.class);
-						Util.killorderBook();
+						Util.killupdateorderBook();
 						startActivity(in);
-						//refreshActivity();
 					}
 				}
 				else if (response.getTag().equals("productCategoryItems"))
@@ -1021,8 +808,19 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 //						areaNameSpinnerAdapter(jsonArray);
 						for (int i = 0; i < jsonArray.length(); i++)
 						{
-							JSONObject obj = jsonArray.getJSONObject(i);
-							GetProductCategoryInOrderUpdate getProductCategory = new Gson().fromJson(obj.toString(), GetProductCategoryInOrderUpdate.class);
+							JSONObject objresp = jsonArray.getJSONObject(i);
+							Log.e("objData", objresp.toString());
+							JSONObject jsonObject = new JSONObject();
+							jsonObject.putOpt("ProductId", objresp.getInt("ProductId"));
+							jsonObject.putOpt("ProductName", objresp.getString("ProductName"));
+							jsonObject.putOpt("ProductPrice", objresp.getInt("ProductPrice"));
+							jsonObject.putOpt("VAT", objresp.getDouble("VAT"));
+							jsonObject.putOpt("GST", objresp.getInt("GST"));
+							jsonObject.putOpt("Quantity", objresp.getInt("Quantity"));
+							jsonObject.putOpt("Frees", objresp.getInt("Frees"));
+							Log.e("objDataAfterCon", jsonObject.toString());
+
+							GetProductCategoryInOrderUpdate getProductCategory = new Gson().fromJson(jsonObject.toString(), GetProductCategoryInOrderUpdate.class);
 							productDP.add(getProductCategory);
 							list.add(getProductCategory);
 							displayTableView(list);
@@ -1126,166 +924,12 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	}
 	//ZoneId, RouteId, AreaId, ShopId,OrderDeliveryDate, OrderStatusId, EmployeeId,OrderId
 
-	private void showAlert()
-	{
-		AlertDialog alertDialog = new AlertDialog.Builder(UpdateOrderActvity.this).create();
-		alertDialog.setTitle("Alert");
-		alertDialog.setMessage("App needs to access the Camera.");
-
-		alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "DONT ALLOW",
-		                      new DialogInterface.OnClickListener()
-		                      {
-			                      public void onClick(DialogInterface dialog, int which)
-			                      {
-				                      dialog.dismiss();
-				                      finish();
-			                      }
-		                      });
-
-		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "ALLOW",
-		                      new DialogInterface.OnClickListener()
-		                      {
-
-			                      public void onClick(DialogInterface dialog, int which)
-			                      {
-				                      dialog.dismiss();
-				                      ActivityCompat.requestPermissions(UpdateOrderActvity.this,
-				                                                        new String[]{Manifest.permission.CAMERA},
-				                                                        MY_PERMISSIONS_REQUEST_CAMERA);
-			                      }
-		                      });
-		alertDialog.show();
-	}
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
 	{
-		switch (requestCode)
-		{
-			case MY_PERMISSIONS_REQUEST_CAMERA:
-			{
-				for (int i = 0, len = permissions.length; i < len; i++)
-				{
-					String permission = permissions[i];
 
-					if (grantResults[i] == PackageManager.PERMISSION_DENIED)
-					{
-						boolean
-								showRationale =
-								ActivityCompat.shouldShowRequestPermissionRationale(
-										this, permission);
-
-						if (showRationale)
-						{
-							showAlert();
-						}
-						else if (!showRationale)
-						{
-							// user denied flagging NEVER ASK AGAIN
-							// you can either enable some fall back,
-							// disable features of your app
-							// or open another dialog explaining
-							// again the permission and directing to
-							// the app setting
-							saveToPreferences(UpdateOrderActvity.this, ALLOW_KEY, true);
-						}
-					}
-				}
-			}
-
-			// other 'case' lines to check for other
-			// permissions this app might request
-		}
 	}
-
-	public static void saveToPreferences(Context context, String key, Boolean allowed)
-	{
-		SharedPreferences myPrefs = context.getSharedPreferences(CAMERA_PREF,
-		                                                         Context.MODE_PRIVATE);
-		SharedPreferences.Editor prefsEditor = myPrefs.edit();
-		prefsEditor.putBoolean(key, allowed);
-		prefsEditor.commit();
-	}
-
-	public static void startInstalledAppDetailsActivity(final Activity context)
-	{
-		if (context == null)
-		{
-			return;
-		}
-
-		final Intent i = new Intent();
-		i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-		i.addCategory(Intent.CATEGORY_DEFAULT);
-		i.setData(Uri.parse("package:" + context.getPackageName()));
-		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-		i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-		context.startActivity(i);
-	}
-
-	private void openCamera()
-	{
-		/*Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-		startActivityForResult(intent, 0);*/
-		mCapturedImageFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-		Uri fileUri = getOutputMediaFileUri(mCapturedImageFile);
-		if (fileUri != null)
-		{
-			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			List<ResolveInfo> resInfoList = mContext.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-			for (ResolveInfo resolveInfo : resInfoList)
-			{
-				String packageName = resolveInfo.activityInfo.packageName;
-				mContext.grantUriPermission(packageName, fileUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-			}
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-			startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
-		}
-	}
-
-	private static File getOutputMediaFile(int type)
-	{
-		File mediaStorageDir = new File(
-				Environment
-						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-				IMAGE_DIRECTORY_NAME);
-		if (!mediaStorageDir.exists())
-		{
-			if (!mediaStorageDir.mkdirs())
-			{
-				Log.d(IMAGE_DIRECTORY_NAME, "Oops! Failed create "
-						+ IMAGE_DIRECTORY_NAME + " directory");
-				return null;
-			}
-		}
-
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
-		                                        Locale.getDefault()).format(new Date());
-		File mediaFile;
-		if (type == MEDIA_TYPE_IMAGE)
-		{
-			mediaFile = new File(mediaStorageDir.getPath() + File.separator
-					                     + "IMG_" + timeStamp + ".jpg");
-		}
-		else
-		{
-			return null;
-		}
-
-		return mediaFile;
-	}
-
-	public Uri getOutputMediaFileUri(File mediaFile)
-	{
-//		return Uri.fromFile(getOutputMediaFile(type));
-		if (mediaFile != null)
-		{
-			return FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", mediaFile);
-		}
-		return null;
-	}
-
 
 	private class OrderSummary extends TableRow
 	{
@@ -1489,7 +1133,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 				quantityETID.setCursorVisible(true);
 				quantityETID.setFocusableInTouchMode(true);
 				quantityETID.setTextSize(15);
-				quantityETID.setEnabled(false);
+//				quantityETID.setEnabled(false);
 				quantityETID.setInputType(InputType.TYPE_CLASS_NUMBER);
 				quantityETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                              LayoutParams.WRAP_CONTENT));
@@ -1516,7 +1160,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 				fresETID.setCursorVisible(true);
 				fresETID.setFocusableInTouchMode(true);
 				fresETID.setTextSize(15);
-				fresETID.setEnabled(false);
+//				fresETID.setEnabled(false);
 				fresETID.setInputType(InputType.TYPE_CLASS_NUMBER);
 				fresETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                          LayoutParams.WRAP_CONTENT));
@@ -1617,8 +1261,22 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			@Override
 			public void afterTextChanged(final Editable s)
 			{
-				afterTextChanged = s.toString();
-				storedProductCategories.get(position).setQuantity(Integer.valueOf(s.toString()));
+//				afterTextChanged = String.valueOf(Integer.parseInt(s.toString()));
+
+				try
+				{
+					String quantity = s.toString();
+					Log.e("quantity", quantity);
+					if (!quantity.isEmpty() && quantity != null)
+					{
+						storedProductCategories.get(position).setQuantity(Integer.parseInt(quantity));
+					}
+				}
+				catch (Exception e)
+				{
+
+				}
+
 			}
 		};
 
@@ -1668,383 +1326,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 
 			}
 		};
-	}
-
-	/*private class ProductCategoryTableRow extends TableRow
-	{
-
-		private Context mContext;
-		private GetProductCategoryInOrderUpdate mProductCategory;
-
-		private EditText quantityETID;
-		private EditText fresETID;
-
-		private String afterTextChanged = "";
-		private String beforeTextChanged = "";
-		private String onTextChanged = "";
-
-		private final int position;
-
-		public ProductCategoryTableRow(final Context context, final GetProductCategoryInOrderUpdate productCategory, int index)
-		{
-			super(context);
-			mContext = context;
-			mProductCategory = productCategory;
-			position = index;
-			init();
-		}
-
-		public GetProductCategoryInOrderUpdate getProductCategory()
-		{
-			// update your new data
-			if (!TextUtils.isEmpty(quantityETID.getText()))
-			{
-				mProductCategory.Quantity = quantityETID.getText().toString();
-				mProductCategory.Frees = fresETID.getText().toString();
-			}
-			return mProductCategory;
-		}
-
-		public String getAfterTextChanged()
-		{
-			return afterTextChanged;
-		}
-
-		public String getBeforeTextChanged()
-		{
-			return beforeTextChanged;
-		}
-
-		public String getOnTextChanged()
-		{
-			return onTextChanged;
-		}
-
-		private void init()
-		{
-			try
-			{
-				TextView taskdate = new TextView(mContext);
-				taskdate.setTextSize(15);
-				taskdate.setText(mProductCategory.ProductName);
-				taskdate.setPadding(0, 0, 0, 10);
-				taskdate.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.36f));
-				addView(taskdate);
-
-				TextView title = new TextView(mContext);
-				title.setText(String.valueOf(mProductCategory.Price));
-				title.setTextSize(15);
-				title.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                       LayoutParams.WRAP_CONTENT));
-				addView(title);
-
-				quantityETID = new EditText(mContext);
-				quantityETID.setText(String.valueOf(mProductCategory.Quantity));
-				quantityETID.setBackgroundColor(Color.TRANSPARENT);
-				quantityETID.setClickable(false);
-				quantityETID.setCursorVisible(true);
-				quantityETID.setFocusableInTouchMode(true);
-				quantityETID.setEnabled(false);
-				quantityETID.setTextSize(15);
-				quantityETID.setTextColor(Color.BLACK);
-				quantityETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				quantityETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                              LayoutParams.WRAP_CONTENT));
-				quantityETID.addTextChangedListener(mTextWatcher);
-				addView(quantityETID);
-
-			*//*TextView description3 = new TextView(mContext);
-			description3.setText("-");
-			description3.setTextSize(15);
-			addView(description3);
-			description3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-			                                                       TableRow.LayoutParams.WRAP_CONTENT));*//*
-				fresETID = new EditText(mContext);
-				*//*if (mProductCategory.Frees != null && !mProductCategory.Frees.isEmpty())
-				{*//*
-				fresETID.setText(String.valueOf(mProductCategory.Frees));
-//				}
-				*//*else
-				{
-					fresETID.setText("-");
-				}*//*
-				fresETID.setBackgroundColor(Color.TRANSPARENT);
-				fresETID.setClickable(true);
-				fresETID.setCursorVisible(true);
-				fresETID.setFocusableInTouchMode(true);
-				fresETID.setTextSize(15);
-				fresETID.setEnabled(false);
-				fresETID.setTextColor(Color.BLACK);
-				fresETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				fresETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                          LayoutParams.WRAP_CONTENT));
-				fresETID.addTextChangedListener(mTextWatcherFres);
-				addView(fresETID);
-
-
-				TextView description = new TextView(mContext);
-				description.setText(String.valueOf(mProductCategory.VAT));
-				description.setTextSize(15);
-				//description.setPadding(15,0,0,0);
-				description.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                             LayoutParams.WRAP_CONTENT));
-				addView(description);
-
-				TextView description2 = new TextView(mContext);
-				description2.setText(String.valueOf(mProductCategory.SubTotalAmount));
-				description2.setTextSize(15);
-//				description2.setVisibility(GONE);
-				description2.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                              LayoutParams.WRAP_CONTENT));
-				addView(description2);
-
-				*//*ImageView deleteimg = new ImageView(mContext);
-				deleteimg.setImageResource(R.drawable.delete);
-				deleteimg.setVisibility(View.GONE);
-				deleteimg.setMaxWidth(28);
-				deleteimg.setMaxHeight(28);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-				{
-					deleteimg.setForegroundGravity(Gravity.CENTER_VERTICAL);
-				}
-				deleteimg.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				addView(deleteimg);
-				deleteimg.setOnClickListener(new OnClickListener()
-				{
-					@Override
-					public void onClick(final View v)
-					{
-						try
-						{
-							int temposition = position + 1;
-							TableRow row = (TableRow) tableLayout.getChildAt(temposition);
-							tableLayout.removeView(row);
-							productDP.remove(position - 1);
-							storedProductCategories.remove(position - 1);
-							list.remove(position - 1);
-
-
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-						}
-					}
-				});*//*
-
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				Log.e("", e + "");
-			}
-		}
-
-		*//*private void init()
-		{
-			try
-			{
-				TextView taskdate = new TextView(mContext);
-				taskdate.setTextSize(15);
-				taskdate.setText(mProductCategory.ProductName);
-				taskdate.setPadding(0, 0, 0, 10);
-				taskdate.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.36f));
-				addView(taskdate);
-
-				TextView title = new TextView(mContext);
-				title.setText(mProductCategory.ProductPrice);
-				title.setTextSize(15);
-				title.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                       LayoutParams.WRAP_CONTENT));
-				addView(title);
-
-				quantityETID = new EditText(mContext);
-				quantityETID.setText(mProductCategory.Quantity);
-				quantityETID.setBackgroundColor(Color.TRANSPARENT);
-				quantityETID.setClickable(true);
-				quantityETID.setCursorVisible(true);
-				quantityETID.setFocusableInTouchMode(true);
-				quantityETID.setTextSize(15);
-				quantityETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				quantityETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                              LayoutParams.WRAP_CONTENT));
-				quantityETID.addTextChangedListener(mTextWatcher);
-				addView(quantityETID);
-
-				fresETID = new EditText(mContext);
-				if (mProductCategory.Frees != null && !mProductCategory.Frees.isEmpty())
-				{
-					fresETID.setText(mProductCategory.Frees);
-				}
-				else
-				{
-					fresETID.setText("-");
-				}
-				fresETID.setBackgroundColor(Color.TRANSPARENT);
-				fresETID.setClickable(true);
-				fresETID.setCursorVisible(true);
-				fresETID.setFocusableInTouchMode(true);
-				fresETID.setTextSize(15);
-				fresETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				fresETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                          LayoutParams.WRAP_CONTENT));
-				fresETID.addTextChangedListener(mTextWatcherFres);
-				addView(fresETID);
-
-
-				TextView description = new TextView(mContext);
-				description.setText(mProductCategory.VAT);
-				description.setTextSize(15);
-				//description.setPadding(15,0,0,0);
-				description.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                             LayoutParams.WRAP_CONTENT));
-				addView(description);
-
-				TextView description2 = new TextView(mContext);
-				description2.setText(mProductCategory.GST);
-				description2.setTextSize(15);
-				description2.setVisibility(GONE);
-				description2.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                              LayoutParams.WRAP_CONTENT));
-				addView(description2);
-
-				ImageView deleteimg = new ImageView(mContext);
-//				deleteimg.setImageResource(getResources().getDrawable(R.drawable.delete));
-//				deleteimg.setPadding(0, 10, 0, 0);
-				deleteimg.setImageResource(R.drawable.delete);
-
-				deleteimg.setMaxWidth(28);
-				deleteimg.setMaxHeight(28);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-				{
-					deleteimg.setForegroundGravity(Gravity.CENTER_VERTICAL);
-				}
-//				deleteimg.setLayoutParams(new TableRow.LayoutParams(24,
-//				                                                    TableRow.LayoutParams.WRAP_CONTENT));
-				deleteimg.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//				deleteimg.gr
-				addView(deleteimg);
-				deleteimg.setOnClickListener(new OnClickListener()
-				{
-					@Override
-					public void onClick(final View v)
-					{
-						try
-						{
-							int temposition = position + 1;
-							TableRow row = (TableRow) tableLayout.getChildAt(temposition);
-							tableLayout.removeView(row);
-							productDP.remove(position - 1);
-							storedProductCategories.remove(position - 1);
-							list.remove(position - 1);
-
-
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-						}
-
-//						notifyDataSetChanged();
-						//notifyAll();
-						*//**//*int childCount = tableLayout.getChildCount();
-						// Remove all rows except the first one
-						if (childCount > position)
-						{
-//							tableLayout.removeViews(position, childCount - position);
-//							int ll = position;
-							tableLayout.removeViews(0, position);
-						}*//**//*
-						*//**//*storedProductCategories.get(position).getQuantity();
-						tableLayout.removeView(position);*//**//*
-					}
-				});
-
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				Log.e("", e + "");
-			}
-		}*//*
-
-		private TextWatcher mTextWatcher = new TextWatcher()
-		{
-			@Override
-			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
-			{
-				beforeTextChanged = quantityETID.getText().toString();
-			}
-
-			@Override
-			public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
-			{
-				onTextChanged = quantityETID.getText().toString();
-			}
-
-			@Override
-			public void afterTextChanged(final Editable s)
-			{
-				afterTextChanged = s.toString();
-				storedProductCategories.get(position).setQuantity(s.toString());
-			}
-		};
-
-		private TextWatcher mTextWatcherFres = new TextWatcher()
-		{
-			@Override
-			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
-			{
-				beforeTextChanged = "";
-				beforeTextChanged = fresETID.getText().toString();
-			}
-
-			@Override
-			public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
-			{
-				onTextChanged = "";
-				onTextChanged = fresETID.getText().toString();
-			}
-
-			@Override
-			public void afterTextChanged(final Editable s)
-			{
-				afterTextChanged = "";
-				afterTextChanged = s.toString();
-				try
-				{
-					if (!afterTextChanged.isEmpty() && !afterTextChanged.equalsIgnoreCase(null))
-					{
-						int fresValue = Integer.parseInt(afterTextChanged);
-						int quantityValue = Integer.parseInt(storedProductCategories.get(position).getQuantity());
-						if (quantityValue > fresValue)
-						{
-							storedProductCategories.get(position).setFres(s.toString());
-						}
-						else
-						{
-							fresETID.setText(storedProductCategories.get(position).getFres());
-							Toast.makeText(mContext, "Frees Must be not Equal or Less than to the Quantity", Toast.LENGTH_SHORT).show();
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					Log.e("error", e + "");
-				}
-
-
-			}
-		};
-	}*/
-
-	public String BitMapToString(Bitmap bitmap)
-	{
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-		byte[] b = baos.toByteArray();
-		String temp = Base64.encodeToString(b, Base64.DEFAULT);
-		return temp;
 	}
 
 	private boolean validationEntryData()
@@ -2103,154 +1384,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 
 
 		return ret;
-	}
-
-
-	private void handleTaskWithUserPermission(int requestCode)
-	{
-		DangerousPermissionUtils.getPermission(mContext, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, requestCode)
-		                        .enqueue(new DangerousPermResponseCallBack()
-		                        {
-			                        @Override
-			                        public void onComplete(final DangerousPermissionResponse permissionResponse)
-			                        {
-				                        if (permissionResponse.isGranted())
-				                        {
-					                        if (permissionResponse.getRequestCode() == CAMERA_REQUES_CODE)
-					                        {
-						                        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat
-								                        .checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-						                        {
-							                        return;
-						                        }
-						                        cameracaptured = true;
-						                        openCamera();
-						                        /*if (selectedListItem.equalsIgnoreCase("Camera"))
-						                        {
-							                        captureImage();
-						                        }
-						                        else
-						                        {
-							                        if (selectedListItem.equalsIgnoreCase("Gallery"))
-							                        {
-								                        try
-								                        {
-									                        Intent i = new Intent(
-											                        Intent.ACTION_PICK,
-											                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-									                        startActivityForResult(i, RESULT_LOAD_IMAGE);
-								                        }
-								                        catch (Exception e)
-								                        {
-								                        }
-
-							                        }
-						                        }*/
-					                        }
-				                        }
-			                        }
-		                        });
-	}
-
-
-	private void previewCapturedImage()
-	{
-		try
-		{
-
-			String filePath = mCapturedImageFile.getAbsolutePath();
-			//mCapturedimage_Imageview.setVisibility(View.VISIBLE);
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inSampleSize = 8;
-
-			capturedImage = BitmapFactory
-					.decodeFile(filePath, options);
-
-
-			try
-			{
-				Uri fileUri = getOutputMediaFileUri(mCapturedImageFile);
-				ExifInterface ei = new ExifInterface(filePath);
-				int orientation = ei.getAttributeInt(
-						ExifInterface.TAG_ORIENTATION,
-						ExifInterface.ORIENTATION_NORMAL);
-
-				switch (orientation)
-				{
-					case ExifInterface.ORIENTATION_ROTATE_90:
-						capturedImage = rotateImageIfRequired(mContext,
-						                                      capturedImage, fileUri);
-						break;
-					case ExifInterface.ORIENTATION_ROTATE_180:
-						capturedImage = rotateImageIfRequired(mContext,
-						                                      capturedImage, fileUri);
-						break;
-				}
-			}
-			catch (Exception e)
-			{
-
-			}
-
-			if (capturedImage != null)
-			{
-				imageViewDisplay(capturedImage);
-			}
-		}
-		catch (NullPointerException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	private static Bitmap rotateImageIfRequired(Context context, Bitmap img,
-	                                            Uri selectedImage)
-	{
-
-		int rotation = getRotation(context, selectedImage);
-		if (rotation != 0)
-		{
-			Matrix matrix = new Matrix();
-			matrix.postRotate(rotation);
-			Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(),
-			                                        img.getHeight(), matrix, true);
-			img.recycle();
-			return rotatedImg;
-		}
-		else
-		{
-			return img;
-		}
-	}
-
-	private static int getRotation(Context context, Uri selectedImage)
-	{
-		int rotation = 0;
-		ContentResolver content = context.getContentResolver();
-
-		Cursor mediaCursor = content.query(
-				MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{
-						"orientation", "date_added"}, null, null,
-				"date_added desc");
-
-		if (mediaCursor != null && mediaCursor.getCount() != 0)
-		{
-			while (mediaCursor.moveToNext())
-			{
-				rotation = mediaCursor.getInt(0);
-				break;
-			}
-		}
-		mediaCursor.close();
-		return rotation;
-	}
-
-	private void imageViewDisplay(Bitmap captured_img_bitMap)
-	{
-		capture.setBackgroundResource(R.color.empty);
-		capture.setImageBitmap(null);
-		capture.setImageBitmap(captured_img_bitMap);
-		//captured_img_str = BitMapToString(captured_img_bitMap);
 	}
 
 	private void dailogBoxAfterSubmit()
@@ -2419,17 +1552,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		dateselect.setVisibility(View.GONE);
 		dateaccept.setVisibility(View.GONE);
 	}
-
-	/*public String getCurrentDate()
-	{
-		StringBuilder builder = new StringBuilder();
-		builder.append("Current Date: ");
-		builder.append((picker.getMonth() + 1) + "/");//month is 0 based
-		builder.append(picker.getDayOfMonth() + "/");
-		builder.append(picker.getYear());
-		return builder.toString();
-	}*/
-
 
 	public static class DatePickerFragmentDailog extends DialogFragment
 			implements DatePickerDialog.OnDateSetListener
@@ -2975,6 +2097,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, zoneDetailsDP_str);
 		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		routeName_sp.setAdapter(dataAdapter_areaName);
+		selectRouteNameBind();
 	}
 
 	private void selectRouteNameBind()
@@ -2983,6 +2106,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routenostitle);
 		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		routeName_sp.setAdapter(dataAdapter_areaName);
+		selectAreaNameBind();
 	}
 
 	private void selectAreaNameBind()
@@ -2991,6 +2115,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaDetailsDP_str);
 		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
+		selectShopNameBind();
 	}
 
 	private void selectShopNameBind()
@@ -3002,8 +2127,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	}
 
 	////////
-
-
 	private int getIndex(Spinner spinner, int searchId, ArrayList<ShopNamesData> _availbleDropDownData)
 	{
 		int searchIdIndex = 0;

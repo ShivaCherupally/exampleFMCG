@@ -1,5 +1,6 @@
 package com.fmcg.ui;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -25,9 +28,13 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +55,7 @@ import com.fmcg.util.AlertDialogManager;
 import com.fmcg.util.Common;
 import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
+import com.fmcg.util.Util;
 import com.fmcg.util.Utility;
 import com.fmcg.util.Validation;
 import com.google.android.gms.common.ConnectionResult;
@@ -77,6 +85,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.fmcg.util.Common.orderNUm;
 
 
 /**
@@ -158,6 +168,14 @@ public class UpdateCustomerActivity extends AppCompatActivity implements View.On
 	boolean routeDropDownItemSeleted = false;
 	boolean areaDropDownItemSeleted = false;
 	int OrdersId;
+
+	///Dailog
+	private Dialog promoDialog;
+	private ImageView close_popup;
+	RadioGroup select_option_radio_grp;
+	Button alert_submit;
+	boolean check1 = false;
+	boolean check2 = false;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -304,7 +322,10 @@ public class UpdateCustomerActivity extends AppCompatActivity implements View.On
 				{
 					if (Utility.isOnline(mContext))
 					{
-						new CreateShopTask().execute();
+//						new CreateShopTask().execute();
+						String jsonString = createJsonForUpdateCustomerSubmit();
+						Log.e("params", jsonString.toString());
+						HttpAdapter.updateCustomerSave(UpdateCustomerActivity.this, "UpdateCustomerSave", jsonString);
 					}
 					else
 					{
@@ -467,6 +488,33 @@ public class UpdateCustomerActivity extends AppCompatActivity implements View.On
 						//shopName_spinner.setVisibility(View.GONE);
 					}
 				}
+				else if (response.getTag().equals("UpdateCustomerSave"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						JSONObject result = mJson.getJSONObject("Data");
+						Log.e("response", result.toString() + "");
+						if (result.getString("Status").equals("OK"))
+						{
+							Toast.makeText(UpdateCustomerActivity.this, "Successfully Shop Details Updated..", Toast.LENGTH_SHORT).show();
+//							refreshActivity();
+							dailogBoxAfterSubmit();
+						}
+						else
+						{
+							Toast.makeText(UpdateCustomerActivity.this, "Details Failed to Updated", Toast.LENGTH_SHORT).show();
+//							refreshActivity();
+							dailogBoxAfterSubmit();
+						}
+					}
+					else
+					{
+						Toast.makeText(UpdateCustomerActivity.this, "Details Failed to Updated", Toast.LENGTH_SHORT).show();
+//							refreshActivity();
+						dailogBoxAfterSubmit();
+					}
+				}
+				//"UpdateCustomerSave"
 
 			}
 			catch (JSONException e)
@@ -742,6 +790,7 @@ public class UpdateCustomerActivity extends AppCompatActivity implements View.On
 		finish();
 		startActivity(i);
 	}
+	/*its*/
 
 	/**
 	 * If connected get lat and long
@@ -1635,7 +1684,6 @@ public class UpdateCustomerActivity extends AppCompatActivity implements View.On
 			nameValuePairs.add(new BasicNameValuePair("ShopDescription", "Good"));
 			nameValuePairs.add(new BasicNameValuePair("OwnerName", ownername.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("Address", shop_address.getText().toString()));
-			//nameValuePairs.add(new BasicNameValuePair("Pincode", pin.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("Latitude", lat.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("Longitude", lang.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("PhoneNumber", phone.getText().toString()));
@@ -1919,6 +1967,121 @@ public class UpdateCustomerActivity extends AppCompatActivity implements View.On
 			shopName_sp.setVisibility(View.VISIBLE);
 		}
 	}*/
+
+	private String createJsonForUpdateCustomerSubmit()
+	{
+		JSONObject studentsObj = new JSONObject();
+		JSONObject dataObj = new JSONObject();
+		try
+		{
+			dataObj.putOpt("shopId", selected_ShopId);
+			dataObj.putOpt("ShopName", shopname.getText().toString());
+			dataObj.putOpt("ShopDescription", "Good");
+			dataObj.putOpt("OwnerName", ownername.getText().toString());
+			dataObj.putOpt("Address", shop_address.getText().toString());
+			dataObj.putOpt("Latitude", lat.getText().toString());
+			dataObj.putOpt("Longitude", lang.getText().toString());
+			dataObj.putOpt("PhoneNumber", phone.getText().toString());
+			dataObj.putOpt("MobileNumber", mobile.getText().toString());
+			dataObj.putOpt("GPSL", GPSL);
+			dataObj.putOpt("LocationName", locationName.getText().toString());
+			dataObj.putOpt("ZoneId", selected_zoneId);
+			dataObj.putOpt("RouteId", selected_roueId);
+			dataObj.putOpt("ShopTypeId", shopTypeDropdown);
+			dataObj.putOpt("ReligionID", religionDropdown);
+			dataObj.putOpt("PaymentTermId", paymentDropDown);
+			dataObj.putOpt("AreaId", selected_areaNameId);
+			dataObj.putOpt("Active", "Y");
+			dataObj.putOpt("DateTime", DateUtil.currentDate());
+			dataObj.putOpt("Createdby", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
+			dataObj.putOpt("EmailID", emailId.getText().toString());
+			dataObj.putOpt("Pincode", pin.getText().toString());
+		}
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+		}
+		Log.e("params", dataObj.toString());
+		return dataObj.toString();
+	}
+
+	private void dailogBoxAfterSubmit()
+	{
+		promoDialog = new Dialog(this);
+		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		promoDialog.setCancelable(false);
+		promoDialog.setContentView(R.layout.dailog_for_acceptance);
+		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
+		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
+		select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
+
+		promoDialog.show();
+
+		select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+		{
+			@Override
+			public void onCheckedChanged(final RadioGroup radioGroup, final int i)
+			{
+				switch (i)
+				{
+					case R.id.orderBook:
+						check1 = true;
+						break;
+					case R.id.inovice:
+						check2 = true;
+						break;
+
+
+				}
+			}
+
+
+		});
+
+		close_popup.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				if (promoDialog != null)
+				{
+					promoDialog.dismiss();
+					Util.hideSoftKeyboard(mContext, v);
+					Intent in = new Intent(UpdateCustomerActivity.this, DashboardActivity.class);
+					Util.killorderBook();
+					startActivity(in);
+//					refreshActivity();
+				}
+			}
+		});
+
+		alert_submit.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				if (check1)
+				{
+					Intent in = new Intent(UpdateCustomerActivity.this, Order.class);
+					Util.killorderBook();
+					startActivity(in);
+				}
+				else if (check2)
+				{
+					Intent inten = new Intent(UpdateCustomerActivity.this, Invoice.class);
+					Util.killorderBook();
+					startActivity(inten);
+				}
+				else
+				{
+					Toast.makeText(mContext, "Please Select Order Book or Invoice", Toast.LENGTH_SHORT).show();
+				}
+
+			}
+		});
+
+	}
 }
 
 

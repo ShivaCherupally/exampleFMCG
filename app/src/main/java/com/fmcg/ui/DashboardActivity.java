@@ -170,7 +170,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		month = (TextView) findViewById(R.id.month);
 
 		//normalTest();
-
 		mactivity = DashboardActivity.this;
 
 		//setSupportActionBar(toolbar);

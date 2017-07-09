@@ -145,14 +145,15 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 					{
 						if (mJson.getString("Data").equals("null"))
 						{
-							nodata.setVisibility(View.VISIBLE);
+
 							swipeleftlabellayout.setVisibility(View.GONE);
+							Toast.makeText(mContext, "Data " + "null", Toast.LENGTH_SHORT).show();
+							nodata.setVisibility(View.VISIBLE);
 						}
 						else
 						{
 							try
 							{
-
 								nodata.setVisibility(View.GONE);
 								JSONArray jsonArray = mJson.getJSONArray("Data");
 								orderBookListData(jsonArray);
@@ -173,6 +174,8 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 						{
 							nodata.setVisibility(View.VISIBLE);
 							swipeleftlabellayout.setVisibility(View.GONE);
+							Toast.makeText(mContext, "Data " + "null", Toast.LENGTH_SHORT).show();
+							nodata.setVisibility(View.VISIBLE);
 						}
 						else
 						{

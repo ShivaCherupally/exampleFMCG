@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+
 /**
  * Created by Shiva on 5/05/2017.
  */
@@ -198,6 +199,8 @@ public class DateUtil
 		return updateDate;
 	}
 
+
+
 	public static String presentDate()
 	{
 		String updateDate = "";
@@ -232,6 +235,7 @@ public class DateUtil
 
 	public static String serverSentDateChange(String serverDate)
 	{
+		Log.e("serverDate",serverDate);
 		String changeFormatDate = "";
 		try
 		{
