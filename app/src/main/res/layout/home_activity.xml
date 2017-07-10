@@ -182,8 +182,8 @@
                             android:padding="5dp"
                             android:text="@string/totalcount"
                             android:textColor="@color/HeaderColor"
-                            android:textStyle="bold"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
 
                         <View
                             android:layout_width="match_parent"
@@ -199,9 +199,9 @@
                             android:gravity="center_vertical"
                             android:padding="5dp"
                             android:text="@string/today_count"
-                            android:textStyle="bold"
                             android:textColor="@color/HeaderColor"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -220,16 +220,16 @@
                         android:id="@+id/month"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
                         android:gravity="center_vertical|center_horizontal"
+
                         android:padding="5dp"
                         android:text="@string/month"
-                        android:textStyle="bold"
-
                         android:textColor="@color/HeaderColor"
                         android:textSize="16sp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"/>
+                        android:textStyle="bold"/>
 
 
                     <com.github.mikephil.charting.charts.BarChart

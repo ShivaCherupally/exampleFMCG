@@ -498,4 +498,15 @@ public class HttpAdapter
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(UPDATE_ORDERBOOK, METHOD_POST, jsonString);
 	}
+
+
+	//Update Customer
+	public static void updateCustomerSave(NetworkOperationListener listener, Object tag, String jsonString)
+	{
+		// TODO Auto-generated method stub
+		Log.d("jsonrequest", jsonString + "");
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(UPDATESHOP_DETAILS, METHOD_POST, jsonString);
+	}
 }

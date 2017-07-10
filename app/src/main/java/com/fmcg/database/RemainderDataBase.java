@@ -63,7 +63,6 @@ public class RemainderDataBase extends SQLiteOpenHelper
 	{
 		List<RemainderData> remainder_data = new ArrayList<RemainderData>();
 		String selectQuery = "SELECT  * FROM " + REMAINDER_TABLE;
-
 		Log.e("", selectQuery);
 
 		SQLiteDatabase db = this.getReadableDatabase();
