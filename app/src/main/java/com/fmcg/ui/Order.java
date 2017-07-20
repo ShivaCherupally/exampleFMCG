@@ -671,7 +671,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 
 				String jsonString = createJsonOrderSubmit(orderNumber, ZoneId, RouteId, AreaId,
 				                                          selected_shopId, IsShopClosed, ShopClosedImage, OrderDeliveryDate,
-				                                          OrderStatusId, IsOrdered, IsInvoice, Remarks,
+				                                          OrderStatusId,paymentTermsId, IsOrdered, IsInvoice, Remarks,
 				                                          EmployeeId, cartItemsArray);
 				Log.e("parameters", jsonString + "");
 				HttpAdapter.orderbook(this, "orderbook", jsonString);
@@ -1241,7 +1241,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 
 	private String createJsonOrderSubmit(String OrderNumber, String ZoneId, String RouteId,
 	                                     String AreaId, String ShopId, String IsShopClosed, String ShopClosedImage,
-	                                     String OrderDeliveryDate, String OrderStatusId, String IsOrdered, String IsInvoice,
+	                                     String OrderDeliveryDate, String OrderStatusId, String PaymentTermsId,String IsOrdered, String IsInvoice,
 	                                     String Remarks, String EmployeeId, JSONArray cartItemsArray
 	)
 	{
@@ -1258,6 +1258,7 @@ public class Order extends AppCompatActivity implements View.OnClickListener, Ne
 			dataObj.putOpt("ShopClosedImage", ShopClosedImage);
 			dataObj.putOpt("OrderDeliveryDate", OrderDeliveryDate);
 			dataObj.putOpt("OrderStatusId", OrderStatusId);
+			dataObj.putOpt("PaymentTermsId", PaymentTermsId); //PaymentTermsId // Added New param for paymnet tersms
 			dataObj.putOpt("IsOrdered", IsOrdered);
 			dataObj.putOpt("IsInvoice", IsInvoice);
 			dataObj.putOpt("Remarks", Remarks);

@@ -264,7 +264,6 @@ public class GetShopsByRoute extends AppCompatActivity
 		if (grantResults.length > 0
 				&& grantResults[0] == PackageManager.PERMISSION_GRANTED)
 		{
-
 			googleMapsSetup();
 			mGoogleApiClient.connect();
 		}
@@ -646,82 +645,102 @@ public class GetShopsByRoute extends AppCompatActivity
 
 	private void allShopdetails(final JSONArray shopsData)
 	{
+
 		try
 		{
-			try
+			googleMap.clear();
+			currentLocationAccessWithNavigationMarker(googleMap);
+			PolylineOptions polyLineOptions = new PolylineOptions();
+			for (int i = 0; i < shopsData.length(); i++)
 			{
-				googleMap.clear();
-				currentLocationAccessWithNavigationMarker(googleMap);
-				PolylineOptions polyLineOptions = new PolylineOptions();
-				for (int i = 0; i < shopsData.length(); i++)
+				JSONObject statuss = shopsData.getJSONObject(i);
+				GetShopsArray getShopsArray = new Gson().fromJson(statuss.toString(), GetShopsArray.class);
+				points = new ArrayList<LatLng>();
+
+				Log.e("lat", getShopsArray.Latitude + "shiv");
+				Log.e("long", getShopsArray.Longitude + "Shivaa");
+
+				if (getShopsArray.Longitude != null && !getShopsArray.Longitude.isEmpty())
 				{
-					JSONObject statuss = shopsData.getJSONObject(i);
-					GetShopsArray getShopsArray = new Gson().fromJson(statuss.toString(), GetShopsArray.class);
-					points = new ArrayList<LatLng>();
-
-					Log.e("lat", getShopsArray.Latitude + "shiv");
-					Log.e("long", getShopsArray.Longitude + "Shivaa");
-
 					if (getShopsArray.Longitude != null && !getShopsArray.Longitude.isEmpty())
 					{
-						if (getShopsArray.Longitude != null && !getShopsArray.Longitude.isEmpty())
-						{
-							LatLng latLng = new LatLng(Double.parseDouble(getShopsArray.Latitude), Double.parseDouble(getShopsArray.Longitude));
-							points.add(latLng);
-							Log.e("latlang", String.valueOf(latLng));
-							MarkerOptions markerOptions = new MarkerOptions();
+						LatLng latLng = new LatLng(Double.parseDouble(getShopsArray.Latitude), Double.parseDouble(getShopsArray.Longitude));
+						points.add(latLng);
+						Log.e("latlang", String.valueOf(latLng));
+						MarkerOptions markerOptions = new MarkerOptions();
 
-							// Setting latitude and longitude of the marker position
-							markerOptions.position(latLng);
+						// Setting latitude and longitude of the marker position
+						markerOptions.position(latLng);
 
 							/*Drawable circleDrawable = getResources().getDrawable(R.drawable.popup_close);
 							BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);*/
 
-							// Setting titile of the infowindow of the marker
-							markerOptions.title(getShopsArray.ShopName);
-							polyLineOptions.width(8);
+						// Setting titile of the infowindow of the marker
+						markerOptions.title(getShopsArray.ShopName);
+						polyLineOptions.width(8);
 
-							if (getShopsArray.Active != null && !getShopsArray.Active.equalsIgnoreCase("null"))
+						if (getShopsArray.Active != null && !getShopsArray.Active.equalsIgnoreCase("null"))
+						{
+							if (getShopsArray.Active.equalsIgnoreCase("N"))
 							{
-								if (getShopsArray.Active.equalsIgnoreCase("Y"))
-								{
-									polyLineOptions.color(Color.RED);
-									Drawable circleDrawable = getResources().getDrawable(R.drawable.greenlocator);
-									BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
-									markerOptions.icon(markerIcon);
-								}
-								else
-								{
-									polyLineOptions.color(Color.RED);
-//									markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
-								}
+								polyLineOptions.color(Color.RED);
+								Drawable circleDrawable = getResources().getDrawable(R.drawable.greenlocator);
+								BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+								markerOptions.icon(markerIcon);
 							}
 							else
 							{
-//								markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
+								polyLineOptions.color(Color.RED);
+//									markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
 							}
-							bounds.include(latLng);
-							googleMap.addMarker(markerOptions);
-							polyLineOptions.addAll(points).color(Color.BLACK).width(5);;
 						}
+						else
+						{
+//								markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
+						}
+						bounds.include(latLng);
+						googleMap.addMarker(markerOptions);
+						polyLineOptions.addAll(points).color(Color.BLACK).width(5);
+						drawPolyLineOnMap(points);
+//							googleMap.addPolyline(polyLineOptions);
 					}
 				}
-
-				googleMap.addPolyline(polyLineOptions);
-				googleMapszoom();
-				requestDirection();
 			}
-			catch (Exception e)
-			{
-				Log.e("error", e.toString() + "");
 
-			}
+			googleMap.addPolyline(polyLineOptions);
+			googleMapszoom();
+			requestDirection();
 		}
-		catch (NumberFormatException e)
+		catch (Exception e)
 		{
-			e.printStackTrace();
+			Log.e("error", e.toString() + "");
 		}
 
+
+	}
+
+	private void drawPolyLineOnMap(List<LatLng> list)
+	{
+//		polyLineOptions.addAll(points).color(Color.BLACK).width(5);
+		PolylineOptions polyOptions = new PolylineOptions();
+		polyOptions.color(Color.RED);
+		polyOptions.width(5);
+		polyOptions.addAll(list);
+
+		googleMap.clear();
+		googleMap.addPolyline(polyOptions);
+
+		LatLngBounds.Builder builder = new LatLngBounds.Builder();
+		for (LatLng latLng : list)
+		{
+			builder.include(latLng);
+		}
+
+		final LatLngBounds bounds = builder.build();
+
+		//BOUND_PADDING is an int to specify padding of bound.. try 100.
+		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+		googleMap.animateCamera(cu);
 	}
 
 

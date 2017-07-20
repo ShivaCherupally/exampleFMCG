@@ -69,8 +69,9 @@ public class HttpAdapter
 
 	//Order Book List
 	public static final String GET_ORDER_BOOK_LIST = BASE_URL + "GetOrderBookingDetails?OrderNumber=0";
-	public static final String GET_INVOICE_LIST = BASE_URL + "GetInvoiceDetails?InvoiceNumber=0";
-	//http://202.143.96.20/Orderstest/api/Services/GetInvoiceDetails?InvoiceNumber=0
+//	public static final String GET_INVOICE_LIST = BASE_URL + "GetInvoiceDetails?InvoiceNumber=0";
+	public static final String GET_INVOICE_LIST = BASE_URL + "GetInvoiceDetails?OrderSalesId=0";
+	//OrderSalesId
 
 	//Star Trip Services
 	public static final String GET_ROUTE_DROPDOWN = BASE_URL + "GetRouteDetailsByEmpRouteIds";

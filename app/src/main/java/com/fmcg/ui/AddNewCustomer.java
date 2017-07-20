@@ -120,7 +120,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 	Toolbar toolbar;
 	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, location, createdby, locationName, payment, emailId;
 	private TextView submit;
-	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp, shopName_spinner;
+	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp;
 	//Define a request code to send to Google Play services
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	private GoogleApiClient mGoogleApiClient;
@@ -190,7 +190,6 @@ public class AddNewCustomer extends AppCompatActivity implements
 		submit = (TextView) findViewById(R.id.submit);
 
 
-		shopName_spinner = (Spinner) findViewById(R.id.shopName_spinner);
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
 		routecd = (Spinner) findViewById(R.id.routecd);
 		areaName_sp = (Spinner) findViewById(R.id.area_name);
@@ -198,7 +197,6 @@ public class AddNewCustomer extends AppCompatActivity implements
 		religion = (Spinner) findViewById(R.id.religion);
 		payment_sp = (Spinner) findViewById(R.id.payment_sp);
 		//routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
-		shopName_spinner.setVisibility(View.GONE);
 
 		defaultAreaNameSelect();
 
@@ -384,7 +382,6 @@ public class AddNewCustomer extends AppCompatActivity implements
 					case R.id.inovice:
 						check2 = true;
 						break;
-
 
 				}
 			}
@@ -665,8 +662,8 @@ public class AddNewCustomer extends AppCompatActivity implements
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
-						shopNameSpinnerAdapter(jsonArray);
-						shopNamesSpinnerAdapter(jsonArray);
+						shopTypeNameSpinnerAdapter(jsonArray);
+//						shopNamesSpinnerAdapter(jsonArray);
 					}
 				}
 
@@ -696,57 +693,6 @@ public class AddNewCustomer extends AppCompatActivity implements
 
 
 		}
-	}
-
-	private void shopNamesSpinnerAdapter(JSONArray jsonArray)
-	{
-		try
-		{
-			_shopNamesData.clear();
-			shooNamestitle.clear();
-			_shopNamesData = new ArrayList<ShopNamesData>();
-			for (int i = 0; i < jsonArray.length(); i++)
-			{
-				JSONObject jsnobj = jsonArray.getJSONObject(i);
-				String shopId = jsnobj.getString("ZoneId");
-				String shopNamee = jsnobj.getString("ZoneName");
-				_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
-			}
-			shooNamestitle.add("Zone Name");
-			if (_shopNamesData.size() > 0)
-			{
-				for (int i = 0; i < _shopNamesData.size(); i++)
-				{
-					shooNamestitle.add(_shopNamesData.get(i).getShopName());
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shooNamestitle);
-		dataAdapter_zoneName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		shopName_spinner.setAdapter(dataAdapter_zoneName);
-		shopName_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-			{
-				if (position != 0)
-				{
-					selected_shopNameId = _shopNamesData.get(position - 1).getShopId();
-					HttpAdapter.getRouteDetails(AddNewCustomer.this, "routeCode", selected_shopNameId);
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-
-			}
-		});
 	}
 
 	private void zoneSpinnerAdapter(JSONArray jsonArray)
@@ -905,7 +851,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 		});
 	}
 
-	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
+	private void shopTypeNameSpinnerAdapter(final JSONArray jsonArray)
 	{
 		try
 		{

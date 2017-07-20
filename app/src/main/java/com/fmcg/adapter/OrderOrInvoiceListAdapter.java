@@ -83,9 +83,9 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 				}
 				else
 				{
-					viewHolder.editBtn.setVisibility(View.INVISIBLE);
-					viewHolder.closeRL.setVisibility(View.GONE);
-					viewHolder.deleteRL.setVisibility(View.GONE);
+					viewHolder.editBtn.setVisibility(View.VISIBLE);
+					viewHolder.closeRL.setVisibility(View.VISIBLE);
+					viewHolder.deleteRL.setVisibility(View.VISIBLE);
 					invoiceListData(viewHolder, position);
 				}
 			}
@@ -154,10 +154,10 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 			{*/
 			viewHolder.subtotaltxt.setText(String.valueOf(String.valueOf(_orderBookOrInvoiceListData.get(position).getSubTotalAmount())));
 			//}
-			if (_orderBookOrInvoiceListData.get(position).getTaxAmount() != 0.0)
-			{
+//			if (_orderBookOrInvoiceListData.get(position).getTaxAmount() != 0.0)
+//			{
 				viewHolder.taxamounttxt.setText(String.valueOf(_orderBookOrInvoiceListData.get(position).getTaxAmount()));
-			}
+//			}
 			if (_orderBookOrInvoiceListData.get(position).getTotalAmount() != 0.0)
 			{
 				viewHolder.totalamounttxt.setText(String.valueOf(_orderBookOrInvoiceListData.get(position).getTotalAmount()));

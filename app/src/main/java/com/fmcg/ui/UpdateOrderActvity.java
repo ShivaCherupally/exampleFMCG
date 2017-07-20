@@ -130,9 +130,11 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	private Dialog promoDialog;
 	private ImageView close_popup;
 	RadioGroup select_option_radio_grp;
+	RadioButton viewList;
 	Button alert_submit;
 	boolean check1 = false;
 	boolean check2 = false;
+	boolean check3 = false;
 
 
 	//Payment Selection
@@ -360,7 +362,10 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			{
 				if (_paymentsSelectData.size() > 0)
 				{
-					payment_sp.setSelection(getIndex(payment_sp, Integer.parseInt(PaymentTermsId), _paymentsSelectData));
+					payment_sp.clearFocus();
+//					payment_sp.setClickable(false);
+//					payment_sp.setEnabled(false);
+					payment_sp.setSelection(getIndex(payment_sp, Integer.parseInt(PaymentTermsId), _paymentsSelectData), false);
 				}
 			}
 		}
@@ -603,7 +608,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			boolean validated = validationEntryData();
 			if (validated)
 			{
-				list_li.setVisibility(View.GONE);
 				JSONArray cartItemsArray = new JSONArray();
 				if (storedProductCategories != null && !storedProductCategories.isEmpty())
 				{
@@ -1396,7 +1400,8 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
 		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
 		select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
-
+		viewList = (RadioButton) promoDialog.findViewById(R.id.viewList);
+		viewList.setVisibility(View.VISIBLE);
 		promoDialog.show();
 
 		select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
@@ -1411,6 +1416,9 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 						break;
 					case R.id.inovice:
 						check2 = true;
+						break;
+					case R.id.viewList:
+						check3 = true;
 						break;
 
 
@@ -1455,9 +1463,15 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 					Util.killorderBook();
 					startActivity(inten);
 				}
+				else if (check3)
+				{
+					Intent inten = new Intent(UpdateOrderActvity.this, ViewListActivity.class);
+					Util.killupdateorderBook();
+					startActivity(inten);
+				}
 				else
 				{
-					Toast.makeText(mContext, "Please Select Order Book or Invoice", Toast.LENGTH_SHORT).show();
+					Toast.makeText(mContext, "Please select a value from the list", Toast.LENGTH_SHORT).show();
 				}
 
 			}

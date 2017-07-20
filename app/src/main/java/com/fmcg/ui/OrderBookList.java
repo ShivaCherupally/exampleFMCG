@@ -72,6 +72,7 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 	int deletedOrderPosition;
 
 	ProgressDialog progressdailog;
+	String ACCESS_LIST = "";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -99,7 +100,7 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 		mRecyclerView.setHasFixedSize(true);
 
-		String ACCESS_LIST = SharedPrefsUtil.getStringPreference(mContext, "ACCESS_LIST");
+		ACCESS_LIST = SharedPrefsUtil.getStringPreference(mContext, "ACCESS_LIST");
 		if (ACCESS_LIST != null && !ACCESS_LIST.equalsIgnoreCase("null") && !ACCESS_LIST.isEmpty())
 		{
 			if (ACCESS_LIST.equalsIgnoreCase("BOOK_LIST"))
@@ -222,12 +223,19 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 						try
 						{
 							progressdailog.dismiss();
-							JSONObject jsonObj = mJson.getJSONObject("Data");
-							String editOrderJsonDataToString = jsonObj.toString();
-							SharedPrefsUtil.setStringPreference(mContext, "EDIT_ORDER_DATA_STRING", editOrderJsonDataToString);
-							Toast.makeText(mContext, "Successfully Order Editing", Toast.LENGTH_SHORT).show();
-							Intent i = new Intent(OrderBookList.this, UpdateOrderActvity.class);
-							startActivity(i);
+							if (mJson.getJSONObject("Data") != null)
+							{
+								JSONObject jsonObj = mJson.getJSONObject("Data");
+								String editOrderJsonDataToString = jsonObj.toString();
+								SharedPrefsUtil.setStringPreference(mContext, "EDIT_ORDER_DATA_STRING", editOrderJsonDataToString);
+								Toast.makeText(mContext, "Successfully Order Editing", Toast.LENGTH_SHORT).show();
+								Intent i = new Intent(OrderBookList.this, UpdateOrderActvity.class);
+								startActivity(i);
+							}
+							else
+							{
+								Toast.makeText(mContext, "Successfully Order Editing", Toast.LENGTH_SHORT).show();
+							}
 							/*_orderBookOrInvoiceListData.remove(deletedOrderPosition);
 							mAdapter.notifyDataSetChanged(); //update adapter*/
 						}
@@ -268,6 +276,7 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 			{
 				for (int i = 0; i < jsonArray.length(); i++)
 				{
+					int OrderSalesId;
 					String OrderInvoiceNumber = "";
 					String InvoiceDate = "";
 					String Status_invoice = "";
@@ -279,7 +288,7 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 
 					JSONObject jObj = jsonArray.getJSONObject(i);
 
-					//int OrdersId = jObj.getInt("OrdersId");
+					OrderSalesId = jObj.getInt("OrderSalesId");
 
 					if (jObj.getString("OrderInvoiceNumber") != null && !jObj.getString("OrderInvoiceNumber").equalsIgnoreCase("null"))
 					{
@@ -302,16 +311,16 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 					{
 						PaidAmount = jObj.getInt("PaidAmount");
 					}
-					if (jObj.getInt("DueAmount") != 0)
-					{
-						DueAmount = jObj.getDouble("DueAmount");
-					}
+					/*if (jObj.getInt("DueAmount") != 0)
+					{*/
+					DueAmount = jObj.getDouble("DueAmount");
+//					}
 					Balance = jObj.getInt("Balance");
 
 					TotalAmount = jObj.getDouble("TotalAmount");
 
 					_orderBookOrInvoiceListData
-							.add(new OrderBookOrInvoiceListData(0, 0, 0, OrderInvoiceNumber, InvoiceDate, Customer, Status_invoice, PaidAmount, Balance, DueAmount,
+							.add(new OrderBookOrInvoiceListData(OrderSalesId, 0, 0, OrderInvoiceNumber, InvoiceDate, Customer, Status_invoice, PaidAmount, Balance, DueAmount,
 							                                    TotalAmount));
 				}
 				adapterAssigning(_orderBookOrInvoiceListData);
@@ -500,18 +509,38 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 	{
 		try
 		{
+			if (ACCESS_LIST != null && !ACCESS_LIST.equalsIgnoreCase("null") && !ACCESS_LIST.isEmpty())
+			{
+				if (ACCESS_LIST.equalsIgnoreCase("BOOK_LIST"))
+				{
+					if (Utility.isOnline(mContext))
+					{
+						progressdailog.show();
+						Log.e("orderno", _orderBookOrInvoiceListData.get(positionValue).getOrderNumber() + "Editing");
+						deletedOrderPosition = positionValue;
+						HttpAdapter.orderEdit(OrderBookList.this, "Order_Edit", String.valueOf(_orderBookOrInvoiceListData.get(positionValue).getOrderId()));
+					}
+					else
+					{
+						Toast.makeText(mContext, "Please check internet connection", Toast.LENGTH_SHORT).show();
+					}
+				}
+				else
+				{
+					if (Utility.isOnline(mContext))
+					{
+						progressdailog.show();
+						Log.e("orderno", _orderBookOrInvoiceListData.get(positionValue).getOrderNumber() + "Editing");
+						deletedOrderPosition = positionValue;
+						HttpAdapter.orderEdit(OrderBookList.this, "Order_Edit", String.valueOf(_orderBookOrInvoiceListData.get(positionValue).getOrderId()));
+					}
+					else
+					{
+						Toast.makeText(mContext, "Please check internet connection", Toast.LENGTH_SHORT).show();
+					}
+				}
+			}
 
-			if (Utility.isOnline(mContext))
-			{
-				progressdailog.show();
-				Log.e("orderno", _orderBookOrInvoiceListData.get(positionValue).getOrderNumber() + "Editing");
-				deletedOrderPosition = positionValue;
-				HttpAdapter.orderEdit(OrderBookList.this, "Order_Edit", String.valueOf(_orderBookOrInvoiceListData.get(positionValue).getOrderId()));
-			}
-			else
-			{
-				Toast.makeText(mContext, "Please check internet connection", Toast.LENGTH_SHORT).show();
-			}
 
 		}
 		catch (Exception e)

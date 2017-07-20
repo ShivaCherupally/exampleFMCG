@@ -17,7 +17,7 @@ public class GetOrderSummary
 
 	public int SubTotalAmount;
 	public int Quantity;
-	public int Price;
+	public int ProductPrice;
 	public int Frees;
 	public double TotalAmount;
 	public double VAT;
@@ -47,12 +47,12 @@ public class GetOrderSummary
 
 	public int getPrice()
 	{
-		return Price;
+		return ProductPrice;
 	}
 
-	public void setPrice(final int price)
+	public void setPrice(final int productPrice)
 	{
-		Price = price;
+		ProductPrice = productPrice;
 	}
 
 	public int getFrees()
@@ -136,7 +136,7 @@ public class GetOrderSummary
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.putOpt("SubTotalAmount", SubTotalAmount);
 		jsonObject.putOpt("Quantity", Quantity);
-		jsonObject.putOpt("Price", Price);
+		jsonObject.putOpt("Price", ProductPrice);
 		jsonObject.putOpt("Frees", Frees);
 		jsonObject.putOpt("TotalAmount", TotalAmount);
 		jsonObject.putOpt("VAT", VAT);

@@ -716,7 +716,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 		else if (v.getId() == R.id.shop_update)
 		{
-			Intent mylocation = new Intent(this, UpdateCustomerActivity.class);
+//			Intent mylocation = new Intent(this, UpdateCustomerActivity.class);
+			Intent mylocation = new Intent(this, UpdateCustomerNewActivity.class);
 			startActivity(mylocation);
 		}
 		else if (v.getId() == R.id.add_new_customer)

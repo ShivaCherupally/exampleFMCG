@@ -498,36 +498,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		}
 	}
 
-	// display current date
-	   /* public void setCurrentDateOnView() {
-
-	        tvDisplayDate = (TextView) findViewById(R.id.order_date);
-	        dpResult = (DatePicker) findViewById(R.id.dpResult);
-
-	        final Calendar c = Calendar.getInstance();
-	        year = c.get(Calendar.YEAR);
-	        month = c.get(Calendar.MONTH);
-	        day = c.get(Calendar.DAY_OF_MONTH);
-
-	        // set current date into textview
-	        tvDisplayDate.setText(new StringBuilder()
-	                // Month is 0 based, just add 1
-	                .append("Sales Invoice Date  ")
-	                .append(month + 1).append("-").append(day).append("-")
-	                .append(year).append(" "));
-
-	        // set current date into datepicker
-	        dpResult.init(year, month, day, null);
-
-	    }*/
-
-	public static Map<String, String> insertFeedback(String EmployeeId, String FeedbackMessages)
-	{
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("EmployeeId", EmployeeId);
-		map.put("FeedbackMessages", FeedbackMessages);
-		return map;
-	}
 
 	@Override
 	public void onClick(View v)
@@ -621,101 +591,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				}
 				break;
 		}
-
 	}
-
-	/*private void displayTableView(List<GetOrderSummary> orderSummary)
-	{
-		tableLayout.removeAllViews();
-
-		headers();
-		for (int i = 0; i < orderSummary.size(); i++)
-		{
-
-			android.widget.TableRow row = new android.widget.TableRow(this);
-
-
-			*//*extView taskdate = new TextView(Invoice.this);
-			taskdate.setTextSize(15);
-			//taskdate.setPadding(15,0,0,0);
-			taskdate.setText(orderSummary.get(i).ProductName);
-			//			taskdate.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-			//			                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-			taskdate.setPadding(0, 0, 0, 10);
-			taskdate.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.36f));
-			.addView(taskdate);*//*
-
-			TextView taskdate = new TextView(Invoice.this);
-			taskdate.setTextSize(15);
-			taskdate.setPadding(10, 10, 10, 10);
-			taskdate.setText(orderSummary.get(i).ProductName);
-			taskdate.setBackgroundColor(getResources().getColor(R.color.light_green));
-			taskdate.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-			                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-			row.addView(taskdate);
-
-
-			*//*TextView taskdate = new TextView(mContext);
-			taskdate.setTextSize(10);
-			taskdate.setText(orderSummary.get(i).ProductName);
-			taskdate.setPadding(0, 0, 0, 10);
-			taskdate.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.36f));
-			row.addView(taskdate);*//*
-
-
-
-			TextView title = new TextView(Invoice.this);
-			title.setText(orderSummary.get(i).Price);
-			title.setTextSize(15);
-			//title.setPadding(15,0,0,0);
-			title.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-			                                                               android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-			row.addView(title);
-
-
-			TextView taskhour = new TextView(Invoice.this);
-			taskhour.setText(orderSummary.get(i).Quantity);
-			taskhour.setTextSize(15);
-			//taskhour.setPadding(15,0,0,0);
-			taskhour.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-			                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-			row.addView(taskhour);
-
-			TextView description3 = new TextView(Invoice.this);
-			description3.setText(orderSummary.get(i).Frees);
-			description3.setTextSize(15);
-			//description3.setPadding(15,0,0,0);
-			row.addView(description3);
-			description3.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-			                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-
-			TextView description = new TextView(Invoice.this);
-			description.setText(orderSummary.get(i).TaxAmount);
-			description.setTextSize(15);
-			//description.setPadding(15,0,0,0);
-			row.addView(description);
-			description.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-			                                                                     android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-
-			TextView description2 = new TextView(Invoice.this);
-			description2.setText(orderSummary.get(i).GST);
-			description2.setTextSize(15);
-			//description2.setPadding(15,0,0,0);
-			description2.setVisibility(View.GONE);
-			row.addView(description2);
-
-			description2.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-			                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-
-
-			tableLayout.addView(row, new TableLayout.LayoutParams(
-					TableLayout.LayoutParams.MATCH_PARENT,
-					TableLayout.LayoutParams.WRAP_CONTENT));
-
-		}
-
-	}*/
-
 
 	private void displayTableView(final List<GetOrderSummary> productDP)
 	{
@@ -1128,26 +1004,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				}
 				else if (response.getTag().equals("orderSummary"))
 				{
-					/*Double total = 0.0;
-					if (mJson.getString("Message").equals("SuccessFull"))
-					{
-						JSONArray jsonArray = mJson.getJSONArray("Data");
-						orderSummary.clear();
-						for (int i = 0; i < jsonArray.length(); i++)
-						{
-							*//*JSONObject obj = jsonArray.getJSONObject(i);
-							GetOrderSummary getOrderSummary = new Gson().fromJson(obj.toString(), GetOrderSummary.class);
-							total = total + Double.parseDouble(getOrderSummary.TotalAmount);
-							orderSummary.add(getOrderSummary);*//*
-
-							JSONObject obj = jsonArray.getJSONObject(i);
-							GetProductCategory getOrderSummary = new Gson().fromJson(obj.toString(), GetProductCategory.class);
-							// productNameDropDown = productDP.get(position).ProductId;
-							list_productesCategry.add(getOrderSummary);
-						}
-						displayTableView(list_productesCategry);
-					}*/
-
 					Double total = 0.0;
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
@@ -1161,6 +1017,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 							orderSummary.add(getOrderSummary);*/
 
 							JSONObject obj = jsonArray.getJSONObject(i);
+//							Log.e("categorydata", obj.toString());
 							GetOrderSummary getOrderSummary = new Gson().fromJson(obj.toString(), GetOrderSummary.class);
 							list_of_orders.add(getOrderSummary);
 						}
@@ -1576,7 +1433,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 		if (AreaId == null || AreaId.isEmpty() || AreaId.equals("0"))
 		{
-			Toast.makeText(getApplicationContext(), "Please Enter Area Name", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "Please Select Area Name", Toast.LENGTH_SHORT).show();
 			ret = false;
 			return ret;
 		}
@@ -1738,260 +1595,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		startActivity(i);
 	}
 
-	/*private class ProductCategoryTableRow extends TableRow
-	{
-
-		private Context mContext;
-		private GetProductCategory mProductCategory;
-
-		private EditText quantityETID;
-		private EditText fresETID;
-
-		private String afterTextChanged = "";
-		private String beforeTextChanged = "";
-		private String onTextChanged = "";
-
-		private final int position;
-
-		public ProductCategoryTableRow(final Context context, final GetProductCategory productCategory, int index)
-		{
-			super(context);
-			mContext = context;
-			mProductCategory = productCategory;
-			position = index;
-			init();
-		}
-
-		public GetProductCategory getProductCategory()
-		{
-			// update your new data
-			if (!TextUtils.isEmpty(quantityETID.getText()))
-			{
-				mProductCategory.Quantity = quantityETID.getText().toString();
-				mProductCategory.Frees = fresETID.getText().toString();
-			}
-			return mProductCategory;
-		}
-
-		public String getAfterTextChanged()
-		{
-			return afterTextChanged;
-		}
-
-		public String getBeforeTextChanged()
-		{
-			return beforeTextChanged;
-		}
-
-		public String getOnTextChanged()
-		{
-			return onTextChanged;
-		}
-
-		private void init()
-		{
-			try
-			{
-				TextView taskdate = new TextView(mContext);
-				taskdate.setTextSize(15);
-				taskdate.setText(mProductCategory.ProductName);
-				taskdate.setPadding(0, 0, 0, 10);
-				taskdate.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.36f));
-				addView(taskdate);
-
-				TextView title = new TextView(mContext);
-				title.setText(String.valueOf(mProductCategory.ProductPrice));
-				title.setTextSize(15);
-				title.setTextColor(getResources().getColor(R.color.light_green));
-				title.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                       LayoutParams.WRAP_CONTENT));
-				addView(title);
-
-				quantityETID = new EditText(mContext);
-				quantityETID.setText(mProductCategory.Quantity);
-				quantityETID.setBackgroundColor(Color.TRANSPARENT);
-				quantityETID.setClickable(true);
-				quantityETID.setCursorVisible(true);
-				quantityETID.setFocusableInTouchMode(true);
-				quantityETID.setTextSize(15);
-				quantityETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				quantityETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                              LayoutParams.WRAP_CONTENT));
-				quantityETID.addTextChangedListener(mTextWatcher);
-				addView(quantityETID);
-
-			*//*TextView description3 = new TextView(mContext);
-			description3.setText("-");
-			description3.setTextSize(15);
-			addView(description3);
-			description3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-			                                                       TableRow.LayoutParams.WRAP_CONTENT));*//*
-				fresETID = new EditText(mContext);
-				if (mProductCategory.Frees != null && !mProductCategory.Frees.isEmpty())
-				{
-					fresETID.setText(mProductCategory.Frees);
-				}
-				else
-				{
-					fresETID.setText("-");
-				}
-				fresETID.setBackgroundColor(Color.TRANSPARENT);
-				fresETID.setClickable(true);
-				fresETID.setCursorVisible(true);
-				fresETID.setFocusableInTouchMode(true);
-				fresETID.setTextSize(15);
-				fresETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				fresETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                          LayoutParams.WRAP_CONTENT));
-				fresETID.addTextChangedListener(mTextWatcherFres);
-				addView(fresETID);
-
-
-				TextView description = new TextView(mContext);
-				description.setText(mProductCategory.VAT);
-				description.setTextSize(15);
-				//description.setPadding(15,0,0,0);
-				description.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                             LayoutParams.WRAP_CONTENT));
-				addView(description);
-
-				TextView description2 = new TextView(mContext);
-				description2.setText(mProductCategory.GST);
-				description2.setTextSize(15);
-				description2.setVisibility(GONE);
-				description2.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                              LayoutParams.WRAP_CONTENT));
-				addView(description2);
-
-				ImageView deleteimg = new ImageView(mContext);
-				deleteimg.setImageResource(R.drawable.delete);
-
-				deleteimg.setVisibility(GONE);
-				deleteimg.setMaxWidth(28);
-				deleteimg.setMaxHeight(28);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-				{
-					deleteimg.setForegroundGravity(Gravity.CENTER_VERTICAL);
-				}
-//				deleteimg.setLayoutParams(new TableRow.LayoutParams(24,
-//				                                                    TableRow.LayoutParams.WRAP_CONTENT));
-				deleteimg.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//				deleteimg.gr
-				addView(deleteimg);
-				deleteimg.setOnClickListener(new OnClickListener()
-				{
-					@Override
-					public void onClick(final View v)
-					{
-						try
-						{
-							int temposition = position + 1;
-							TableRow row = (TableRow) tableLayout.getChildAt(temposition);
-							tableLayout.removeView(row);
-							productDP.remove(position - 1);
-							storedProductCategories.remove(position - 1);
-							list.remove(position - 1);
-
-
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-						}
-
-//						notifyDataSetChanged();
-						//notifyAll();
-						*//*int childCount = tableLayout.getChildCount();
-						// Remove all rows except the first one
-						if (childCount > position)
-						{
-//							tableLayout.removeViews(position, childCount - position);
-//							int ll = position;
-							tableLayout.removeViews(0, position);
-						}*//*
-						*//*storedProductCategories.get(position).getQuantity();
-						tableLayout.removeView(position);*//*
-					}
-				});
-
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				Log.e("", e + "");
-			}
-		}
-
-		private TextWatcher mTextWatcher = new TextWatcher()
-		{
-			@Override
-			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
-			{
-				beforeTextChanged = quantityETID.getText().toString();
-			}
-
-			@Override
-			public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
-			{
-				onTextChanged = quantityETID.getText().toString();
-			}
-
-			@Override
-			public void afterTextChanged(final Editable s)
-			{
-				afterTextChanged = s.toString();
-				storedProductCategories.get(position).setQuantity(s.toString());
-			}
-		};
-
-		private TextWatcher mTextWatcherFres = new TextWatcher()
-		{
-			@Override
-			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
-			{
-				beforeTextChanged = "";
-				beforeTextChanged = fresETID.getText().toString();
-			}
-
-			@Override
-			public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
-			{
-				onTextChanged = "";
-				onTextChanged = fresETID.getText().toString();
-			}
-
-			@Override
-			public void afterTextChanged(final Editable s)
-			{
-				afterTextChanged = "";
-				afterTextChanged = s.toString();
-				try
-				{
-					if (!afterTextChanged.isEmpty() && !afterTextChanged.equalsIgnoreCase(null))
-					{
-						int fresValue = Integer.parseInt(afterTextChanged);
-						int quantityValue = Integer.parseInt(storedProductCategories.get(position).getQuantity());
-						if (quantityValue > fresValue)
-						{
-							storedProductCategories.get(position).setFres(s.toString());
-						}
-						else
-						{
-							fresETID.setText(storedProductCategories.get(position).getFres());
-							Toast.makeText(mContext, "Frees Must be not Equal or Less than to the Quantity", Toast.LENGTH_SHORT).show();
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					Log.e("error", e + "");
-				}
-
-
-			}
-		};
-	}*/
-
 	private class OrderSummary extends TableRow
 	{
 
@@ -2054,7 +1657,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				addView(taskdate);
 
 				TextView title = new TextView(mContext);
-				title.setText(String.valueOf(mProductCategory.Price));
+				title.setText(String.valueOf(mProductCategory.ProductPrice));
 				title.setTextSize(15);
 				title.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                       LayoutParams.WRAP_CONTENT));

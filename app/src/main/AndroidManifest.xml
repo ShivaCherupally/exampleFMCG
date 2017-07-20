@@ -183,7 +183,13 @@
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden"/>
         <activity
-            android:name="com.fmcg.ui.UpdateCustomerActivity"
+        android:name="com.fmcg.ui.UpdateCustomerActivity"
+        android:label="@string/update_customer"
+        android:screenOrientation="portrait"
+        android:theme="@style/AppBaseTheme"
+        android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name="com.fmcg.ui.UpdateCustomerNewActivity"
             android:label="@string/update_customer"
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme"

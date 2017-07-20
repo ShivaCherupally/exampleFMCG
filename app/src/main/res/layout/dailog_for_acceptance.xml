@@ -74,6 +74,22 @@
                             android:padding="8dp"
                             android:text="Billing"
                             android:textColor="@color/list_group_title"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/bg_color_book_now"/>
+
+
+                        <RadioButton
+                            android:id="@+id/viewList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:padding="8dp"
+                            android:text="ViewList"
+                            android:textColor="@color/list_group_title"
+                            android:visibility="gone"/>
                     </RadioGroup>
 
                 </LinearLayout>

@@ -304,6 +304,7 @@ public class Util
 		}
 	}
 
+
 	public static void killInvoice()
 	{
 		if (Invoice.invoiceActivity != null)
