@@ -93,58 +93,37 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
                                                                             NetworkOperationListener
 {
 	SharedPreferences sharedPreferences;
-
 	public List<GetZoneDetails> zoneDetailsDP;
-	private List<GetRouteDropDown> routeDp;
-	private List<PaymentDropDown> paymentDP;
-	private List<ReligionsDropDown> religionsDP;
-	private List<GetShopTypeDropDown> shopTypeDP;
-	private List<GetAreaDetailsByRouteId> areaDp;
 	public List<GetRouteDetails> routeDetailsDP;
-
-	private List<String> zoneDetailsDP_str;
-	private List<String> routeDetailsDP_str;
-	private List<String> routeDp_str;
-	private List<String> religionsDP_str;
-	private List<String> paymentDP_str;
-	private List<String> shopTypeDP_str;
-	private List<String> areaDp_str;
-
-
-	private String routeCode, religionDropdown, paymentDropDown, shopTypeDropdown, areaDropDwn;
-	TextView mydayPlan, shop, maps, getshops, mylocation, new_customer, endTrip, remarks, logout, order, invoice, userName, shop_update;
-	DrawerLayout drawer;
-	Toolbar toolbar;
-	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, location, createdby, locationName, payment, emailId;
+	private String religionDropdown, paymentDropDown;
+	TextView shop, order, invoice;
+	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, createdby, locationName, payment, emailId;
 	private TextView submit;
 	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp, shopName_spinner;
-	//Define a request code to send to Google Play services
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	private GoogleApiClient mGoogleApiClient;
 	private LocationRequest mLocationRequest;
 	private LocationManager locationManager;
 	public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 	Context mContext;
-	String UserId = "";
-
 	ArrayList<ShopNamesData> _shopNamesData = new ArrayList<ShopNamesData>(); //Shop Names Newly added
 	ArrayList<ShopNamesData> _zoneNamesData = new ArrayList<ShopNamesData>(); //Zone Drop down
 	ArrayList<ShopNamesData> _routeCodesData = new ArrayList<ShopNamesData>(); //Route Drop Down
 	ArrayList<ShopNamesData> _areaNamesData = new ArrayList<ShopNamesData>(); //Area Drop down
 	ArrayList<ShopNamesData> _shoptypesData = new ArrayList<ShopNamesData>(); //Shop Type Drop Down
+
 	ArrayList<ShopNamesData> _religionsData = new ArrayList<ShopNamesData>(); //Religion Drop Down
 	ArrayList<ShopNamesData> _paymentsSelectData = new ArrayList<ShopNamesData>(); //Select Payment
-
 
 	ArrayList<String> shooNamestitle = new ArrayList<String>(); // Shop Name Title
 	ArrayList<String> zoneNamestitle = new ArrayList<String>();
 	ArrayList<String> routeNamestitle = new ArrayList<String>();
 	ArrayList<String> areaNamestitle = new ArrayList<String>();
 	ArrayList<String> shoptypesNamestitle = new ArrayList<String>();
+
 	ArrayList<String> religionsNamestitle = new ArrayList<String>();
 	ArrayList<String> paymentNamestitle = new ArrayList<String>();
 
-	String selected_shopNameId = "";
 	String selected_zoneId = "";
 	String selected_roueId = "";
 	String selected_areaNameId = "";
@@ -152,19 +131,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	String selected_ShopTypeId = "";
 	String selected_religionNameId = "";
 	String selected_paymentNameId = "";
-
-	String selectedrouteName = "";
-
 	String GPSL = "";
-
-	boolean SHOP_DETAILS_ACCESS = false;
-	boolean SHOP_DETAILS_WITH_ROUTE_ACCESS = false;
-	EditText availZonenametxt, availRoutetxt, availAreatxt;
-
 	boolean routeDropDownItemSeleted = false;
-	boolean areaDropDownItemSeleted = false;
-	int OrdersId;
-
 	///Dailog
 	private Dialog promoDialog;
 	private ImageView close_popup;
@@ -207,37 +175,13 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		shoptype_sp = (Spinner) findViewById(R.id.shop_type_dp);
 		religion = (Spinner) findViewById(R.id.religion);
 		payment_sp = (Spinner) findViewById(R.id.payment_sp);
-
-
 		emailId = (EditText) findViewById(R.id.emailId);
 
-		availZonenametxt = (EditText) findViewById(R.id.availZonenametxt);
-		availRoutetxt = (EditText) findViewById(R.id.availRoutetxt);
-		availAreatxt = (EditText) findViewById(R.id.availAreatxt);
-
-
 		zoneDetailsDP = new ArrayList<>();
-		religionsDP = new ArrayList<>();
-		routeDp = new ArrayList<>();
-		paymentDP = new ArrayList<>();
-		shopTypeDP = new ArrayList<>();
-		areaDp = new ArrayList<>();
 		routeDetailsDP = new ArrayList<>();
-
-		routeDetailsDP_str = new ArrayList<>();
-		zoneDetailsDP_str = new ArrayList<>();
-		routeDp_str = new ArrayList<>();
-		religionsDP_str = new ArrayList<>();
-		paymentDP_str = new ArrayList<>();
-		shopTypeDP_str = new ArrayList<>();
-		areaDp_str = new ArrayList<>();
-
-
-		//defaultAreaNameSelect();
 
 		HttpAdapter.getShopDetailsDP(UpdateCustomerNewActivity.this, "shopNames", "0");
 		HttpAdapter.getZoneDetailsDP(UpdateCustomerNewActivity.this, "zoneName");
-//		HttpAdapter.getRoute(UpdateCustomerNewActivity.this, "routeCode");
 		HttpAdapter.getReligion(UpdateCustomerNewActivity.this, "getReligion");
 		HttpAdapter.getPayment(UpdateCustomerNewActivity.this, "payment");
 		HttpAdapter.shopType(UpdateCustomerNewActivity.this, "shoptypeDP");
@@ -258,28 +202,11 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			{
 				buildGoogleApiClient();
 			}
-			// mMap.setMyLocationEnabled(true);
 		}
-
-		// Create the LocationRequest object
 		mLocationRequest = LocationRequest.create()
 		                                  .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 		                                  .setInterval(10 * 1000)        // 10 seconds, in milliseconds
 		                                  .setFastestInterval(1 * 1000); // 1 second, in milliseconds
-
-
-		availZonenametxt.setOnTouchListener(new View.OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(final View v, final MotionEvent event)
-			{
-				availZonenametxt.setVisibility(View.GONE);
-				zone_sp.setVisibility(View.VISIBLE);
-				zone_sp.hasFocusable();
-				zone_sp.performClick();
-				return false;
-			}
-		});
 
 		zone_sp.setOnTouchListener(new View.OnTouchListener()
 		{
@@ -318,34 +245,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		});
 
 
-		availRoutetxt.setOnTouchListener(new View.OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(final View v, final MotionEvent event)
-			{
-				availRoutetxt.setVisibility(View.GONE);
-				routecd.hasFocusable();
-				routecd.performClick();
-				routecd.setVisibility(View.VISIBLE);
-				return false;
-			}
-		});
-
-		availAreatxt.setOnTouchListener(new View.OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(final View v, final MotionEvent event)
-			{
-
-				availAreatxt.setVisibility(View.GONE);
-				areaName_sp.hasFocusable();
-				areaName_sp.performClick();
-				areaName_sp.setVisibility(View.VISIBLE);
-				return false;
-			}
-		});
-
-
 		submit.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
@@ -377,38 +276,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		areaName_sp.setAdapter(dataAdapter_areaName);
 	}
 
-	private static Map<String, String> registerShops(String shopName, String shopDescription, String routeId, String routeCode, String ownerName, String address,
-	                                                 String mobileNumber, String phoneNumbe,
-	                                                 String latitude, String longitude, String gPSL, String locationName, String shopTypeId, String active, String createdOn,
-	                                                 String createdby, String ReligionID, String PaymentTermID, String AreaId)
-	{
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("shopName", shopName);
-		map.put("shopDescription", shopDescription);
-		map.put("routeId", routeId);
-		map.put("routeCode", routeCode);
-		map.put("ownerName", ownerName);
-		map.put("address", address);
-		map.put("mobileNumber", mobileNumber);
-		map.put("phoneNumbe", phoneNumbe);
-		map.put("latitude", latitude);
-		map.put("longitude", longitude);
-		map.put("gPSL", gPSL);
-		map.put("locationName", locationName);
-		map.put("shopTypeId", shopTypeId);
-		map.put("active", active);
-		map.put("createdOn", createdOn);
-		map.put("createdby", createdby);
-		map.put("ReligionID", ReligionID);
-		map.put("PaymentTermID", PaymentTermID);
-		map.put("AreaId", AreaId);
-		return map;
-	}
-
 	@Override
 	public void onClick(final View v)
 	{
-
 	}
 
 	@Override
@@ -487,7 +357,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 						paymentSpinnerAdapter(jsonArray);
 					}
 				}
-
 				//shopName_spinner DropDown // Change after giving service
 				else if (response.getTag().equals("editShopDetails"))
 				{
@@ -496,14 +365,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 						JSONObject jsonArray = mJson.getJSONObject("Data");
 						shopCompleteDetails(jsonArray);
 					}
-
-					else
-					{
-					}
 				}
 				else if (response.getTag().equals("UpdateCustomerSave"))
 				{
-					//Log.e("response",  mJson.getJSONObject("Data")+ "");
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONObject result = mJson.getJSONObject("Data");
@@ -511,13 +375,11 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 						if (result.getString("Status").equals("OK"))
 						{
 							Toast.makeText(UpdateCustomerNewActivity.this, "Successfully Shop Details Updated..", Toast.LENGTH_SHORT).show();
-//							refreshActivity();
 							dailogBoxAfterSubmit();
 						}
 						else
 						{
 							Toast.makeText(UpdateCustomerNewActivity.this, "Details Failed to Updated", Toast.LENGTH_SHORT).show();
-//							refreshActivity();
 							dailogBoxAfterSubmit();
 						}
 					}
@@ -583,7 +445,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			selected_zoneId = String.valueOf(zoneId);
 			zone_sp.setSelection(getIndexWithId(zone_sp, zoneId, _zoneNamesData), false);
 			HttpAdapter.getRouteDetails(UpdateCustomerNewActivity.this, "routeName", selected_zoneId);
-
 
 			if (ShopTypeId != 0)
 			{
@@ -684,9 +545,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	@Override
 	public void showToast(final String string, final int lengthLong)
 	{
-
 	}
-
 
 	public class CreateShopTask extends AsyncTask<String, String, String>
 	{
@@ -724,13 +583,11 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 					if (result.getString("Status").equals("OK"))
 					{
 						Toast.makeText(UpdateCustomerNewActivity.this, "Successfully Shop Details Updated..", Toast.LENGTH_SHORT).show();
-//						refreshActivity();
 						dailogBoxAfterSubmit();
 					}
 					else
 					{
 						Toast.makeText(UpdateCustomerNewActivity.this, "Details Failed to Updated", Toast.LENGTH_SHORT).show();
-//						refreshActivity();
 						dailogBoxAfterSubmit();
 					}
 
@@ -744,12 +601,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 	}
 
-	private void refreshActivity()
-	{
-		Intent i = getIntent();
-		finish();
-		startActivity(i);
-	}
 	@Override
 	public void onConnected(Bundle bundle)
 	{
@@ -767,7 +618,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 		else
 		{
-			//If everything went fine lets get latitude and longitude
 			Toast.makeText(getApplicationContext(), "Latitude : " + location.getLatitude(), Toast.LENGTH_SHORT).show();
 			Toast.makeText(getApplicationContext(), "Longitude : " + location.getLongitude(), Toast.LENGTH_SHORT).show();
 			lat.setText("" + location.getLatitude());
@@ -793,7 +643,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			}
 			catch (IntentSender.SendIntentException e)
 			{
-				// Log the error
 				e.printStackTrace();
 			}
 		}
@@ -803,11 +652,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 	}
 
-	/**
-	 * If locationChanges change lat and long
-	 *
-	 * @param location
-	 */
 	@Override
 	public void onLocationChanged(Location location)
 	{
@@ -854,11 +698,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		{
 			case MY_PERMISSIONS_REQUEST_LOCATION:
 			{
-				// If request is cancelled, the result arrays are empty.
 				if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
 				{
-					// permission was granted, yay! Do the
-					// contacts-related task you need to do.
 					if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
 					{
 
@@ -871,7 +712,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 						{
 							buildGoogleApiClient();
 						}
-						//mMap.setMyLocationEnabled(true);
 					}
 				}
 				else
@@ -909,7 +749,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	private void buildGoogleApiClient()
 	{
 
-		//Initializing googleapi client
 		mGoogleApiClient = new GoogleApiClient.Builder(this)
 				.addConnectionCallbacks(this)
 				.addOnConnectionFailedListener(this)
@@ -1035,7 +874,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	}
 
 
-
 	private void zoneSpinnerAdapter(JSONArray jsonArray)
 	{
 		try
@@ -1082,10 +920,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 						selected_zoneId = _zoneNamesData.get(position - 1).getShopId();
 						selected_roueId = "";
 						selected_areaNameId = "";
-						availRoutetxt.setVisibility(View.GONE);
-						availAreatxt.setVisibility(View.GONE);
-						routecd.setVisibility(View.VISIBLE);
-						areaName_sp.setVisibility(View.VISIBLE);
 						HttpAdapter.getRouteDetails(UpdateCustomerNewActivity.this, "routeName", selected_zoneId);
 					}
 				}
@@ -1169,20 +1003,10 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				{
 					if (position != 0)
 					{
-						//Toast.makeText(mContext, "Route Touch True", Toast.LENGTH_SHORT).show();
-						availRoutetxt.setVisibility(View.GONE);
-						availAreatxt.setVisibility(View.GONE);
-						routecd.setVisibility(View.VISIBLE);
-						areaName_sp.setVisibility(View.VISIBLE);
-
 						routeDropDownItemSeleted = true;
 						selected_roueId = _routeCodesData.get(position - 1).getShopId(); //3
 						HttpAdapter.getAreaDetailsByRoute(UpdateCustomerNewActivity.this, "areaNameDP", selected_roueId);
 					}
-				}
-				else
-				{
-//					Toast.makeText(mContext, "Route Touch False", Toast.LENGTH_SHORT).show();
 				}
 
 			}
@@ -1257,15 +1081,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				{
 					if (position != 0)
 					{
-						availAreatxt.setVisibility(View.GONE);
 						selected_areaNameId = _areaNamesData.get(position - 1).getShopId();
 					}
 				}
-				else
-				{
-//					Toast.makeText(mContext, "Area Touch False", Toast.LENGTH_SHORT).show();
-				}
-
 			}
 
 			@Override
@@ -1275,7 +1093,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			}
 		});
 	}
-
 
 	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
 	{
@@ -1304,9 +1121,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		catch (Exception e)
 		{
 		}
-		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this,
-		                                                                     android.R.layout.simple_spinner_item, shooNamestitle);
-
+		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shooNamestitle);
 		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		shopName_spinner.setAdapter(dataAdapter_shopType);
 		shopName_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -1387,7 +1202,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			}
 		});
 	}
-
 
 	private void religionNamesSpinnerAdapter(final JSONArray jsonArray)
 	{
@@ -1678,6 +1492,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 		return searchIdIndex; // Not found
 	}
+
 	private void dailogBoxAfterSubmit()
 	{
 		promoDialog = new Dialog(this);
@@ -1755,7 +1570,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		});
 
 	}
-
 
 }
 

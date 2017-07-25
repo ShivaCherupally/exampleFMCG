@@ -86,9 +86,7 @@
             android:name="com.fmcg.ui.MyLocation"
             android:label="@string/myLocation"
             android:screenOrientation="portrait"
-            android:theme="@style/AppBaseTheme">
-
-        </activity>
+            android:theme="@style/AppBaseTheme"/>
 
         <activity
             android:name="com.fmcg.ui.EndTrip"
@@ -97,6 +95,13 @@
             android:theme="@style/AppBaseTheme">
 
         </activity>
+
+        <activity
+            android:name="com.fmcg.ui.UpdateInvoiceActivity"
+            android:label="@string/updateinvoice"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity
             android:name="com.fmcg.ui.Remarks"
@@ -114,7 +119,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden|adjustResize">
-
         </activity>
 
         <activity
@@ -183,34 +187,21 @@
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden"/>
         <activity
-        android:name="com.fmcg.ui.UpdateCustomerActivity"
-        android:label="@string/update_customer"
-        android:screenOrientation="portrait"
-        android:theme="@style/AppBaseTheme"
-        android:windowSoftInputMode="stateHidden"/>
+            android:name="com.fmcg.ui.UpdateCustomerActivity"
+            android:label="@string/update_customer"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name="com.fmcg.ui.UpdateCustomerNewActivity"
             android:label="@string/update_customer"
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden"/>
-
-        <!--  <receiver android:name="com.fmcg.ui.ConnectionReceiver">
-              <intent-filter>
-                  <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-              </intent-filter>
-          </receiver>-->
-
-
         <!--Google MAP API key-->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDrWICgv42u3DWMEZBAtLjv9fWnNKSMYIQ"/>
-        <!--<meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAFAg_3bEWFB-Nj6lvZv3UATmXpr0aDYc0" />-->
-        <!--AIzaSyDrWICgv42u3DWMEZBAtLjv9fWnNKSMYIQ-->
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"

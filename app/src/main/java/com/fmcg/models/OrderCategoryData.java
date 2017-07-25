@@ -4,17 +4,29 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by Shiva on 7/3/2017.
+ * Created by Shiva on 7/24/2017.
  */
 
-public class GetProductCategoryInOrderUpdate
+public class OrderCategoryData
 {
 	public int ProductId;
 	public String ProductName;
 	public String ProductDescription;
 	public int ProductPrice;
 	public double VAT;
+	public int SubTotalAmount;
 	public int GST;
+
+	public int getSubTotalAmount()
+	{
+		return SubTotalAmount;
+	}
+
+	public void setSubTotalAmount(final int subTotalAmount)
+	{
+		SubTotalAmount = subTotalAmount;
+	}
+
 	public int Quantity;
 	public int Frees;
 
@@ -104,6 +116,7 @@ public class GetProductCategoryInOrderUpdate
 		jsonObject.putOpt("ProductId", ProductId);
 		jsonObject.putOpt("ProductName", ProductName);
 		jsonObject.putOpt("ProductPrice", ProductPrice);
+		jsonObject.putOpt("SubTotalAmount", SubTotalAmount);
 		jsonObject.putOpt("VAT", VAT);
 		jsonObject.putOpt("GST", GST);
 		jsonObject.putOpt("Quantity", Quantity);

@@ -37,6 +37,7 @@
     <string name="addNew_customer">Add New Customer</string>
     <string name="emailid">Emailid</string>
     <string name="remarks">Remarks</string>
+    <string name="updateinvoice">Update Invoice</string>
     <string name="orderBooking">OrderBooking</string>
     <string name="isShopClosed">Is ShopClosed</string>
     <string name="orderStatusName">orderStatus Name</string>

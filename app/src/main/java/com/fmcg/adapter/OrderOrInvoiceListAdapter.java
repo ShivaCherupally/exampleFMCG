@@ -302,11 +302,11 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 
 	}
 
-	// method to access in activity after updating selection
+	/*// method to access in activity after updating selection
 	public List<OrderBookOrInvoiceListData> getStudentist()
 	{
 		return _orderBookOrInvoiceListData;
-	}
+	}*/
 
 
 	////////////
@@ -317,16 +317,8 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 			@Override
 			public void onClick(View v)
 			{
-
-//				boolean userDelete = remainderDb.deleteRemainder(listData.get(position).getEventName());
-				/*if (userDelete)
-				{
-					Toast.makeText(mContext, "Order Successfully Deleted.. ", Toast.LENGTH_LONG).show();
-
-				}*/
-//				_orderBookOrInvoiceListData.remove(position);
 				holder.swipeLayout.close();
-				mActivity.updateAdapter(position);
+				mActivity.deleteListItem(position);
 			}
 		};
 	}
@@ -352,7 +344,7 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 			public void onClick(View v)
 			{
 				holder.swipeLayout.close();
-				mActivity.editUpdateAdapter(position);
+				mActivity.editListItem(position);
 			}
 		};
 	}

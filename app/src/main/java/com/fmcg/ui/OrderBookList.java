@@ -63,10 +63,7 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 	TextView nodata;
 	TextView swipeLefttxt;
 	LinearLayout swipeleftlabellayout;
-	RemainderDataBase remainderDb;
-	RemainderData _RemainderData = null;
 	RecyclerView.Adapter mAdapter;
-	Button addRemainder;
 	Context mContext;
 	ArrayList<OrderBookOrInvoiceListData> _orderBookOrInvoiceListData = new ArrayList<OrderBookOrInvoiceListData>();
 	int deletedOrderPosition;
@@ -227,15 +224,30 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 							{
 								JSONObject jsonObj = mJson.getJSONObject("Data");
 								String editOrderJsonDataToString = jsonObj.toString();
-								SharedPrefsUtil.setStringPreference(mContext, "EDIT_ORDER_DATA_STRING", editOrderJsonDataToString);
-								Toast.makeText(mContext, "Successfully Order Editing", Toast.LENGTH_SHORT).show();
-								Intent i = new Intent(OrderBookList.this, UpdateOrderActvity.class);
-								startActivity(i);
+								if (ACCESS_LIST.equalsIgnoreCase("BOOK_LIST"))
+								{
+									SharedPrefsUtil.setStringPreference(mContext, "EDIT_ORDER_DATA_STRING", editOrderJsonDataToString);
+									Toast.makeText(mContext, "Successfully Order Editing", Toast.LENGTH_SHORT).show();
+									Intent i = new Intent(OrderBookList.this, UpdateOrderActvity.class);
+									startActivity(i);
+								}
+								else
+								{
+									SharedPrefsUtil.setStringPreference(mContext, "EDIT_INVOICE_DATA_STRING", editOrderJsonDataToString);
+									Toast.makeText(mContext, "Successfully Inovice Editing", Toast.LENGTH_SHORT).show();
+									Intent i = new Intent(OrderBookList.this, UpdateInvoiceActivity.class);
+									startActivity(i);
+								}
 							}
 							else
 							{
-								Toast.makeText(mContext, "Successfully Order Editing", Toast.LENGTH_SHORT).show();
+								Toast.makeText(mContext, "Unable to Edit data", Toast.LENGTH_SHORT).show();
 							}
+
+
+
+
+
 							/*_orderBookOrInvoiceListData.remove(deletedOrderPosition);
 							mAdapter.notifyDataSetChanged(); //update adapter*/
 						}
@@ -456,22 +468,23 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 		finish();
 	}
 
-	public void updateAdapter(final int positionValue)
+	public void deleteListItem(final int positionValue)
 	{
 		try
 		{
 			if (Utility.isOnline(mContext))
 			{
-				//	progressdailog.show();
 
-				deletedOrderPosition = positionValue;
-				new DeleteOrder().execute();
-
-				/*Log.e("orderno", _orderBookOrInvoiceListData.get(positionValue).getOrderNumber() + "Deleting");
-				Log.e("orderId", _orderBookOrInvoiceListData.get(positionValue).getOrderId()+ "Deleting");
-				deletedOrderPosition = positionValue;
-				String jsonParametres = deleteOrderJsonRequest(String.valueOf(_orderBookOrInvoiceListData.get(positionValue).getOrderId()), SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
-				HttpAdapter.orderDelete(OrderBookList.this, "Order_Delete",jsonParametres);*/
+				if (ACCESS_LIST.equalsIgnoreCase("BOOK_LIST"))
+				{
+					deletedOrderPosition = positionValue;
+					new DeleteOrder().execute();
+				}
+				else
+				{
+					deletedOrderPosition = positionValue;
+					new DeleteInvoiceListItem().execute();
+				}
 			}
 			else
 			{
@@ -487,71 +500,35 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 
 	}
 
-	private String deleteOrderJsonRequest(String OrderId, String UserId)
-	{
-		JSONObject dataObj = new JSONObject();
-		try
-		{
-			dataObj.putOpt("OrderId", OrderId);
-			dataObj.putOpt("UserId", UserId);
-			//http://202.143.96.20/Orderstest/api/Services/DeleteOrders?OrderId=6&UserId=4
-		}
-		catch (JSONException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Log.d("orderjson", dataObj.toString());
-		return dataObj.toString();
-	}
-
-	public void editUpdateAdapter(final int positionValue)
+	public void editListItem(final int positionValue)
 	{
 		try
 		{
-			if (ACCESS_LIST != null && !ACCESS_LIST.equalsIgnoreCase("null") && !ACCESS_LIST.isEmpty())
+			if (Utility.isOnline(mContext))
 			{
+				progressdailog.show();
 				if (ACCESS_LIST.equalsIgnoreCase("BOOK_LIST"))
 				{
-					if (Utility.isOnline(mContext))
-					{
-						progressdailog.show();
-						Log.e("orderno", _orderBookOrInvoiceListData.get(positionValue).getOrderNumber() + "Editing");
-						deletedOrderPosition = positionValue;
-						HttpAdapter.orderEdit(OrderBookList.this, "Order_Edit", String.valueOf(_orderBookOrInvoiceListData.get(positionValue).getOrderId()));
-					}
-					else
-					{
-						Toast.makeText(mContext, "Please check internet connection", Toast.LENGTH_SHORT).show();
-					}
+					HttpAdapter.orderEdit(OrderBookList.this, "Order_Edit", String.valueOf(_orderBookOrInvoiceListData.get(positionValue).getOrderId()));
 				}
 				else
 				{
-					if (Utility.isOnline(mContext))
-					{
-						progressdailog.show();
-						Log.e("orderno", _orderBookOrInvoiceListData.get(positionValue).getOrderNumber() + "Editing");
-						deletedOrderPosition = positionValue;
-						HttpAdapter.orderEdit(OrderBookList.this, "Order_Edit", String.valueOf(_orderBookOrInvoiceListData.get(positionValue).getOrderId()));
-					}
-					else
-					{
-						Toast.makeText(mContext, "Please check internet connection", Toast.LENGTH_SHORT).show();
-					}
+					HttpAdapter.invoiceEdit(OrderBookList.this, "Order_Edit", String.valueOf(_orderBookOrInvoiceListData.get(positionValue).getOrderId()));
 				}
 			}
-
-
+			else
+			{
+				Toast.makeText(mContext, "Please check internet connection", Toast.LENGTH_SHORT).show();
+			}
 		}
 		catch (Exception e)
 		{
+			progressdailog.dismiss();
 			e.printStackTrace();
 		}
-
-
 	}
 
-	public class DeleteOrder extends AsyncTask<String, String, String>
+	private class DeleteOrder extends AsyncTask<String, String, String>
 	{
 		ProgressDialog pd = new ProgressDialog(OrderBookList.this);
 
@@ -570,11 +547,10 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 		@Override
 		protected String doInBackground(String... params)
 		{
-			// TODO: attempt authentication against a network service.
 			String result = "";
 			try
 			{
-				result = serviceCallInvoiceCancelOrder();
+				result = serviceCallOrderDataDelete();
 				Log.e("loginResult", result);
 			}
 			catch (Exception e)
@@ -624,7 +600,77 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 		}
 	}
 
-	public String serviceCallInvoiceCancelOrder()
+	private class DeleteInvoiceListItem extends AsyncTask<String, String, String>
+	{
+		ProgressDialog pd = new ProgressDialog(OrderBookList.this);
+
+		@Override
+		protected void onPreExecute()
+		{
+			pd.setMessage("Please wait...");
+			pd.setIndeterminate(false);
+			pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pd.setCancelable(false);
+			pd.show();
+		}
+
+		@Override
+		protected String doInBackground(String... params)
+		{
+			String result = "";
+			try
+			{
+				result = serviceCallInvoiceItemDelete();
+				Log.e("result", result);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String success)
+		{
+			Log.e("successData", String.valueOf(success));
+			if (success != null && !success.equals("null"))
+			{
+				pd.dismiss();
+				try
+				{
+					JSONObject mJson = new JSONObject(success);
+					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
+					{
+						progressdailog.dismiss();
+						Toast.makeText(mContext, "Your Invoice Data Successfully Deleted", Toast.LENGTH_SHORT).show();
+						_orderBookOrInvoiceListData.remove(deletedOrderPosition);
+						mAdapter.notifyDataSetChanged(); //update adapter
+					}
+					else
+					{
+
+						Toast.makeText(mContext, "Invoice Failed to Delete", Toast.LENGTH_SHORT).show();
+					}
+
+				}
+				catch (JSONException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				pd.dismiss();
+			}
+
+
+		}
+	}
+
+	public String serviceCallOrderDataDelete()
 	{
 		// Create a new HttpClient and Post Header
 		String responseBody = null;
@@ -637,6 +683,47 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 			// Add your data
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 			nameValuePairs.add(new BasicNameValuePair("OrderId", orderNUm));
+			nameValuePairs.add(new BasicNameValuePair("UserId", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId")));
+			Log.d("Invoice", "" + nameValuePairs.toString());
+			httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+			// Execute HTTP Post Request
+			HttpResponse response = httpclient.execute(httppost);
+			int responseCode = response.getStatusLine().getStatusCode();
+			if (responseCode == 200)
+			{
+				HttpEntity entity = response.getEntity();
+				if (entity != null)
+				{
+					responseBody = EntityUtils.toString(entity);
+
+				}
+
+			}
+		}
+		catch (ClientProtocolException e)
+		{
+			// TODO Auto-generated catch block
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+		}
+		return responseBody;
+	}
+
+	public String serviceCallInvoiceItemDelete()
+	{
+		// Create a new HttpClient and Post Header
+		String responseBody = null;
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpPost httppost = new HttpPost(
+				HttpAdapter.DELETE_INVOICE + "?OrderSalesId=" + String
+						.valueOf(_orderBookOrInvoiceListData.get(deletedOrderPosition).getOrderId() + "&UserID=" + SharedPrefsUtil.getStringPreference(mContext, "EmployeeId")));
+		try
+		{
+			// Add your data
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			nameValuePairs.add(new BasicNameValuePair("OrderSalesId", orderNUm));
 			nameValuePairs.add(new BasicNameValuePair("UserId", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId")));
 			Log.d("Invoice", "" + nameValuePairs.toString());
 			httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");

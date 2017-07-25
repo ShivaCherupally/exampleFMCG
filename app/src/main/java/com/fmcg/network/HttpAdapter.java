@@ -69,7 +69,7 @@ public class HttpAdapter
 
 	//Order Book List
 	public static final String GET_ORDER_BOOK_LIST = BASE_URL + "GetOrderBookingDetails?OrderNumber=0";
-//	public static final String GET_INVOICE_LIST = BASE_URL + "GetInvoiceDetails?InvoiceNumber=0";
+	//	public static final String GET_INVOICE_LIST = BASE_URL + "GetInvoiceDetails?InvoiceNumber=0";
 	public static final String GET_INVOICE_LIST = BASE_URL + "GetInvoiceDetails?OrderSalesId=0";
 	//OrderSalesId
 
@@ -94,6 +94,14 @@ public class HttpAdapter
 	public static final String UPDATE_ORDERBOOK = BASE_URL + "Updateorderbooking";
 
 
+	//Invoice Delete
+	public static final String DELETE_INVOICE = BASE_URL + "DeleteInvoice";
+
+	//Invoice Edit
+	public static final String EDIT_INVOICE = BASE_URL + "GetInvoiceByOrderSalesId";
+
+	//Update Invoice Save
+	public static final String UPDATE_INVOICE = BASE_URL + "UpdateInvoice";
 
 //CancelOrderNumber
 	//http://202.143.96.20/Orderstest/Api/Services/GetRouteDataAgent?AgentCode
@@ -458,19 +466,13 @@ public class HttpAdapter
 	//////Pending Bill Details
 	public static void orderDelete(NetworkOperationListener listener, Object tag, String params)
 	{
-		// TODO Auto-generated method stub
-		/*NetworkOperation operation = new NetworkOperation(listener, tag);
-		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
-//		operation.execute(DELETE_ORDER + "?OrderId=" + orderId + "?UserId=" + userId, METHOD_POST, "NONE");
-		operation.execute(DELETE_ORDER + "?OrderId=" + orderId + "?UserId=" + userId, METHOD_POST, "NONE");*/
-
 		Log.d("jsonrequest", params);
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(DELETE_ORDER, METHOD_POST, params);
 	}
 
-	//////Pending Bill Details
+	//////Order Edit
 	public static void orderEdit(NetworkOperationListener listener, Object tag, String orderId)
 	{
 		// TODO Auto-generated method stub
@@ -479,6 +481,14 @@ public class HttpAdapter
 		operation.execute(EDIT_ORDER + "?OrderId=" + orderId, METHOD_GET, "NONE");
 	}
 
+	//////Invoice Edit
+	public static void invoiceEdit(NetworkOperationListener listener, Object tag, String orderId)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(EDIT_INVOICE + "?OrderSalesId=" + orderId, METHOD_GET, "NONE");
+	}
 
 
 	//////Pending Bill Details
@@ -509,5 +519,16 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(UPDATESHOP_DETAILS, METHOD_POST, jsonString);
+	}
+
+
+	//Update Invoice
+	public static void updateInvoiceSave(NetworkOperationListener listener, Object tag, String jsonString)
+	{
+		// TODO Auto-generated method stub
+		Log.d("jsonrequest", jsonString);
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(UPDATE_INVOICE, METHOD_POST, jsonString);
 	}
 }
