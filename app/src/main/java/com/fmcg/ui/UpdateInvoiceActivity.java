@@ -238,7 +238,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		HttpAdapter.getOrderStatus(UpdateInvoiceActivity.this, "orderStatus");
 		HttpAdapter.getPayment(UpdateInvoiceActivity.this, "payment");
 		HttpAdapter.getProductCategoryDP(UpdateInvoiceActivity.this, "productCategoryName");
-		HttpAdapter.getZoneDetailsDP(UpdateInvoiceActivity.this, "zoneName");
+		//HttpAdapter.getZoneDetailsDP(UpdateInvoiceActivity.this, "zoneName");
 
 
 		paymentDP = new ArrayList<>();
@@ -1517,11 +1517,6 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 			selected_ShopId = String.valueOf(ShopId);
 
 
-			zone_sp.setBackgroundColor(Color.TRANSPARENT);
-			zone_sp.setClickable(false);
-			zone_sp.setSelection(getIndexWithId(zone_sp, zoneId, _zoneNamesData), false);
-			HttpAdapter.getRouteDetails(UpdateInvoiceActivity.this, "routeName", selected_zoneId);
-
 			try
 			{
 				selected_paymentNameId = String.valueOf(PaymentTermsId);
@@ -1540,6 +1535,12 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 			{
 
 			}
+
+			zone_sp.setBackgroundColor(Color.TRANSPARENT);
+			zone_sp.setClickable(false);
+			zone_sp.setSelection(getIndexWithId(zone_sp, zoneId, _zoneNamesData), false);
+			HttpAdapter.getRouteDetails(UpdateInvoiceActivity.this, "routeName", selected_zoneId);
+
 
 		}
 		catch (Exception e)
@@ -1924,6 +1925,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		catch (Exception e)
 		{
 		}
+		HttpAdapter.getZoneDetailsDP(UpdateInvoiceActivity.this, "zoneName");
 		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this,
 		                                                                     android.R.layout.simple_spinner_item,
 		                                                                     paymentNamestitle);

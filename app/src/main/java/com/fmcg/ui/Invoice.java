@@ -85,12 +85,10 @@ import java.util.Map;
 import static com.fmcg.util.Common.orderNUm;
 
 
-public class Invoice extends AppCompatActivity implements View.OnClickListener, NetworkOperationListener
+public class Invoice extends AppCompatActivity implements View.OnClickListener, NetworkOperationListener, AdapterView.OnItemSelectedListener
 		//, AsyncResponse
 {
 	public static Activity invoiceActivity;
-	public SharedPreferences sharedPreferences;
-	Dialog alertDialog;
 	public List<PaymentDropDown> paymentDP;
 	public List<GetShopDetailsDP> shopsDP;
 	public List<OrderStatusDropdown> orderstatusDP;
@@ -128,13 +126,13 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	private int day;
 	private TableLayout tableLayout;
 
-	String ZoneId = "";
-	String RouteId = "";
-	String AreaId = "";
-	String ShopId = "";
-	String OrderStatusId = "";
+	//	String ZoneId = "";
+//	String RouteId = "";
+//	String AreaId = "";
+//	String ShopId = "";
+//	String OrderStatusId = "";
 	String productCategoryId = "";
-	String paymentTermsId = "";
+	//	String paymentTermsId = "";
 	String OrderDeliveryDate = "";
 	Context mContext;
 
@@ -146,15 +144,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	private Map<String, String> mParams;
 	public ProgressDialog mPDialog;
 	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-
-	ArrayList<ShopNamesData> _shopNamesData = new ArrayList<ShopNamesData>();
-	ArrayList<String> shopNamestitle = new ArrayList<String>();
-	String selected_shopId = "";
-
-	ArrayList<ShopNamesData> _orderNumberData = new ArrayList<ShopNamesData>(); //Zone Drop down
-	ArrayList<String> orderNosTitle = new ArrayList<String>();
-	String selected_orderId = "";
-
 	///Dailog
 	private Dialog promoDialog;
 	private ImageView close_popup;
@@ -174,8 +163,32 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	Button dateaccept;
 	private static TextView paymentSelectedvalue;
 
+	//////////All Spinner model classes
+	ArrayList<ShopNamesData> _shopNamesData = new ArrayList<ShopNamesData>(); //Shop Names Newly added
+	ArrayList<ShopNamesData> _zoneNamesData = new ArrayList<ShopNamesData>(); //Zone Drop down
+	ArrayList<ShopNamesData> _routeCodesData = new ArrayList<ShopNamesData>(); //Route Drop Down
+	ArrayList<ShopNamesData> _areaNamesData = new ArrayList<ShopNamesData>(); //Area Drop down
+	ArrayList<ShopNamesData> _shoptypesData = new ArrayList<ShopNamesData>(); //Shop Type Drop Down
 	ArrayList<ShopNamesData> _orderStatusData = new ArrayList<ShopNamesData>(); //Religion Drop Down
+	ArrayList<ShopNamesData> _paymentsSelectData = new ArrayList<ShopNamesData>(); //Select Payment
+
+
+	ArrayList<String> shooNamestitle = new ArrayList<String>(); // Shop Name Title
+	ArrayList<String> zoneNamestitle = new ArrayList<String>();
+	ArrayList<String> routeNamestitle = new ArrayList<String>();
+	ArrayList<String> areaNamestitle = new ArrayList<String>();
+	ArrayList<String> shoptypesNamestitle = new ArrayList<String>();
 	ArrayList<String> orderStatusTitle = new ArrayList<String>();
+	ArrayList<String> productCatogeryTitle = new ArrayList<String>();
+	ArrayList<String> paymentNamestitle = new ArrayList<String>();
+
+	String selected_zoneId = "";
+	String selected_roueId = "";
+	String selected_areaNameId = "";
+	String selected_ShopId = "";
+	String selected_orderStatusId = "";
+	String selected_paymentTermsId = "";
+	String SPINNER_SELECTION = "";
 
 
 	@Override
@@ -185,21 +198,23 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		setContentView(R.layout.order_invoice);
 		mContext = Invoice.this;
 		invoiceActivity = Invoice.this;
-		sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
-		//initializing the variables
+
 		tableLayout = (TableLayout) findViewById(R.id.tableRow1);
 
-		orderStatus_sp = (Spinner) findViewById(R.id.order_type_dp);
 		category_sp = (Spinner) findViewById(R.id.product_category);
-		payment_sp = (Spinner) findViewById(R.id.payment_terms_name);
-		shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
 		orderNumber_sp = (Spinner) findViewById(R.id.order_number);
+
+
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
 		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
-		routecd = (Spinner) findViewById(R.id.routecd);
 		areaName_sp = (Spinner) findViewById(R.id.areaName_spinner);
+		shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
+		orderStatus_sp = (Spinner) findViewById(R.id.order_status_spinner);
+		payment_sp = (Spinner) findViewById(R.id.payment_terms_spinner);
+
+
 
 		isShopClosed = (CheckBox) findViewById(R.id.isClosed);
 		ordered = (CheckBox) findViewById(R.id.isOrder);
@@ -251,6 +266,14 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		invoiceNum.setOnClickListener(this);
 		submit.setOnClickListener(this);
 		cancel.setOnClickListener(this);
+
+
+		zone_sp.setOnItemSelectedListener(this);
+		routeName_sp.setOnItemSelectedListener(this);
+		areaName_sp.setOnItemSelectedListener(this);
+		shopName_sp.setOnItemSelectedListener(this);
+		orderStatus_sp.setOnItemSelectedListener(this);
+		payment_sp.setOnItemSelectedListener(this);
 	}
 
 
@@ -264,12 +287,12 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 						+ selected_shopId + "&OrderNumber=" + orderNUm);*/
 		HttpPost httppost = new HttpPost(
 				HttpAdapter.CANCEL_ORDER_NUMBER + "?ShopId="
-						+ selected_shopId + "&OrderNumber=" + orderNUm + "&UserID=" + SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
+						+ selected_ShopId + "&OrderNumber=" + orderNUm + "&UserID=" + SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
 		try
 		{
 			// Add your data
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
-			nameValuePairs.add(new BasicNameValuePair("ShopId", selected_shopId));
+			nameValuePairs.add(new BasicNameValuePair("ShopId", selected_ShopId));
 			nameValuePairs.add(new BasicNameValuePair("OrderNumber", orderNUm));
 			nameValuePairs.add(new BasicNameValuePair("UserID", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId")));
 			Log.d("Invoice", "" + nameValuePairs.toString());
@@ -297,6 +320,110 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 			// TODO Auto-generated catch block
 		}
 		return responseBody;
+	}
+
+	@Override
+	public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id)
+	{
+		String selectedSpinner = "";
+		switch (parent.getId())
+		{
+			case R.id.zone_name_spinner:
+				selectedSpinner = "ZONE";
+				dropDownValueSelection(position, _zoneNamesData, selectedSpinner);
+				break;
+			case R.id.routeName_spinner:
+				selectedSpinner = "ROUTE";
+				dropDownValueSelection(position, _routeCodesData, selectedSpinner);
+				break;
+			case R.id.areaName_spinner:
+				selectedSpinner = "AREA";
+				dropDownValueSelection(position, _areaNamesData, selectedSpinner);
+				break;
+			case R.id.shopname_spinner:
+				selectedSpinner = "SHOP";
+				dropDownValueSelection(position, _shopNamesData, selectedSpinner);
+				break;
+			case R.id.order_status_spinner:
+				selectedSpinner = "ORDER_STATUS";
+				dropDownValueSelection(position, _orderStatusData, selectedSpinner);
+				break;
+			case R.id.payment_terms_spinner:
+				selectedSpinner = "PAYMENT_TYPE";
+				dropDownValueSelection(position, _paymentsSelectData, selectedSpinner);
+				break;
+
+		}
+	}
+
+	@Override
+	public void onNothingSelected(final AdapterView<?> parent)
+	{
+	}
+
+	private void dropDownValueSelection(int position, ArrayList<ShopNamesData> _dropDownData, String selectedSpinner)
+	{
+		try
+		{
+			if (position != 0)
+			{
+				if (_dropDownData.size() != 0)
+				{
+					if (selectedSpinner.equals("ZONE"))
+					{
+						selected_zoneId = _dropDownData.get(position - 1).getShopId();
+						HttpAdapter.getRouteDetails(Invoice.this, "routeName", selected_zoneId);
+					}
+					else if (selectedSpinner.equals("ROUTE"))
+					{
+						selected_roueId = _dropDownData.get(position - 1).getShopId(); //3
+						HttpAdapter.getAreaDetailsByRoute(Invoice.this, "areaNameDP", selected_roueId);
+					}
+					else if (selectedSpinner.equals("AREA"))
+					{
+						selected_areaNameId = _dropDownData.get(position - 1).getShopId();
+						HttpAdapter.getShopDetailsDP(Invoice.this, "shopName", selected_areaNameId);
+					}
+					else if (selectedSpinner.equals("SHOP"))
+					{
+						selected_ShopId = _dropDownData.get(position - 1).getShopId();
+						HttpAdapter.getOrderNumberDp(Invoice.this, "orderNumber", selected_ShopId);
+					}
+					else if (selectedSpinner.equals("ORDER_STATUS"))
+					{
+						selected_orderStatusId = _dropDownData.get(position - 1).getShopId();
+					}
+					else if (selectedSpinner.equals("PAYMENT_TYPE"))
+					{
+
+						selected_paymentTermsId = _dropDownData.get(position - 1).getShopId();
+						String paymentSelected = _dropDownData.get(position - 1).getShopName();
+						Log.e("paymentSelected", paymentSelected);
+						if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
+						{
+							if (paymentSelected.equalsIgnoreCase("Credit-days"))
+							{
+								dailogBoxforPaymentSelection("Credit-days");
+							}
+							else if (paymentSelected.equalsIgnoreCase("Days to Cheque"))
+							{
+								dailogBoxforPaymentSelection("Days to Cheque");
+							}
+							else if (paymentSelected.equalsIgnoreCase("Cheque"))
+							{
+								dailogBoxforPaymentSelection("Cheque");
+							}
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+
+		}
+
+
 	}
 
 	public class InvoiceCancel extends AsyncTask<String, String, String>
@@ -431,11 +558,11 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 							}
 
 
-							String jsonString = createJsonInvoiceSubmit(invoiceNum.getText().toString(), ZoneId, RouteId, AreaId,
-							                                            selected_shopId, orderNUm, "Y", "",
-							                                            SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"), TotalAmount, paidAmt.getText().toString(),
-							                                            paymentTermsId, chequeDate, CreditDays);
-							Log.e("id", selected_shopId + "" + "");
+							String jsonString = createJsonInvoiceSubmit(invoiceNum.getText().toString(), selected_zoneId, selected_roueId, selected_areaNameId,
+							                                            selected_ShopId, orderNUm, "Y", "",
+							                                            SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"),
+							                                            TotalAmount, paidAmt.getText().toString(),
+							                                            selected_orderStatusId, selected_paymentTermsId, chequeDate, CreditDays);
 							Log.e("parameters", jsonString + "");
 							HttpAdapter.invoiceSubmit(this, "invoiceSubmit", jsonString);
 						}
@@ -503,149 +630,10 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
-						Log.e("paymentData", jsonArray.toString());
-						paymentDP_str.add("Payment Terms Name");
-						for (int i = 0; i < jsonArray.length(); i++)
-						{
-							JSONObject obj = jsonArray.getJSONObject(i);
-							PaymentDropDown paymentDropDown = new Gson().fromJson(obj.toString(), PaymentDropDown.class);
-							paymentDP.add(paymentDropDown);
-							paymentDP_str.add(paymentDropDown.PaymentName);
-						}
-						//Payment adapter
-						ArrayAdapter<String> dataAdapter_payment = new ArrayAdapter<String>(this,
-						                                                                    android.R.layout.simple_spinner_item, paymentDP_str);
-						dataAdapter_payment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-						payment_sp.setAdapter(dataAdapter_payment);
-						payment_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-						{
-							@Override
-							public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-							{
-								//paymentTermsId = String.valueOf(position);
-								if (position != 0)
-								{
-									paymentTermsId = paymentDP.get(position - 1).PaymentTermsId;
-									Log.e("paymentId", paymentTermsId);
-//									Log.e("paymentname", paymentDP.get(position - 1).PaymentName);
-									String paymentSelected = paymentDP.get(position - 1).PaymentName;
-									SharedPrefsUtil.setStringPreference(mContext, "paymentSelected", paymentSelected);
-									Log.e("paymentSelected", paymentSelected);
-									if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
-									{
-										if (paymentSelected.equalsIgnoreCase("Credit-days"))
-										{
-											dailogBoxforPaymentSelection("Credit-days");
-										}
-										else if (paymentSelected.equalsIgnoreCase("Days to Cheque"))
-										{
-											dailogBoxforPaymentSelection("Days to Cheque");
-										}
-										else if (paymentSelected.equalsIgnoreCase("Cheque"))
-										{
-											dailogBoxforPaymentSelection("Cheque");
-										}
-									}
-								}
-								else
-								{
-									paymentTermsId = "";
-								}
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent)
-							{
-
-							}
-						});
+						paymentSpinnerAdapter(jsonArray);
+						Log.e("DataPaymentDrp", jsonArray.toString());
 					}
 
-				}
-				//Shop Name DropDown
-				else if (response.getTag().equals("shopName"))
-				{
-					if (mJson.getString("Message").equals("SuccessFull"))
-					{
-						JSONArray jsonArray = mJson.getJSONArray("Data");
-						shopsDP.clear();
-						shopNameDP_str.clear();
-						shopNameDP_str.add("Shop Name");
-						for (int i = 0; i < jsonArray.length(); i++)
-						{
-							JSONObject obj = jsonArray.getJSONObject(i);
-							GetShopDetailsDP getShopsArrayDropdown = new Gson().fromJson(obj.toString(), GetShopDetailsDP.class);
-							shopsDP.add(getShopsArrayDropdown);
-							shopNameDP_str.add(getShopsArrayDropdown.ShopName);
-						}
-
-
-						//////////Shop Names and ShopId
-						_shopNamesData.clear();
-						shopNamestitle.clear();
-						_shopNamesData = new ArrayList<ShopNamesData>();
-						for (int i = 0; i < jsonArray.length(); i++)
-						{
-							JSONObject jsnobj = jsonArray.getJSONObject(i);
-							String shopId = jsnobj.getString("ShopId");
-							String shopNamee = jsnobj.getString("ShopName");
-							_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
-						}
-						shopNamestitle.add("Shop Name");
-
-						if (_shopNamesData.size() > 0)
-						{
-
-							for (int i = 0; i < _shopNamesData.size(); i++)
-							{
-								shopNamestitle.add(_shopNamesData.get(i).getShopName());
-							}
-						}
-
-						//shopname adapter
-						ArrayAdapter<String> dataAdapter_shopName = new ArrayAdapter<String>(this,
-						                                                                     android.R.layout.simple_spinner_item, shopNamestitle);
-						dataAdapter_shopName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-						shopName_sp.setAdapter(dataAdapter_shopName);
-//						shopName_sp.setAdapter(new ArrayAdapter<String>(Invoice.this, android.R.layout.simple_spinner_item, shopNamestitle));
-						shopName_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-						{
-							@Override
-							public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-							{
-								try
-								{
-
-									if (position != 0)
-									{
-
-//										ShopId = String.valueOf(position);
-										position = position - 1;
-										selected_shopId = _shopNamesData.get(position).getShopId();
-										//shopNameDropDown = shopsDP.get(position - 1).ShopId;
-										ShopId = selected_shopId;
-										Log.e("selected_shopId", selected_shopId);
-										HttpAdapter.getOrderNumberDp(Invoice.this, "orderNumber", selected_shopId);
-									}
-									else
-									{
-										ShopId = "";
-									}
-								}
-								catch (Exception e)
-								{
-
-								}
-
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent)
-							{
-
-							}
-						});
-					}
 				}
 				// OrderStatus DropDown
 				else if (response.getTag().equals("orderStatus"))
@@ -654,6 +642,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
 						orderStatusSpinnerAdapter(jsonArray);
+						Log.e("DataOrderStausDrp", jsonArray.toString());
 					}
 
 				}
@@ -691,15 +680,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 									orderNUm = orderNumberDropDown;
 									HttpAdapter.getOrderSummary(Invoice.this, "orderSummary", orderNumberDropDown);
 									HttpAdapter.getOrderTotal(Invoice.this, "totalAmount", orderNUm);
-
-								/*	if (Utility.isOnline(mContext))
-									{
-										new TotalAmountGet().execute();
-									}
-									else
-									{
-										Toast.makeText(mContext, "No internet Connection", Toast.LENGTH_SHORT).show();
-									}*/
 								}
 							}
 
@@ -709,147 +689,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 							}
 						});
-					}
-
-				}
-				//ZoneDetails DropDown
-				else if (response.getTag().equals("zoneName"))
-				{
-					if (mJson.getString("Message").equals("SuccessFull"))
-					{
-						JSONArray jsonArray = mJson.getJSONArray("Data");
-						zoneDetailsDP.clear();
-						zoneDetailsDP_str.clear();
-						zoneDetailsDP_str.add("Zone Name");
-						for (int i = 0; i < jsonArray.length(); i++)
-						{
-							JSONObject obj = jsonArray.getJSONObject(i);
-							GetZoneDetails getZoneDetails = new Gson().fromJson(obj.toString(), GetZoneDetails.class);
-							zoneDetailsDP.add(getZoneDetails);
-							zoneDetailsDP_str.add(getZoneDetails.ZoneName);
-
-						}
-
-						//zoneDetails adapter
-						ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this,
-						                                                                     android.R.layout.simple_spinner_item, zoneDetailsDP_str);
-						dataAdapter_zoneName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-						zone_sp.setAdapter(dataAdapter_zoneName);
-
-						zone_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-						{
-							@Override
-							public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-							{
-								ZoneId = String.valueOf(position);
-								if (position != 0)
-								{
-									zoneNameDropdown = zoneDetailsDP.get(position - 1).ZoneId;
-									HttpAdapter.getRouteDetails(Invoice.this, "routeName", zoneNameDropdown);
-								}
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent)
-							{
-
-							}
-						});
-
-					}
-
-				}
-				//AreaDetails DropDown
-				else if (response.getTag().equals("areaNameDP"))
-				{
-					if (mJson.getString("Message").equals("SuccessFull"))
-					{
-						JSONArray jsonArray = mJson.getJSONArray("Data");
-						areaDetailsDP.clear();
-						areaDetailsDP_str.clear();
-						areaDetailsDP_str.add("Area Name");
-						for (int i = 0; i < jsonArray.length(); i++)
-						{
-							JSONObject obj = jsonArray.getJSONObject(i);
-							GetAreaDetails getAreaDetails = new Gson().fromJson(obj.toString(), GetAreaDetails.class);
-							areaDetailsDP.add(getAreaDetails);
-							areaDetailsDP_str.add(getAreaDetails.AreaName);
-
-						}
-
-						//AreaDetails adapter
-						ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this,
-						                                                                     android.R.layout.simple_spinner_item, areaDetailsDP_str);
-						dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-						areaName_sp.setAdapter(dataAdapter_areaName);
-
-						areaName_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-						{
-							@Override
-							public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-							{
-								AreaId = String.valueOf(position);
-								if (position != 0)
-								{
-									areaNameDropDown = areaDetailsDP.get(position - 1).AreaId;
-									HttpAdapter.getShopDetailsDP(Invoice.this, "shopName", areaNameDropDown);
-								}
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent)
-							{
-
-							}
-						});
-
-					}
-
-				}
-				//RouteDetails DropDown
-				else if (response.getTag().equals("routeName"))
-				{
-					if (mJson.getString("Message").equals("SuccessFull"))
-					{
-						JSONArray jsonArray = mJson.getJSONArray("Data");
-						routeDetailsDP.clear();
-						routeDetailsDP_str.clear();
-						routeDetailsDP_str.add("Route Name");
-						for (int i = 0; i < jsonArray.length(); i++)
-						{
-							JSONObject obj = jsonArray.getJSONObject(i);
-							GetRouteDetails getRoute = new Gson().fromJson(obj.toString(), GetRouteDetails.class);
-							routeDetailsDP.add(getRoute);
-							routeDetailsDP_str.add(getRoute.RouteName);
-						}
-
-						//Routedetails adapter
-						ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this,
-						                                                                      android.R.layout.simple_spinner_item, routeDetailsDP_str);
-						dataAdapter_routeName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-						routeName_sp.setAdapter(dataAdapter_routeName);
-
-						routeName_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-						{
-							@Override
-							public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-							{
-								RouteId = String.valueOf(position);
-								if (position != 0)
-								{
-									routeNameDropDown = routeDetailsDP.get(position - 1).RouteId;
-									HttpAdapter.getAreaDetailsByRoute(Invoice.this, "areaNameDP", routeNameDropDown);
-
-								}
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent)
-							{
-
-							}
-						});
-
 					}
 
 				}
@@ -928,10 +767,46 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					}
 
 				}
-				else
+				//ZoneDetails DropDown
+				else if (response.getTag().equals("zoneName"))
 				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						JSONArray jsonArray = mJson.getJSONArray("Data");
+						zoneSpinnerAdapter(jsonArray);
+						Log.e("DataZoneDrp", jsonArray.toString());
+					}
 				}
-
+				//RouteDetails DropDown
+				else if (response.getTag().equals("routeName"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						JSONArray jsonArray = mJson.getJSONArray("Data");
+						routeNoSpinnerAdapter(jsonArray);
+						Log.e("DataRouteDrp", jsonArray.toString());
+					}
+				}
+				//AreaDetails DropDown
+				else if (response.getTag().equals("areaNameDP"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						JSONArray jsonArray = mJson.getJSONArray("Data");
+						areaNameSpinnerAdapter(jsonArray);
+						Log.e("DataAreaDrp", jsonArray.toString());
+					}
+				}
+				//Shop Name DropDown
+				else if (response.getTag().equals("shopName"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						JSONArray jsonArray = mJson.getJSONArray("Data");
+						shopNameSpinnerAdapter(jsonArray);
+						Log.e("DataShopNameDrp", jsonArray.toString());
+					}
+				}
 			}
 			catch (JSONException e)
 			{
@@ -1037,7 +912,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	private String createJsonInvoiceSubmit(String OrderNumber, String ZoneId, String RouteId,
 	                                       String AreaId, String ShopId, String orderNo, String inVoice,
 	                                       String Remarks, String EmployeeId,
-	                                       String totalAmountStr, String paidAmountstr
+	                                       String totalAmountStr, String paidAmountstr, String OrderStatusId
 			, String paymentTermsId, String chequeDate, String creditDays
 	)
 	{
@@ -1091,28 +966,27 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	private boolean validationEntryData()
 	{
 		boolean ret = true;
-		Log.e("ZoneId", ZoneId);
-		if (ZoneId == null || ZoneId.isEmpty() || ZoneId.equals("0"))
+		if (selected_zoneId == null || selected_zoneId.isEmpty() || selected_zoneId.equals("0"))
 		{
 			Toast.makeText(getApplicationContext(), "Please Select Zone Name", Toast.LENGTH_SHORT).show();
 			ret = false;
 			return ret;
 		}
-		if (RouteId == null || RouteId.isEmpty() || RouteId.equals("0"))
+		if (selected_roueId == null || selected_roueId.isEmpty() || selected_roueId.equals("0"))
 		{
 			Toast.makeText(getApplicationContext(), "Please Select Route Name", Toast.LENGTH_SHORT).show();
 			ret = false;
 			return ret;
 		}
 
-		if (AreaId == null || AreaId.isEmpty() || AreaId.equals("0"))
+		if (selected_areaNameId == null || selected_areaNameId.isEmpty() || selected_areaNameId.equals("0"))
 		{
 			Toast.makeText(getApplicationContext(), "Please Select Area Name", Toast.LENGTH_SHORT).show();
 			ret = false;
 			return ret;
 		}
 
-		if (ShopId == null || ShopId.isEmpty() || ShopId.equals("0"))
+		if (selected_ShopId == null || selected_ShopId.isEmpty() || selected_ShopId.equals("0"))
 		{
 			Toast.makeText(getApplicationContext(), "Please Select Shop Name", Toast.LENGTH_SHORT).show();
 			ret = false;
@@ -1125,33 +999,19 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		}
 		else
 		{
-			if (OrderStatusId == null || OrderStatusId.isEmpty() || OrderStatusId.equals("0"))
+			if (selected_orderStatusId == null || selected_orderStatusId.isEmpty() || selected_orderStatusId.equals("0"))
 			{
 				Toast.makeText(getApplicationContext(), "Please Select Order Status", Toast.LENGTH_SHORT).show();
 				ret = false;
 				return ret;
 			}
 
-			if (paymentTermsId == null || paymentTermsId.isEmpty() || paymentTermsId.equals("0"))
+			if (selected_paymentTermsId == null || selected_paymentTermsId.isEmpty() || selected_paymentTermsId.equals("0"))
 			{
 				Toast.makeText(getApplicationContext(), "Please Select Payment Terms Name", Toast.LENGTH_SHORT).show();
 				ret = false;
 				return ret;
 			}
-//			if (paymentTermsId == null || paymentTermsId.isEmpty() || paymentTermsId.equals("0"))
-//			{
-//				Toast.makeText(getApplicationContext(), "Please Select Payment Terms Name", Toast.LENGTH_SHORT).show();
-//				ret = false;
-//				return ret;
-//			}
-
-//			if (TotalAmount.equals(paidAmt.getText().toString()))
-//			{
-////				Toast.makeText(getApplicationContext(), "Please Check Paid Amount", Toast.LENGTH_SHORT).show();
-////				ret = false;
-////				return ret;
-//			}
-
 			String paidAmount = paidAmt.getText().toString();
 			if (!paidAmount.equalsIgnoreCase(null) && !paidAmount.isEmpty())
 			{
@@ -1594,6 +1454,134 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 	}
 
+
+	private void zoneSpinnerAdapter(JSONArray jsonArray)
+	{
+		try
+		{
+			_zoneNamesData.clear();
+			zoneNamestitle.clear();
+			_zoneNamesData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
+			{
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				String shopId = jsnobj.getString("ZoneId");
+				String shopNamee = jsnobj.getString("ZoneName");
+				_zoneNamesData.add(new ShopNamesData(shopId, shopNamee));
+			}
+			zoneNamestitle.add("Zone Name");
+			if (_zoneNamesData.size() > 0)
+			{
+				for (int i = 0; i < _zoneNamesData.size(); i++)
+				{
+					zoneNamestitle.add(_zoneNamesData.get(i).getShopName());
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		SPINNER_SELECTION = "ZONE";
+		adapterDataAssigingToSpinner(zoneNamestitle, SPINNER_SELECTION);
+	}
+
+	private void routeNoSpinnerAdapter(JSONArray jsonArray)
+	{
+		try
+		{
+			_routeCodesData.clear();
+			routeNamestitle.clear();
+			_routeCodesData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
+			{
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				String shopId = jsnobj.getString("RouteId");
+				String shopNamee = jsnobj.getString("RouteName");
+				Log.e("RouteId + RouteName", shopId + shopNamee);
+				_routeCodesData.add(new ShopNamesData(shopId, shopNamee));
+			}
+			routeNamestitle.add("Select Route No");
+			if (_routeCodesData.size() > 0)
+			{
+				for (int i = 0; i < _routeCodesData.size(); i++)
+				{
+					routeNamestitle.add(_routeCodesData.get(i).getShopName());
+				}
+			}
+
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		SPINNER_SELECTION = "ROUTE";
+		adapterDataAssigingToSpinner(routeNamestitle, SPINNER_SELECTION);
+	}
+
+	private void areaNameSpinnerAdapter(final JSONArray jsonArray)
+	{
+		try
+		{
+			_areaNamesData.clear();
+			areaNamestitle.clear();
+			_areaNamesData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
+			{
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				String shopId = jsnobj.getString("AreaId");
+				String shopNamee = jsnobj.getString("AreaName");
+				_areaNamesData.add(new ShopNamesData(shopId, shopNamee));
+			}
+			areaNamestitle.add("Select Area Name");
+			if (_areaNamesData.size() > 0)
+			{
+				for (int i = 0; i < _areaNamesData.size(); i++)
+				{
+					areaNamestitle.add(_areaNamesData.get(i).getShopName());
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		SPINNER_SELECTION = "AREA";
+		adapterDataAssigingToSpinner(areaNamestitle, SPINNER_SELECTION);
+	}
+
+	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
+	{
+		Log.e("shopNamesDropdown", jsonArray.toString() + "");
+		try
+		{
+			_shopNamesData.clear();
+			shooNamestitle.clear();
+			_shopNamesData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
+			{
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				String shopId = jsnobj.getString("ShopId");
+				String shopNamee = jsnobj.getString("ShopName");
+				_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
+			}
+			shooNamestitle.add("Select Shop Name");
+			if (_shopNamesData.size() > 0)
+			{
+				for (int i = 0; i < _shopNamesData.size(); i++)
+				{
+					shooNamestitle.add(_shopNamesData.get(i).getShopName());
+				}
+			}
+		}
+		catch (Exception e)
+		{
+		}
+		SPINNER_SELECTION = "SHOP";
+		adapterDataAssigingToSpinner(shooNamestitle, SPINNER_SELECTION);
+	}
+
 	private void orderStatusSpinnerAdapter(final JSONArray jsonArray)
 	{
 		Log.e("orderStatus", jsonArray.toString() + "");
@@ -1621,38 +1609,72 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		catch (Exception e)
 		{
 		}
-		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this,
-		                                                                     android.R.layout.simple_spinner_item,
-		                                                                     orderStatusTitle);
-		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		orderStatus_sp.setAdapter(dataAdapter_shopType);
+		SPINNER_SELECTION = "ORDER_STATUS";
+		adapterDataAssigingToSpinner(orderStatusTitle, SPINNER_SELECTION);
+	}
 
-		orderStatus_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+	private void paymentSpinnerAdapter(final JSONArray jsonArray)
+	{
+		try
 		{
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+			_paymentsSelectData.clear();
+			paymentNamestitle.clear();
+			_paymentsSelectData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
 			{
-				try
-				{
-					if (position != 0)
-					{
-						OrderStatusId = _orderStatusData.get(position - 1).getShopId();
-						Log.e("OrderStatusId", OrderStatusId);
-					}
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				String shopId = jsnobj.getString("PaymentTermsId");
+				String shopNamee = jsnobj.getString("PaymentName");
+				_paymentsSelectData.add(new ShopNamesData(shopId, shopNamee));
 			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
+			paymentNamestitle.add("Select Payment");
+			if (_paymentsSelectData.size() > 0)
 			{
+				for (int i = 0; i < _paymentsSelectData.size(); i++)
+				{
+					paymentNamestitle.add(_paymentsSelectData.get(i).getShopName());
 
+				}
 			}
-		});
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		SPINNER_SELECTION = "PAYMENT_SELECT";
+		adapterDataAssigingToSpinner(paymentNamestitle, SPINNER_SELECTION);
+	}
+
+	private void adapterDataAssigingToSpinner(ArrayList<String> spinnerTitles, String spinnerSelction)
+	{
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerTitles);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		if (spinnerSelction.equals("ZONE"))
+		{
+			zone_sp.setAdapter(dataAdapter);
+		}
+		else if (spinnerSelction.equals("ROUTE"))
+		{
+			routeName_sp.setAdapter(dataAdapter);
+		}
+		else if (spinnerSelction.equals("AREA"))
+		{
+			areaName_sp.setAdapter(dataAdapter);
+		}
+		else if (spinnerSelction.equals("SHOP"))
+		{
+			shopName_sp.setAdapter(dataAdapter);
+		}
+		else if (spinnerSelction.equals("ORDER_STATUS"))
+		{
+			orderStatus_sp.setAdapter(dataAdapter);
+		}
+		else if (spinnerSelction.equals("PAYMENT_SELECT"))
+		{
+			payment_sp.setAdapter(dataAdapter);
+		}
+
+
 	}
 
 	public static class DatePickerFragmentDailog extends DialogFragment

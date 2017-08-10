@@ -204,6 +204,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		tableLayout = (TableLayout) findViewById(R.id.tableRow1);
 
 		category_sp = (Spinner) findViewById(R.id.product_category);
+
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
 		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
 		areaName_sp = (Spinner) findViewById(R.id.areaName_spinner);
@@ -233,7 +234,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 			HttpAdapter.getOrderStatus(Order.this, "orderStatus");
 			HttpAdapter.getProductCategoryDP(Order.this, "productCategoryName");
 			HttpAdapter.getZoneDetailsDP(Order.this, "zoneName");
-			HttpAdapter.getRoute(Order.this, "routeCode");
 			HttpAdapter.GetOrderNumber(Order.this, "GetOrderNumber");
 		}
 		else
@@ -398,7 +398,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 					TableLayout.LayoutParams.WRAP_CONTENT));
 		}
 	}
-
 
 	private void dataUploadInServer()
 	{
@@ -565,17 +564,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 						paymentSpinnerAdapter(jsonArray);
 						Log.e("DataPaymentDrp", jsonArray.toString());
 					}
-
-				}
-				//Shop Name DropDown
-				else if (response.getTag().equals("shopName"))
-				{
-					if (mJson.getString("Message").equals("SuccessFull"))
-					{
-						JSONArray jsonArray = mJson.getJSONArray("Data");
-						shopNameSpinnerAdapter(jsonArray);
-						Log.e("DataShopNameDrp", jsonArray.toString());
-					}
 				}
 				// OrderStatus DropDown
 				else if (response.getTag().equals("orderStatus"))
@@ -624,7 +612,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 								}
 								catch (Exception e)
 								{
-
 								}
 
 							}
@@ -632,7 +619,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 							@Override
 							public void onNothingSelected(AdapterView<?> parent)
 							{
-
 							}
 						});
 
@@ -648,7 +634,16 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 						zoneSpinnerAdapter(jsonArray);
 						Log.e("DataZoneDrp", jsonArray.toString());
 					}
-
+				}
+				//RouteDetails DropDown
+				else if (response.getTag().equals("routeName"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						JSONArray jsonArray = mJson.getJSONArray("Data");
+						routeNoSpinnerAdapter(jsonArray);
+						Log.e("DataRouteDrp", jsonArray.toString());
+					}
 				}
 				//AreaDetails DropDown
 				else if (response.getTag().equals("areaNameDP"))
@@ -659,19 +654,16 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 						areaNameSpinnerAdapter(jsonArray);
 						Log.e("DataAreaDrp", jsonArray.toString());
 					}
-
 				}
-
-				//RouteDetails DropDown
-				else if (response.getTag().equals("routeName"))
+				//Shop Name DropDown
+				else if (response.getTag().equals("shopName"))
 				{
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
-						routeNoSpinnerAdapter(jsonArray);
-						Log.e("DataRouteDrp", jsonArray.toString());
+						shopNameSpinnerAdapter(jsonArray);
+						Log.e("DataShopNameDrp", jsonArray.toString());
 					}
-
 				}
 				else if (response.getTag().equals("orderbook"))
 				{
@@ -688,8 +680,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 						Toast.makeText(mContext, "Upload Failed..", Toast.LENGTH_SHORT).show();
 						refreshActivity();
 					}
-
-
 				}
 				else if (response.getTag().equals("GetOrderNumber"))
 				{
