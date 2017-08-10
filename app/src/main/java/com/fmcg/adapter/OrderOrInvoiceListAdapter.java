@@ -119,11 +119,15 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 
 	private void invoiceListData(final ViewHolder viewHolder, final int position)
 	{
-
+		viewHolder.orderlabeltxt.setText("Invoice No");
 		viewHolder.shopNameLabeltxt.setText("Customer");
 		viewHolder.noOfPrductLabeltxt.setText("PaidAmount");
 		viewHolder.subTotalLabeltxt.setText("Balance");
 		viewHolder.taxAmountLabel.setText("DueAmount");
+
+
+		viewHolder.orderDateLL.setVisibility(View.GONE);
+//		viewHolder.orderdatetxt.setVisibility(View.GONE);
 
 		try
 		{
@@ -135,6 +139,7 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 			if (_orderBookOrInvoiceListData.get(position).getOrderDate() != null && !_orderBookOrInvoiceListData.get(position).getOrderDate().equalsIgnoreCase("null"))
 			{
 				viewHolder.orderdatetxt.setText(DateUtil.serverSentDateChange(_orderBookOrInvoiceListData.get(position).getOrderDate()) + "");
+
 			}
 
 			if (_orderBookOrInvoiceListData.get(position).getShopName() != null && !_orderBookOrInvoiceListData.get(position).getShopName().equalsIgnoreCase("null"))
@@ -156,7 +161,7 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 			//}
 //			if (_orderBookOrInvoiceListData.get(position).getTaxAmount() != 0.0)
 //			{
-				viewHolder.taxamounttxt.setText(String.valueOf(_orderBookOrInvoiceListData.get(position).getTaxAmount()));
+			viewHolder.taxamounttxt.setText(String.valueOf(_orderBookOrInvoiceListData.get(position).getTaxAmount()));
 //			}
 			if (_orderBookOrInvoiceListData.get(position).getTotalAmount() != 0.0)
 			{
@@ -228,8 +233,9 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 	public static class ViewHolder extends RecyclerView.ViewHolder
 	{
 
+		public LinearLayout orderDateLL;
 		public TextView ordernotxt, orderdatetxt, shopNametxt, statustxt, noofPrductstxt, subtotaltxt, taxamounttxt, totalamounttxt;
-		public TextView shopNameLabeltxt, noOfPrductLabeltxt, subTotalLabeltxt, taxAmountLabel;
+		public TextView orderlabeltxt, shopNameLabeltxt, noOfPrductLabeltxt, subTotalLabeltxt, taxAmountLabel;
 		public LinearLayout oreder_invoiceViewDetailsLayout;
 
 		private View btnDelete;
@@ -260,7 +266,9 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 			taxamounttxt = (TextView) itemLayoutView.findViewById(R.id.taxamounttxt);
 			totalamounttxt = (TextView) itemLayoutView.findViewById(R.id.totalamounttxt);
 
+			orderDateLL = (LinearLayout) itemLayoutView.findViewById(R.id.orderDateLL);
 
+			orderlabeltxt = (TextView) itemLayoutView.findViewById(R.id.orderlabeltxt);
 			shopNameLabeltxt = (TextView) itemLayoutView.findViewById(R.id.shopNameLabeltxt);
 			noOfPrductLabeltxt = (TextView) itemLayoutView.findViewById(R.id.noOfPrductLabeltxt);
 			taxAmountLabel = (TextView) itemLayoutView.findViewById(R.id.taxAmountLabel);
@@ -276,7 +284,6 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 			btnClose = itemLayoutView.findViewById(R.id.btnClose);
 			closeRL = (RelativeLayout) itemLayoutView.findViewById(R.id.closeRL);
 			deleteRL = (RelativeLayout) itemLayoutView.findViewById(R.id.deleteRL);
-
 
 
 			//View Details

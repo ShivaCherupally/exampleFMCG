@@ -39,6 +39,8 @@ import android.widget.Toast;
 
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
+import com.fmcg.asynctaskutil.AsyncResponse;
+import com.fmcg.asynctaskutil.PostResponseAsyncTask;
 import com.fmcg.models.GetAreaDetails;
 import com.fmcg.models.GetOrderNumberDP;
 import com.fmcg.models.GetOrderSummary;
@@ -84,6 +86,7 @@ import static com.fmcg.util.Common.orderNUm;
 
 
 public class Invoice extends AppCompatActivity implements View.OnClickListener, NetworkOperationListener
+		//, AsyncResponse
 {
 	public static Activity invoiceActivity;
 	public SharedPreferences sharedPreferences;
@@ -110,7 +113,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	private List<String> productDP_str;
 	private List<String> routeDp_str;
 
-	public String paymentDropDown, shopNameDropDown, orderStatusDropDown, productNameDropDown, orderNumberDropDown,
+	public String shopNameDropDown, orderStatusDropDown, productNameDropDown, orderNumberDropDown,
 			zoneNameDropdown, areaNameDropDown, routeNameDropDown, routeCode;
 
 
@@ -170,6 +173,9 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	DatePicker dateselect;
 	Button dateaccept;
 	private static TextView paymentSelectedvalue;
+
+	ArrayList<ShopNamesData> _orderStatusData = new ArrayList<ShopNamesData>(); //Religion Drop Down
+	ArrayList<String> orderStatusTitle = new ArrayList<String>();
 
 
 	@Override
@@ -293,48 +299,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		return responseBody;
 	}
 
-
-	public String serviceCallTotalAmountGet()
-	{
-		// Create a new HttpClient and Post Header
-		String responseBody = null;
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost(
-				"http://202.143.96.20/Orderstest/api/Services/GetOrderNumberAmount?OrderNumber="
-						+ orderNUm);
-		try
-		{
-			// Add your data
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-			nameValuePairs.add(new BasicNameValuePair("OrderNumber", orderNUm));
-			Log.d("Invoice", "" + nameValuePairs.toString());
-			httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-			// Execute HTTP Post Request
-			HttpResponse response = httpclient.execute(httppost);
-			int responseCode = response.getStatusLine().getStatusCode();
-			if (responseCode == 200)
-			{
-				HttpEntity entity = response.getEntity();
-				if (entity != null)
-				{
-					responseBody = EntityUtils.toString(entity);
-
-				}
-
-			}
-		}
-		catch (ClientProtocolException e)
-		{
-			// TODO Auto-generated catch block
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-		}
-		return responseBody;
-	}
-
-
 	public class InvoiceCancel extends AsyncTask<String, String, String>
 	{
 		ProgressDialog pd = new ProgressDialog(Invoice.this);
@@ -409,95 +373,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 		}
 	}
-
-	public class TotalAmountGet extends AsyncTask<String, String, String>
-	{
-		ProgressDialog pd = new ProgressDialog(Invoice.this);
-
-		@Override
-		protected void onPreExecute()
-		{
-			// TODO Auto-generated method stub
-
-			pd.setMessage("Please wait...");
-			pd.setIndeterminate(false);
-			pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pd.setCancelable(false);
-			//pd.show();
-		}
-
-		@Override
-		protected String doInBackground(String... params)
-		{
-			// TODO: attempt authentication against a network service.
-			String result = "";
-			try
-			{
-				result = serviceCallTotalAmountGet();
-				Log.e("loginResult", result);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-
-			}
-
-			return result;
-		}
-
-		@Override
-		protected void onPostExecute(String success)
-		{
-			Log.e("successData", String.valueOf(success));
-			if (success != null && !success.equals("null"))
-			{
-				pd.dismiss();
-				try
-				{
-					JSONObject mJson = new JSONObject(success);
-					Log.e("response", mJson.toString());
-					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
-					{
-						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
-
-						Double total = 0.0;
-						JSONArray jsonArray = mJson.getJSONArray("Data");
-						for (int i = 0; i < jsonArray.length(); i++)
-						{
-							JSONObject obj = jsonArray.getJSONObject(i);
-							Log.e("TotalAmount", obj.toString() + "SS");
-							totalAmt.setText("Total Amount: " + String.format("%.2f", Double.valueOf(obj.toString())) + "");
-							/*GetOrderSummary getOrderSummary = new Gson().fromJson(obj.toString(), GetOrderSummary.class);
-							total = total + Double.parseDouble(getOrderSummary.TotalAmount);*/
-						}
-
-						/*Toast.makeText(mContext, "Successfully Order Cancelled.", Toast.LENGTH_SHORT).show();
-						//com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Successfully Uploaded..", "OK");
-						Intent i = new Intent(Invoice.this, Invoice.class);
-						startActivity(i);*/
-					}
-					else
-					{
-						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
-						Toast.makeText(mContext, "UnSuccessfully Order Cancelled.", Toast.LENGTH_SHORT).show();
-						Intent i = new Intent(Invoice.this, Invoice.class);
-						startActivity(i);
-						//	com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Failed Uploaded", "OK");
-						/*Intent i = new Intent(Order.this, Order.class);
-						startActivity(i);*/
-					}
-
-				}
-				catch (JSONException e)
-				{
-					e.printStackTrace();
-				}
-			}
-
-
-		}
-	}
-
 
 	@Override
 	public void onClick(View v)
@@ -620,7 +495,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		{
 			try
 			{
-
 				JSONObject mJson = new JSONObject(response.getResponseString());
 				Log.e("response", mJson.toString());
 				//Payment Terms Name Dropdown
@@ -629,6 +503,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
+						Log.e("paymentData", jsonArray.toString());
 						paymentDP_str.add("Payment Terms Name");
 						for (int i = 0; i < jsonArray.length(); i++)
 						{
@@ -647,11 +522,11 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 							@Override
 							public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
 							{
-								paymentTermsId = String.valueOf(position);
+								//paymentTermsId = String.valueOf(position);
 								if (position != 0)
 								{
-									paymentDropDown = paymentDP.get(position - 1).PaymentTermsId;
-									Log.e("paymentId", paymentDropDown);
+									paymentTermsId = paymentDP.get(position - 1).PaymentTermsId;
+									Log.e("paymentId", paymentTermsId);
 //									Log.e("paymentname", paymentDP.get(position - 1).PaymentName);
 									String paymentSelected = paymentDP.get(position - 1).PaymentName;
 									SharedPrefsUtil.setStringPreference(mContext, "paymentSelected", paymentSelected);
@@ -671,6 +546,10 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 											dailogBoxforPaymentSelection("Cheque");
 										}
 									}
+								}
+								else
+								{
+									paymentTermsId = "";
 								}
 							}
 
@@ -748,6 +627,10 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 										Log.e("selected_shopId", selected_shopId);
 										HttpAdapter.getOrderNumberDp(Invoice.this, "orderNumber", selected_shopId);
 									}
+									else
+									{
+										ShopId = "";
+									}
 								}
 								catch (Exception e)
 								{
@@ -770,39 +653,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
-						orderstatusDP.clear();
-						shopNameDP_str.clear();
-						orderstatusDP_str.add("Order Status");
-						for (int i = 0; i < jsonArray.length(); i++)
-						{
-							JSONObject obj = jsonArray.getJSONObject(i);
-							OrderStatusDropdown orderStatusDropdown = new Gson().fromJson(obj.toString(), OrderStatusDropdown.class);
-							orderstatusDP.add(orderStatusDropdown);
-							orderstatusDP_str.add(orderStatusDropdown.OrderStatusDescription);
-						}
-						//OrderStatus adapter
-						ArrayAdapter<String> dataAdapter_orderStatus = new ArrayAdapter<String>(this,
-						                                                                        android.R.layout.simple_spinner_item, orderstatusDP_str);
-						dataAdapter_orderStatus.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-						orderStatus_sp.setAdapter(dataAdapter_orderStatus);
-						orderStatus_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-						{
-							@Override
-							public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-							{
-								OrderStatusId = String.valueOf(position);
-								if (position != 0)
-								{
-									orderStatusDropDown = orderstatusDP.get(position - 1).OrderStatusDescription;
-								}
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> parent)
-							{
-
-							}
-						});
+						orderStatusSpinnerAdapter(jsonArray);
 					}
 
 				}
@@ -1079,49 +930,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				}
 				else
 				{
-
 				}
-//				else if (response.getTag().equals("invoiceCancel"))
-//				{
-//					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
-//					{
-//						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
-//						Toast.makeText(mContext, "Order Cancelled Successfully.", Toast.LENGTH_SHORT).show();
-//						//com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Successfully Uploaded..", "OK");
-//						Intent i = new Intent(Invoice.this, Order.class);
-//						startActivity(i);
-//					}
-//					else
-//					{
-//						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
-//						Toast.makeText(mContext, "UnSuccessfully Order Cancelled.", Toast.LENGTH_SHORT).show();
-//						//com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Successfully Uploaded..", "OK");
-//						Intent i = new Intent(Invoice.this, Order.class);
-//						startActivity(i);
-//					}
-//
-//				}
-
-			/*	else if (response.getTag().equals("invoiceCancel"))
-				{
-					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
-					{
-						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
-						Toast.makeText(mContext, "Successfully Uploaded.", Toast.LENGTH_SHORT).show();
-						com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Successfully Uploaded..", "OK");
-						Intent i = new Intent(Invoice.this, Order.class);
-						startActivity(i);
-					}
-					else
-					{
-						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
-						com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Failed Uploaded", "OK");
-						*//*Intent i = new Intent(Order.this, Order.class);
-						startActivity(i);*//*
-					}
-					//invoiceCancel
-
-				}*/
 
 			}
 			catch (JSONException e)
@@ -1131,61 +940,10 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		}
 	}
 
-	private void orderNumbersSpinnerAdapter(final JSONArray jsonArray)
-	{
-		try
-		{
-			_orderNumberData.clear();
-			orderNosTitle.clear();
-			_orderNumberData = new ArrayList<ShopNamesData>();
-			for (int i = 0; i < jsonArray.length(); i++)
-			{
-				JSONObject jsnobj = jsonArray.getJSONObject(i);
-				String shopId = jsnobj.getString("ZoneId");
-				String shopNamee = jsnobj.getString("ZoneName");
-				_orderNumberData.add(new ShopNamesData(shopId, shopNamee));
-			}
-			orderNosTitle.add("Zone Name");
-			if (_orderNumberData.size() > 0)
-			{
-				for (int i = 0; i < _orderNumberData.size(); i++)
-				{
-					orderNosTitle.add(_orderNumberData.get(i).getShopName());
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, orderNosTitle);
-		dataAdapter_zoneName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		zone_sp.setAdapter(dataAdapter_zoneName);
-		zone_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-			{
-				if (position != 0)
-				{
-					zoneNameDropdown = _orderNumberData.get(position - 1).getShopId();
-					HttpAdapter.getRouteDetails(Invoice.this, "routeCode", zoneNameDropdown);
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-
-			}
-		});
-	}
 
 	@Override
 	public void showToast(String string, int lengthLong)
 	{
-
 	}
 
 	@Override
@@ -1209,71 +967,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		finish();
 	}
 
-	/*private void headers()
-	{
-		android.widget.TableRow row = new android.widget.TableRow(this);
 
-		TextView taskdate = new TextView(Invoice.this);
-		taskdate.setTextSize(15);
-		taskdate.setPadding(10, 10, 10, 10);
-		taskdate.setText("Prod");
-		taskdate.setBackgroundColor(getResources().getColor(R.color.light_green));
-		taskdate.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-		row.addView(taskdate);
-
-		TextView title = new TextView(Invoice.this);
-		title.setText("Prc");
-		title.setBackgroundColor(getResources().getColor(R.color.light_green));
-		title.setTextSize(15);
-		title.setPadding(10, 10, 10, 10);
-		title.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                               android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-		row.addView(title);
-
-
-		TextView taskhour = new TextView(Invoice.this);
-		taskhour.setText("Qty");
-		taskhour.setBackgroundColor(getResources().getColor(R.color.light_green));
-		taskhour.setTextSize(15);
-		taskhour.setPadding(10, 10, 10, 10);
-		taskhour.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-		row.addView(taskhour);
-
-		TextView description3 = new TextView(Invoice.this);
-		description3.setText("Fres");
-		description3.setBackgroundColor(getResources().getColor(R.color.light_green));
-		description3.setTextSize(15);
-		description3.setPadding(10, 10, 10, 10);
-		row.addView(description3);
-		description3.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-
-		TextView description = new TextView(Invoice.this);
-		description.setText("TaxAmt");
-		description.setBackgroundColor(getResources().getColor(R.color.light_green));
-		description.setTextSize(15);
-		description.setPadding(10, 10, 10, 10);
-		row.addView(description);
-		description.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                                     android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-
-		TextView description2 = new TextView(Invoice.this);
-		description2.setText("STot");
-		description2.setBackgroundColor(getResources().getColor(R.color.light_green));
-		description2.setTextSize(15);
-		description2.setPadding(10, 10, 10, 10);
-		row.addView(description2);
-		description2.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                                      TableRow.LayoutParams.WRAP_CONTENT));
-
-
-		tableLayout.addView(row, new TableLayout.LayoutParams(
-				TableLayout.LayoutParams.MATCH_PARENT,
-				TableLayout.LayoutParams.WRAP_CONTENT));
-
-	}*/
 	private void headers()
 	{
 		android.widget.TableRow row = new TableRow(this);
@@ -1362,7 +1056,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 			dataObj.putOpt("EmployeeId", EmployeeId);
 			dataObj.putOpt("TotalAmount", totalAmountStr);
 			dataObj.putOpt("PaidAmount", paidAmountstr);
-
+			dataObj.putOpt("OrderStatusId", OrderStatusId);
 			dataObj.putOpt("PaymentTermsId", paymentTermsId);
 			if (chequeDate != null && !chequeDate.isEmpty())
 			{
@@ -1393,26 +1087,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		return studentsObj.toString();
 	}
 
-	private String createJsonInvoiceCancel(String OrderNumber, String ShopId
-	)
-	{
-		JSONObject studentsObj = new JSONObject();
-		JSONObject dataObj = new JSONObject();
-
-		try
-		{
-			dataObj.putOpt("ShopId", ShopId);
-			dataObj.putOpt("OrderNumber", OrderNumber);
-			studentsObj.put("UpdateTripStartEndDetails", dataObj);
-		}
-		catch (JSONException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Log.d("orderjson", studentsObj.toString());
-		return studentsObj.toString();
-	}
 
 	private boolean validationEntryData()
 	{
@@ -1464,12 +1138,12 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				ret = false;
 				return ret;
 			}
-			if (paymentTermsId == null || paymentTermsId.isEmpty() || paymentTermsId.equals("0"))
-			{
-				Toast.makeText(getApplicationContext(), "Please Select Payment Terms Name", Toast.LENGTH_SHORT).show();
-				ret = false;
-				return ret;
-			}
+//			if (paymentTermsId == null || paymentTermsId.isEmpty() || paymentTermsId.equals("0"))
+//			{
+//				Toast.makeText(getApplicationContext(), "Please Select Payment Terms Name", Toast.LENGTH_SHORT).show();
+//				ret = false;
+//				return ret;
+//			}
 
 //			if (TotalAmount.equals(paidAmt.getText().toString()))
 //			{
@@ -1918,6 +1592,67 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 		}
 
+	}
+
+	private void orderStatusSpinnerAdapter(final JSONArray jsonArray)
+	{
+		Log.e("orderStatus", jsonArray.toString() + "");
+		try
+		{
+			_orderStatusData.clear();
+			orderStatusTitle.clear();
+			_orderStatusData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
+			{
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				int shopId = jsnobj.getInt("OrderStatusId");
+				String shopNamee = jsnobj.getString("OrderStatusDescription");
+				_orderStatusData.add(new ShopNamesData(String.valueOf(shopId), shopNamee));
+			}
+			orderStatusTitle.add("Select Order Status");
+			if (_orderStatusData.size() > 0)
+			{
+				for (int i = 0; i < _orderStatusData.size(); i++)
+				{
+					orderStatusTitle.add(_orderStatusData.get(i).getShopName());
+				}
+			}
+		}
+		catch (Exception e)
+		{
+		}
+		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this,
+		                                                                     android.R.layout.simple_spinner_item,
+		                                                                     orderStatusTitle);
+		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		orderStatus_sp.setAdapter(dataAdapter_shopType);
+
+		orderStatus_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+			{
+				try
+				{
+					if (position != 0)
+					{
+						OrderStatusId = _orderStatusData.get(position - 1).getShopId();
+						Log.e("OrderStatusId", OrderStatusId);
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+
+			}
+		});
 	}
 
 	public static class DatePickerFragmentDailog extends DialogFragment

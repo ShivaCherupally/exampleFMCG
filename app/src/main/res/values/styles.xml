@@ -48,8 +48,26 @@
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
         <item name="android:paddingTop">8dp</item>
+
         <item name="android:paddingBottom">8dp</item>
         <item name="android:popupBackground">#DFFFFFFF</item>
 
     </style>
+
+
+    <style name="spinner_background_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:background">@drawable/spinner_bg_with_icon</item>
+
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:popupBackground">#DFFFFFFF</item>
+
+    </style>
+
+
+
 </resources>

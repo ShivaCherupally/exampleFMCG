@@ -22,6 +22,7 @@ import com.fmcg.util.AlertDialogManager;
 import com.fmcg.util.Common;
 import com.fmcg.util.SharedPrefsUtil;
 import com.google.gson.Gson;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,9 +68,11 @@ public class Remarks extends AppCompatActivity implements NetworkOperationListen
 				if ((remarks_et.getText().toString() != null) && (remarks_et.getText().toString() != ""))
 				{
 					Common.showDialog(Remarks.this);
-					String jsonString = new Gson().toJson(insertFeedback(SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"), remarks_et.getText().toString()));
-					Log.d("jsonString", jsonString);
-					HttpAdapter.insertFeedback(Remarks.this, "remarks", jsonString);
+					/*String jsonString = new Gson().toJson(insertFeedback(SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"), remarks_et.getText().toString()));
+					Log.d("jsonString", jsonString);*/
+					String jsonString = createdummy();
+					//HttpAdapter.insertFeedback(Remarks.this, "remarks", jsonString);
+					HttpAdapter.updateInvoiceSubmit(Remarks.this, "remarks", jsonString);
 
 				}
 			}
@@ -96,6 +99,34 @@ public class Remarks extends AppCompatActivity implements NetworkOperationListen
 		return false;
 	}
 
+	private String createdummy()
+	{
+
+		RequestParams params = new RequestParams();
+		params.put("ws_api_key", "10633A#_@D41134469_$BB63B84C_CCC602F"); //Mahendra.Aarakh
+		params.put("user_mobile_email", "9848365548"); //password
+		params.put("user_password", "123456"); //password
+
+		/*JSONObject dataObj = new JSONObject();
+		try
+		{
+			dataObj.putOpt("ws_api_key", "10633A#_@D41134469_$BB63B84C_CCC602F");
+			dataObj.putOpt("user_mobile_email", "9848365548");
+			dataObj.putOpt("user_password", "123456");
+			//
+			*//*dataObj.putOpt("email", "shiva@fb.com");
+			dataObj.putOpt("password", "123456");*//*
+//			dataObj.putOpt("ws_api_key", "!@#$%&OIUYTRE123456");
+		}
+		catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		Log.e("params", params.toString());
+		return params.toString();
+	}
+
 	@Override
 	public void onBackPressed()
 	{
@@ -115,6 +146,7 @@ public class Remarks extends AppCompatActivity implements NetworkOperationListen
 			try
 			{
 				JSONObject mJson = new JSONObject(response.getResponseString());
+				Log.e("mJson", mJson.toString());
 				//register
 				if (response.getTag().equals("remarks"))
 				{
@@ -137,6 +169,19 @@ public class Remarks extends AppCompatActivity implements NetworkOperationListen
 			catch (JSONException e)
 			{
 				e.printStackTrace();
+			}
+
+		}
+		else
+		{
+			try
+			{
+				JSONObject mJson = new JSONObject(response.getResponseString());
+				Log.e("mJson", mJson.toString());
+			}
+			catch (Exception e)
+			{
+
 			}
 
 		}

@@ -103,6 +103,9 @@ public class HttpAdapter
 	//Update Invoice Save
 	public static final String UPDATE_INVOICE = BASE_URL + "UpdateInvoice";
 
+
+	public static final String UPDATE_INVOICE_SUBMIT = "http://182.156.90.123/oreso/web_services/dev/services/login";
+
 //CancelOrderNumber
 	//http://202.143.96.20/Orderstest/Api/Services/GetRouteDataAgent?AgentCode
 	//http://202.143.96.20/Orderstest/api/Services/GetShopeDetailsByRouteID?RouteID=1
@@ -530,5 +533,14 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(UPDATE_INVOICE, METHOD_POST, jsonString);
+	}
+
+	public static void updateInvoiceSubmit(NetworkOperationListener listener, Object tag, String jsonString)
+	{
+		// TODO Auto-generated method stub
+		Log.d("jsonrequest", jsonString);
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(UPDATE_INVOICE_SUBMIT, METHOD_POST, jsonString);
 	}
 }

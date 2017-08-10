@@ -1,9 +1,5 @@
 package com.fmcg.ui;
 
-/**
- * Created by Shiva on 6/26/2017.
- */
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -28,7 +24,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.*;
-import android.widget.TableRow;
 
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
@@ -61,12 +56,13 @@ import java.util.List;
 
 import static com.fmcg.util.SharedPrefsUtil.getStringPreference;
 
+/**
+ * Created by Shiva on 7/26/2017.
+ */
 
-public class UpdateOrderActvity extends AppCompatActivity implements View.OnClickListener, NetworkOperationListener
+public class UpdateOrderDetailsActivity extends AppCompatActivity implements NetworkOperationListener, AdapterView.OnItemSelectedListener, View.OnTouchListener
 {
 	public static Activity orderBookActivity;
-	public SharedPreferences sharedPreferences;
-	Dialog alertDialog;
 	public List<PaymentDropDown> paymentDP;
 	public List<GetShopDetailsDP> shopsDP;
 	public List<OrderStatusDropdown> orderstatusDP;
@@ -87,14 +83,9 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	private List<String> routeDetailsDP_str;
 	private List<String> routeDp_str;
 
-	public String routeCode;
-
-
-	public Spinner shopName_sp, orderStatus_sp, category_sp, payment_sp, routeName_sp, areaName_sp, zone_sp;
-	public CheckBox isShopClosed, ordered, invoice;
-	public TextView uploadImage, shopClosed, orderDate, submit, tvDisplayDate, orderNumInvoice;
+	public Spinner shopname_spinner, order_status_spinner, product_category_spinner, payment_terms_spinner, routeName_spinner, areaName_spinner, zone_name_spinner;
+	public TextView orderNumInvoice, submit;
 	private static TextView paymentSelected;
-	private LinearLayout list_li;
 	private TableLayout tableLayout;
 	int j;
 	Context mContext;
@@ -145,8 +136,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	String selected_ShopId = "";
 	String selected_orderStatusId = "";
 	String selected_productCatogeryId = "";
-	String selected_paymentNameId = "";
-	EditText availZonenametxt, availRoutetxt, availAreatxt, availShopnametxt;
+	String selected_paymentTermsId = "";
 
 	boolean routeDropDownItemSeleted = false;
 	boolean areaDropDownItemSeleted = false;
@@ -159,12 +149,13 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	boolean orderStatusTouchClick = false;
 	boolean paymentTermsTouchClick = false;
 
+	String SPINNER_SELECTION = "";
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.update_order_activity);
-		sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
+		setContentView(R.layout.update_orderdetails_activity);
 		try
 		{
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -175,34 +166,25 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		}
 
 		//initializing the variables
-		mContext = UpdateOrderActvity.this;
-		orderBookActivity = UpdateOrderActvity.this;
+		mContext = UpdateOrderDetailsActivity.this;
+		orderBookActivity = UpdateOrderDetailsActivity.this;
 
+		orderNumInvoice = (TextView) findViewById(R.id.orderNumber_invoice);
+
+		zone_name_spinner = (Spinner) findViewById(R.id.zone_name_spinner);
+		routeName_spinner = (Spinner) findViewById(R.id.routeName_spinner);
+		areaName_spinner = (Spinner) findViewById(R.id.areaName_spinner);
+		shopname_spinner = (Spinner) findViewById(R.id.shopname_spinner);
+		order_status_spinner = (Spinner) findViewById(R.id.order_status_spinner);
+		product_category_spinner = (Spinner) findViewById(R.id.product_category_spinner);
+		payment_terms_spinner = (Spinner) findViewById(R.id.payment_terms_spinner);
 
 		tableLayout = (TableLayout) findViewById(R.id.tableLayout);
-		orderStatus_sp = (Spinner) findViewById(R.id.order_type_dp);
-		category_sp = (Spinner) findViewById(R.id.product_category);
-		payment_sp = (Spinner) findViewById(R.id.payment_terms_name);
-		shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
-		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
-		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
-		areaName_sp = (Spinner) findViewById(R.id.areaName_spinner);
-
-		isShopClosed = (CheckBox) findViewById(R.id.isClosed);
-		ordered = (CheckBox) findViewById(R.id.isOrder);
-		invoice = (CheckBox) findViewById(R.id.isInvoice);
-		orderNumInvoice = (TextView) findViewById(R.id.orderNumber_invoice);
 		submit = (TextView) findViewById(R.id.submit);
 
 		paymentSelected = (TextView) findViewById(R.id.paymentSelected);
 		paymentSelected.setVisibility(View.GONE);
 
-		list_li = (LinearLayout) findViewById(R.id.items_li);
-
-		availZonenametxt = (EditText) findViewById(R.id.availZonenametxt);
-		availRoutetxt = (EditText) findViewById(R.id.availRoutetxt);
-		availAreatxt = (EditText) findViewById(R.id.availAreatxt);
-		availShopnametxt = (EditText) findViewById(R.id.availShopnametxt);
 
 		paymentDP = new ArrayList<>();
 		shopsDP = new ArrayList<>();
@@ -225,73 +207,53 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 
 		if (Utility.isOnline(mContext))
 		{
-			HttpAdapter.getPayment(UpdateOrderActvity.this, "payment");
-			HttpAdapter.getOrderStatus(UpdateOrderActvity.this, "orderStatus");
-			HttpAdapter.getZoneDetailsDP(UpdateOrderActvity.this, "zoneName");
-			HttpAdapter.getProductCategoryDP(UpdateOrderActvity.this, "productCategoryName");
+			HttpAdapter.getPayment(UpdateOrderDetailsActivity.this, "payment");
+			HttpAdapter.getOrderStatus(UpdateOrderDetailsActivity.this, "orderStatus");
+			HttpAdapter.getZoneDetailsDP(UpdateOrderDetailsActivity.this, "zoneName");
+			HttpAdapter.getProductCategoryDP(UpdateOrderDetailsActivity.this, "productCategoryName");
 		}
 		else
 		{
 			Toast.makeText(mContext, "Please check internet connection", Toast.LENGTH_SHORT).show();
 		}
 
+		zone_name_spinner.setOnItemSelectedListener(this);
+		routeName_spinner.setOnItemSelectedListener(this);
+		areaName_spinner.setOnItemSelectedListener(this);
+		shopname_spinner.setOnItemSelectedListener(this);
+		order_status_spinner.setOnItemSelectedListener(this);
+		//product_category_spinner.setOnItemSelectedListener(this);
+		payment_terms_spinner.setOnItemSelectedListener(this);
 
-		availRoutetxt.setOnTouchListener(new View.OnTouchListener()
+		zone_name_spinner.setOnTouchListener(this);
+		routeName_spinner.setOnTouchListener(this);
+		areaName_spinner.setOnTouchListener(this);
+		shopname_spinner.setOnTouchListener(this);
+		order_status_spinner.setOnTouchListener(this);
+//		product_category_spinner.setOnTouchListener(this);
+		payment_terms_spinner.setOnTouchListener(this);
+
+
+		submit.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
-			public boolean onTouch(final View v, final MotionEvent event)
+			public void onClick(final View v)
 			{
-
-				availRoutetxt.setVisibility(View.GONE);
-				routeName_sp.hasFocusable();
-				routeName_sp.performClick();
-				routeName_sp.setVisibility(View.VISIBLE);
-
-				return false;
+				if (validationEntryData())
+				{
+					dataSubmittingInServer();
+				}
 			}
 		});
 
-		availAreatxt.setOnTouchListener(new View.OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(final View v, final MotionEvent event)
-			{
+		zone_name_spinner.setOnItemSelectedListener(this);
+		routeName_spinner.setOnItemSelectedListener(this);
+		areaName_spinner.setOnItemSelectedListener(this);
+		shopname_spinner.setOnItemSelectedListener(this);
+		order_status_spinner.setOnItemSelectedListener(this);
+		product_category_spinner.setOnItemSelectedListener(this);
+		payment_terms_spinner.setOnItemSelectedListener(this);
 
-				availAreatxt.setVisibility(View.GONE);
-				areaName_sp.hasFocusable();
-				areaName_sp.performClick();
-				areaName_sp.setVisibility(View.VISIBLE);
-
-				return false;
-			}
-		});
-
-		availShopnametxt.setOnTouchListener(new View.OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(final View v, final MotionEvent event)
-			{
-
-				availShopnametxt.setVisibility(View.GONE);
-				shopName_sp.hasFocusable();
-				shopName_sp.performClick();
-				shopName_sp.setVisibility(View.VISIBLE);
-				return false;
-			}
-		});
-
-		payment_sp.setOnTouchListener(new View.OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(final View v, final MotionEvent event)
-			{
-				paymentTermsTouchClick = true;
-				return false;
-			}
-		});
-
-		list_li.setOnClickListener(this);
-		submit.setOnClickListener(this);
 
 	}
 
@@ -299,13 +261,20 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	{
 		try
 		{
+			zoneTouchClick = false;
+			routeTouchClick = false;
+			areaTouchClick = false;
+			shopNamesTouchClick = false;
+			orderStatusTouchClick = false;
+			paymentTermsTouchClick = false;
+
 			JSONObject editDatajsonObj = new JSONObject(editBookListData);
 			String OrderNumber = editDatajsonObj.getString("OrderNumber");
 			if (OrderNumber != null && !OrderNumber.equalsIgnoreCase("null"))
 			{
 				Log.e("OrderNumber", "#" + OrderNumber);
 				orderNumInvoice.setText(OrderNumber);
-				HttpAdapter.orderSummryProductCategory(UpdateOrderActvity.this, "productCategoryItems", OrderNumber);
+				HttpAdapter.orderSummryProductCategory(UpdateOrderDetailsActivity.this, "productCategoryItems", OrderNumber);
 			}
 			String OrderDate = editDatajsonObj.getString("OrderDate");
 			String ShopName = editDatajsonObj.getString("ShopName");
@@ -319,43 +288,34 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			{
 				OrderDeliveryDate = OrderDeliveryDatestr;
 			}
-
-
-			int zoneId = editDatajsonObj.getInt("ZoneId");
-			int RouteId = editDatajsonObj.getInt("RouteId");
-			int AreaId = editDatajsonObj.getInt("AreaId");
-			int ShopId = editDatajsonObj.getInt("ShopId");
-
-
-			int OrderStatusId = editDatajsonObj.getInt("OrderStatusId");
+			OrdersId = editDatajsonObj.getInt("OrdersId");
 			String Status = editDatajsonObj.getString("Status");
 
-			OrdersId = editDatajsonObj.getInt("OrdersId");
 
-			String PaymentTermsId = editDatajsonObj.getString("PaymentTermsId");
+			selected_zoneId = String.valueOf(editDatajsonObj.getInt("ZoneId"));
+			selected_roueId = String.valueOf(editDatajsonObj.getInt("RouteId"));
+			selected_areaNameId = String.valueOf(editDatajsonObj.getInt("AreaId"));
+			selected_ShopId = String.valueOf(editDatajsonObj.getInt("ShopId"));
+			selected_orderStatusId = String.valueOf(editDatajsonObj.getInt("OrderStatusId"));
+			selected_paymentTermsId = editDatajsonObj.getString("PaymentTermsId");
 
-
-			selected_zoneId = String.valueOf(zoneId);
-			selected_roueId = String.valueOf(RouteId);
-			selected_areaNameId = String.valueOf(AreaId);
-			selected_ShopId = String.valueOf(ShopId);
-
-			placingAvailZoneName(Integer.parseInt(selected_zoneId));
-
-			if (OrderStatusId != 0)
+			if (selected_zoneId != null && !selected_zoneId.isEmpty())
 			{
-				selected_orderStatusId = String.valueOf(OrderStatusId);
-				orderStatus_sp.setSelection(OrderStatusId);
+				zone_name_spinner.setSelection(getIndex(zone_name_spinner, Integer.parseInt(selected_zoneId), _zoneNamesData), false);
+				HttpAdapter.getRouteDetails(UpdateOrderDetailsActivity.this, "routeName", selected_zoneId);
 			}
 
-			if (PaymentTermsId != null && !PaymentTermsId.equals("0") && !PaymentTermsId.equalsIgnoreCase("null"))
+
+			if (selected_orderStatusId != null && !selected_orderStatusId.isEmpty())
+			{
+				order_status_spinner.setSelection(getIndex(order_status_spinner, Integer.parseInt(selected_orderStatusId), _orderStatusData), false);
+			}
+
+			if (selected_paymentTermsId != null && !selected_paymentTermsId.equals("0") && !selected_paymentTermsId.equalsIgnoreCase("null"))
 			{
 				if (_paymentsSelectData.size() > 0)
 				{
-					//payment_sp.clearFocus();
-					//payment_sp.setSelection(getIndex(payment_sp, Integer.parseInt(PaymentTermsId), _paymentsSelectData), false);
-					selected_paymentNameId = PaymentTermsId;
-					payment_sp.setSelection(getIndex(payment_sp, Integer.parseInt(PaymentTermsId), _paymentsSelectData), false);
+					payment_terms_spinner.setSelection(getIndex(payment_terms_spinner, Integer.parseInt(selected_paymentTermsId), _paymentsSelectData), false);
 				}
 			}
 		}
@@ -363,208 +323,67 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		{
 
 		}
-
-
-	}
-
-	private void placingAvailZoneName(final int zoneId)
-	{
-		String zoneName = "";
-		if (zoneId != 0)
-		{
-			//zone_sp.setSelection(getIndex(zone_sp, zoneId, _zoneNamesData));
-			selected_zoneId = String.valueOf(zoneId);
-
-			HttpAdapter.getRouteDetails(UpdateOrderActvity.this, "routeName", selected_zoneId);
-
-			if (_zoneNamesData.size() != 0)
-			{
-				for (int i = 0; i < _zoneNamesData.size(); i++)
-				{
-					String availZoneId = _zoneNamesData.get(i).getShopId();
-					if (availZoneId.equals(selected_zoneId))
-					{
-						zoneName = _zoneNamesData.get(i).getShopName();
-						Log.e("routeId", selected_zoneId + "");
-					}
-				}
-			}
-		}
-
-		if (zoneName != null && !zoneName.equalsIgnoreCase("null") && !zoneName.isEmpty())
-		{
-			availZonenametxt.setVisibility(View.VISIBLE);
-			availZonenametxt.setText(zoneName + "");
-			zone_sp.setVisibility(View.GONE);
-			selected_zoneId = String.valueOf(zoneId);
-		}
-		else
-		{
-			zone_sp.setVisibility(View.VISIBLE);
-		}
-	}
-
-	private void placingAvailRouteNo(final int routeId)
-	{
-		String routeName = "";
-		if (routeId != 0)
-		{
-			HttpAdapter.getAreaDetailsByRoute(UpdateOrderActvity.this, "areaNameDP", selected_roueId);
-			if (_routeCodesData.size() != 0)
-			{
-				for (int i = 0; i < _routeCodesData.size(); i++)
-				{
-					String availRouteId = _routeCodesData.get(i).getShopId();
-					if (availRouteId.equals(selected_roueId))
-					{
-						routeName = _routeCodesData.get(i).getShopName();
-					}
-				}
-			}
-		}
-
-		if (routeName != null && !routeName.equalsIgnoreCase("null"))
-		{
-			availRoutetxt.setVisibility(View.VISIBLE);
-			availRoutetxt.setText(routeName + "");
-			routeCode = String.valueOf(selected_roueId);
-			selected_roueId = routeCode;
-			routeName_sp.setVisibility(View.GONE);
-
-		}
-		else
-		{
-			routeName_sp.setVisibility(View.VISIBLE);
-		}
-	}
-
-	private void placingAvailAreaName(final int areaId)
-	{
-		String areaName = "";
-		if (areaId != 0)
-		{
-			//	areaName_sp.setSelection(getIndex(areaName_sp, areaId, _areaNamesData));
-			selected_areaNameId = String.valueOf(areaId);
-
-			HttpAdapter.getShopDetailsDP(UpdateOrderActvity.this, "shopName", selected_areaNameId);
-
-
-			if (_areaNamesData.size() != 0)
-			{
-				for (int i = 0; i < _areaNamesData.size(); i++)
-				{
-					String availAreaId = _areaNamesData.get(i).getShopId();
-					if (availAreaId.equals(selected_areaNameId))
-					{
-						areaName = _areaNamesData.get(i).getShopName();
-					}
-				}
-			}
-		}
-
-		if (areaName != null && !areaName.equalsIgnoreCase("null") && !areaName.isEmpty())
-		{
-			availAreatxt.setVisibility(View.VISIBLE);
-			availAreatxt.setText(areaName + "");
-			areaName_sp.setVisibility(View.GONE);
-		}
-		else
-		{
-			areaName_sp.setVisibility(View.VISIBLE);
-		}
-	}
-
-	private void placingAvailShopName(final int ShopId)
-	{
-		String shopName = "";
-		if (ShopId != 0)
-		{
-//			shopName_sp.setSelection(getIndex(shopName_sp, ShopId, _shoptypesData));
-			selected_ShopId = String.valueOf(ShopId);//19
-			if (_shoptypesData.size() != 0)
-			{
-				for (int i = 0; i < _shoptypesData.size(); i++)
-				{
-					String availShopId = _shoptypesData.get(i).getShopId();
-					if (availShopId.equals(selected_ShopId))
-					{
-						shopName = _shoptypesData.get(i).getShopName();
-					}
-				}
-			}
-		}
-
-		if (shopName != null && !shopName.equalsIgnoreCase("null") && !shopName.isEmpty())
-		{
-			availShopnametxt.setVisibility(View.VISIBLE);
-			availShopnametxt.setText(shopName + "");
-			shopName_sp.setVisibility(View.GONE);
-		}
-		else
-		{
-			shopName_sp.setVisibility(View.VISIBLE);
-		}
 	}
 
 	private void headers()
 	{
-		android.widget.TableRow row = new TableRow(this);
+		android.widget.TableRow row = new android.widget.TableRow(this);
 
-		TextView taskdate = new TextView(UpdateOrderActvity.this);
+		TextView taskdate = new TextView(UpdateOrderDetailsActivity.this);
 		taskdate.setTextSize(15);
 		taskdate.setPadding(10, 10, 10, 10);
 		taskdate.setText("Prod");
 		taskdate.setBackgroundColor(getResources().getColor(R.color.light_green));
-		taskdate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                   TableRow.LayoutParams.WRAP_CONTENT));
+		taskdate.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 		row.addView(taskdate);
 
-		TextView title = new TextView(UpdateOrderActvity.this);
+		TextView title = new TextView(UpdateOrderDetailsActivity.this);
 		title.setText("Prc");
 		title.setBackgroundColor(getResources().getColor(R.color.light_green));
 		title.setTextSize(15);
 		title.setPadding(10, 10, 10, 10);
-		title.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                TableRow.LayoutParams.WRAP_CONTENT));
+		title.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                               android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 		row.addView(title);
 
 
-		TextView taskhour = new TextView(UpdateOrderActvity.this);
+		TextView taskhour = new TextView(UpdateOrderDetailsActivity.this);
 		taskhour.setText("Qty");
 		taskhour.setBackgroundColor(getResources().getColor(R.color.light_green));
 		taskhour.setTextSize(15);
 		taskhour.setPadding(10, 10, 10, 10);
-		taskhour.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                   TableRow.LayoutParams.WRAP_CONTENT));
+		taskhour.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 		row.addView(taskhour);
 
-		TextView description3 = new TextView(UpdateOrderActvity.this);
+		TextView description3 = new TextView(UpdateOrderDetailsActivity.this);
 		description3.setText("Fres");
 		description3.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description3.setTextSize(15);
 		description3.setPadding(10, 10, 10, 10);
 		row.addView(description3);
-		description3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                       TableRow.LayoutParams.WRAP_CONTENT));
+		description3.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 
-		TextView description = new TextView(UpdateOrderActvity.this);
+		TextView description = new TextView(UpdateOrderDetailsActivity.this);
 		description.setText("VAT");
 		description.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description.setTextSize(15);
 		description.setPadding(10, 10, 10, 10);
 		row.addView(description);
-		description.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                      TableRow.LayoutParams.WRAP_CONTENT));
+		description.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                     android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 
-		TextView description2 = new TextView(UpdateOrderActvity.this);
+		TextView description2 = new TextView(UpdateOrderDetailsActivity.this);
 		description2.setText("GST");
 		description2.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description2.setTextSize(15);
 		description2.setPadding(10, 10, 10, 10);
 		description2.setVisibility(View.GONE);
 		row.addView(description2);
-		description2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                       TableRow.LayoutParams.WRAP_CONTENT));
+		description2.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 
 
 		tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
@@ -583,76 +402,69 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		for (int i = 0; i < productDP.size(); i++)
 		{
 			j = i;
-			UpdateOrderActvity.OrderSummary row = new UpdateOrderActvity.OrderSummary(this, productDP.get(i), i);
+			UpdateOrderDetailsActivity.OrderSummary row = new UpdateOrderDetailsActivity.OrderSummary(this, productDP.get(i), i);
 			tableLayout.addView(row, new TableLayout.LayoutParams(
 					TableLayout.LayoutParams.MATCH_PARENT,
 					TableLayout.LayoutParams.WRAP_CONTENT));
 		}
 	}
 
-	@Override
-	public void onClick(View v)
+
+	private void dataSubmittingInServer()
 	{
-		if (v.getId() == R.id.submit)
+		JSONArray cartItemsArray = new JSONArray();
+		if (storedProductCategories != null && !storedProductCategories.isEmpty())
 		{
-			boolean validated = validationEntryData();
-			if (validated)
+			Log.d("Order", "Stored_Products" + " : " + storedProductCategories.toString());
+			for (GetProductCategoryInOrderUpdate getProducts : storedProductCategories)
 			{
-				JSONArray cartItemsArray = new JSONArray();
-				if (storedProductCategories != null && !storedProductCategories.isEmpty())
-				{
-					Log.d("Order", "Stored_Products" + " : " + storedProductCategories.toString());
-					for (GetProductCategoryInOrderUpdate getProducts : storedProductCategories)
-					{
-						try
-						{
-							cartItemsArray.put(getProducts.toJSON());
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-						}
-					}
-				}
-				if (cartItemsArray.length() == 0)
-				{
-					for (int i = 0; i < list.size(); i++)
-					{
-						try
-						{
-							cartItemsArray.put(list.get(i).toJSON());
-						}
-						catch (Exception e)
-						{
-						}
-					}
-				}
-				Calendar c = Calendar.getInstance();
-				SimpleDateFormat simDf = new SimpleDateFormat("dd-MM-yyyy");
 				try
 				{
-					OrderDeliveryDate = simDf.format(c.getTime());
+					cartItemsArray.put(getProducts.toJSON());
 				}
 				catch (Exception e)
 				{
 					e.printStackTrace();
 				}
-				Log.e("Ordering Date", OrderDeliveryDate + "");
-
-				String EmployeeId = "";
-				String employeeId = getStringPreference(mContext, "EmployeeId");
-				if (employeeId != null && !employeeId.isEmpty())
-				{
-					EmployeeId = employeeId;
-				}
-
-				String jsonString = createJsonOrderSubmit(String.valueOf(OrdersId), selected_zoneId, selected_roueId,
-				                                          selected_areaNameId, selected_ShopId, OrderDeliveryDate,
-				                                          selected_orderStatusId, EmployeeId, cartItemsArray);
-				Log.e("parameters", jsonString + "");
-				HttpAdapter.updateOrderBooking(this, "updateorderbook", jsonString);
 			}
 		}
+		if (cartItemsArray.length() == 0)
+		{
+			for (int i = 0; i < list.size(); i++)
+			{
+				try
+				{
+					cartItemsArray.put(list.get(i).toJSON());
+				}
+				catch (Exception e)
+				{
+				}
+			}
+		}
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat simDf = new SimpleDateFormat("dd-MM-yyyy");
+		try
+		{
+			OrderDeliveryDate = simDf.format(c.getTime());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		Log.e("Ordering Date", OrderDeliveryDate + "");
+
+		String EmployeeId = "";
+		String employeeId = getStringPreference(mContext, "EmployeeId");
+		if (employeeId != null && !employeeId.isEmpty())
+		{
+			EmployeeId = employeeId;
+		}
+
+		String jsonString = createJsonOrderSubmit(String.valueOf(OrdersId), selected_zoneId, selected_roueId,
+		                                          selected_areaNameId, selected_ShopId, OrderDeliveryDate,
+		                                          selected_orderStatusId, EmployeeId, cartItemsArray);
+		Log.e("parameters", jsonString + "");
+		HttpAdapter.updateOrderBooking(this, "updateorderbook", jsonString);
 	}
 
 
@@ -666,15 +478,33 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			try
 			{
 				JSONObject mJson = new JSONObject(response.getResponseString());
-				//Payment Terms Name Dropdown
-				if (response.getTag().equals("payment"))
+				//ZoneDetails DropDown
+				if (response.getTag().equals("zoneName"))
 				{
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
-						paymentNamesSpinnerAdapter(jsonArray);
+						zoneSpinnerAdapter(jsonArray);
 					}
 
+				}
+				//RouteDetails DropDown
+				else if (response.getTag().equals("routeName"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						JSONArray jsonArray = mJson.getJSONArray("Data");
+						routeNoSpinnerAdapter(jsonArray);
+					}
+				}
+				//AreaDetails DropDown
+				else if (response.getTag().equals("areaNameDP"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						JSONArray jsonArray = mJson.getJSONArray("Data");
+						areaNameSpinnerAdapter(jsonArray);
+					}
 				}
 				//Shop Name DropDown
 				else if (response.getTag().equals("shopName"))
@@ -700,7 +530,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
-						//productCategorySpinnerAdapter(jsonArray);
 						productDP_str.add("Product Category Name");
 						for (int i = 0; i < jsonArray.length(); i++)
 						{
@@ -715,19 +544,17 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 						ArrayAdapter<String> dataAdapter_productName = new ArrayAdapter<String>(this,
 						                                                                        android.R.layout.simple_spinner_item, productDP_str);
 						dataAdapter_productName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-						category_sp.setAdapter(dataAdapter_productName);
+						product_category_spinner.setAdapter(dataAdapter_productName);
 
-						category_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+						product_category_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 						{
 							@Override
 							public void onItemSelected(AdapterView<?> parent, View view, final int positionvalue, long id)
 							{
 								try
 								{
-									//productCategoryId = String.valueOf(positionvalue);
 									if (positionvalue != 0)
 									{
-//										 productNameDropDown = productDP.get(position).ProductId;
 										list.add(productDP.get(positionvalue - 1));
 										displayTableView(list);
 									}
@@ -747,51 +574,16 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 						});
 					}
 				}
-				//ZoneDetails DropDown
-				else if (response.getTag().equals("zoneName"))
+				//Payment Terms Name Dropdown
+				else if (response.getTag().equals("payment"))
 				{
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
-						zoneSpinnerAdapter(jsonArray);
-					}
-
-				}
-				//AreaDetails DropDown
-				else if (response.getTag().equals("areaNameDP"))
-				{
-					if (mJson.getString("Message").equals("SuccessFull"))
-					{
-						JSONArray jsonArray = mJson.getJSONArray("Data");
-						areaNameSpinnerAdapter(jsonArray);
+						paymentNamesSpinnerAdapter(jsonArray);
 					}
 				}
-				//RouteDetails DropDown
-				else if (response.getTag().equals("routeName"))
-				{
-					if (mJson.getString("Message").equals("SuccessFull"))
-					{
-						JSONArray jsonArray = mJson.getJSONArray("Data");
-						routeNoSpinnerAdapter(jsonArray);
-					}
-				}
-				else if (response.getTag().equals("updateorderbook"))
-				{
-					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
-					{
-						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
-						Toast.makeText(mContext, "Successfully Updated.", Toast.LENGTH_SHORT).show();
-						dailogBoxAfterSubmit();
-					}
-					else
-					{
-						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
-						Toast.makeText(mContext, "Update Failed..", Toast.LENGTH_SHORT).show();
-						Intent in = new Intent(UpdateOrderActvity.this, DashboardActivity.class);
-						Util.killupdateorderBook();
-						startActivity(in);
-					}
-				}
+				//Product Grid List Data
 				else if (response.getTag().equals("productCategoryItems"))
 				{
 					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
@@ -821,8 +613,24 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 						}
 					}
 				}
-				//
-
+				//Update Order Save
+				else if (response.getTag().equals("updateorderbook"))
+				{
+					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
+					{
+						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
+						Toast.makeText(mContext, "Successfully Updated.", Toast.LENGTH_SHORT).show();
+						dailogBoxAfterSubmit();
+					}
+					else
+					{
+						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
+						Toast.makeText(mContext, "Update Failed..", Toast.LENGTH_SHORT).show();
+						Intent in = new Intent(UpdateOrderDetailsActivity.this, DashboardActivity.class);
+						Util.killupdateorderBook();
+						startActivity(in);
+					}
+				}
 			}
 			catch (JSONException e)
 			{
@@ -850,13 +658,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		{
 
 		}
-	}
-
-	private void refreshActivity()
-	{
-		Intent i = getIntent();
-		finish();
-		startActivity(i);
 	}
 
 	@Override
@@ -916,16 +717,158 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		Log.d("orderjson", studentsObj.toString());
 		return studentsObj.toString();
 	}
-	//ZoneId, RouteId, AreaId, ShopId,OrderDeliveryDate, OrderStatusId, EmployeeId,OrderId
-
 
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
 	{
+
 	}
 
-	private class OrderSummary extends TableRow
+	@Override
+	public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id)
+	{
+		String selectedSpinner = "";
+		switch (parent.getId())
+		{
+			case R.id.zone_name_spinner:
+				if (zoneTouchClick)
+				{
+					selectedSpinner = "ZONE";
+					dropDownValueSelection(position, _zoneNamesData, selectedSpinner);
+				}
+
+				break;
+			case R.id.routeName_spinner:
+				if (routeTouchClick)
+				{
+					selectedSpinner = "ROUTE";
+					dropDownValueSelection(position, _routeCodesData, selectedSpinner);
+				}
+				break;
+			case R.id.areaName_spinner:
+				if (areaTouchClick)
+				{
+					selectedSpinner = "AREA";
+					dropDownValueSelection(position, _areaNamesData, selectedSpinner);
+
+				}
+				break;
+			case R.id.shopname_spinner:
+				if (shopNamesTouchClick)
+				{
+					selectedSpinner = "SHOP";
+					dropDownValueSelection(position, _shoptypesData, selectedSpinner);
+				}
+				break;
+			case R.id.order_status_spinner:
+				if (orderStatusTouchClick)
+				{
+					selectedSpinner = "ORDER_STATUS";
+					dropDownValueSelection(position, _orderStatusData, selectedSpinner);
+				}
+				break;
+			case R.id.payment_terms_spinner:
+				if (paymentTermsTouchClick)
+				{
+					selectedSpinner = "PAYMENT_TYPE";
+					dropDownValueSelection(position, _paymentsSelectData, selectedSpinner);
+				}
+				break;
+
+		}
+
+	}
+
+	private void dropDownValueSelection(int position, ArrayList<ShopNamesData> _dropDownData, String selectedSpinner)
+	{
+		if (position != 0)
+		{
+			if (selectedSpinner.equals("ZONE"))
+			{
+				selected_zoneId = _dropDownData.get(position - 1).getShopId();
+				HttpAdapter.getRouteDetails(UpdateOrderDetailsActivity.this, "routeName", selected_zoneId);
+			}
+			else if (selectedSpinner.equals("ROUTE"))
+			{
+				selected_roueId = _dropDownData.get(position - 1).getShopId(); //3
+				HttpAdapter.getAreaDetailsByRoute(UpdateOrderDetailsActivity.this, "areaNameDP", selected_roueId);
+			}
+			else if (selectedSpinner.equals("AREA"))
+			{
+				selected_areaNameId = _dropDownData.get(position - 1).getShopId();
+				HttpAdapter.getShopDetailsDP(UpdateOrderDetailsActivity.this, "shopName", selected_areaNameId);
+			}
+			else if (selectedSpinner.equals("SHOP"))
+			{
+				selected_ShopId = _dropDownData.get(position - 1).getShopId();
+			}
+			else if (selectedSpinner.equals("ORDER_STATUS"))
+			{
+				selected_orderStatusId = _dropDownData.get(position - 1).getShopId();
+			}
+			else if (selectedSpinner.equals("PAYMENT_TYPE"))
+			{
+
+				selected_paymentTermsId = _dropDownData.get(position - 1).getShopId();
+				String paymentSelected = _dropDownData.get(position - 1).getShopName();
+				Log.e("paymentSelected", paymentSelected);
+				if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
+				{
+					if (paymentSelected.equalsIgnoreCase("Credit-days"))
+					{
+						dailogBoxforPaymentSelection("Credit-days");
+					}
+					else if (paymentSelected.equalsIgnoreCase("Days to Cheque"))
+					{
+						dailogBoxforPaymentSelection("Days to Cheque");
+					}
+					else if (paymentSelected.equalsIgnoreCase("Cheque"))
+					{
+						dailogBoxforPaymentSelection("Cheque");
+					}
+				}
+			}
+		}
+
+
+	}
+
+	@Override
+	public void onNothingSelected(final AdapterView<?> parent)
+	{
+
+	}
+
+	@Override
+	public boolean onTouch(final View v, final MotionEvent event)
+	{
+		switch (v.getId())
+		{
+			case R.id.zone_name_spinner:
+				zoneTouchClick = true;
+				break;
+			case R.id.routeName_spinner:
+				routeTouchClick = true;
+				break;
+			case R.id.areaName_spinner:
+				areaTouchClick = true;
+				break;
+			case R.id.shopname_spinner:
+				shopNamesTouchClick = true;
+				break;
+			case R.id.order_status_spinner:
+				orderStatusTouchClick = true;
+				break;
+			case R.id.product_category_spinner:
+				paymentTermsTouchClick = true;
+				break;
+
+		}
+		return false;
+	}
+
+	private class OrderSummary extends android.widget.TableRow
 	{
 
 		private Context mContext;
@@ -975,133 +918,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			return onTextChanged;
 		}
 
-		/*private void init()
-		{
-			try
-			{
-				TextView taskdate = new TextView(mContext);
-				taskdate.setTextSize(15);
-				taskdate.setText(mProductCategory.ProductName);
-				taskdate.setPadding(0, 0, 0, 10);
-				taskdate.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, 0.36f));
-				addView(taskdate);
 
-				TextView title = new TextView(mContext);
-				title.setText(String.valueOf(mProductCategory.Price));
-				title.setTextSize(15);
-				title.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                       LayoutParams.WRAP_CONTENT));
-				addView(title);
-
-				quantityETID = new EditText(mContext);
-				quantityETID.setText(String.valueOf(mProductCategory.Quantity));
-				quantityETID.setBackgroundColor(Color.TRANSPARENT);
-				quantityETID.setClickable(false);
-				quantityETID.setCursorVisible(true);
-				quantityETID.setFocusableInTouchMode(true);
-				quantityETID.setEnabled(false);
-				quantityETID.setTextSize(15);
-				quantityETID.setTextColor(Color.BLACK);
-				quantityETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				quantityETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                              LayoutParams.WRAP_CONTENT));
-				quantityETID.addTextChangedListener(mTextWatcher);
-				addView(quantityETID);
-
-			*//*TextView description3 = new TextView(mContext);
-			description3.setText("-");
-			description3.setTextSize(15);
-			addView(description3);
-			description3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-			                                                       TableRow.LayoutParams.WRAP_CONTENT));*//*
-				fresETID = new EditText(mContext);
-				*//*if (mProductCategory.Frees != null && !mProductCategory.Frees.isEmpty())
-				{*//*
-				fresETID.setText(String.valueOf(mProductCategory.Frees));
-//				}
-				*//*else
-				{
-					fresETID.setText("-");
-				}*//*
-				fresETID.setBackgroundColor(Color.TRANSPARENT);
-				fresETID.setClickable(true);
-				fresETID.setCursorVisible(true);
-				fresETID.setFocusableInTouchMode(true);
-				fresETID.setTextSize(15);
-				fresETID.setEnabled(false);
-				fresETID.setTextColor(Color.BLACK);
-				fresETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				fresETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                          LayoutParams.WRAP_CONTENT));
-				fresETID.addTextChangedListener(mTextWatcherFres);
-				addView(fresETID);
-
-
-				TextView description = new TextView(mContext);
-				description.setText(String.valueOf(mProductCategory.VAT));
-				description.setTextSize(15);
-
-				//description.setPadding(15,0,0,0);
-				description.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                             LayoutParams.WRAP_CONTENT));
-				addView(description);
-
-			*//*	TextView description2 = new TextView(mContext);
-				description2.setText(String.valueOf(mProductCategory.SubTotalAmount));
-				description2.setTextSize(15);
-				description.setVisibility(View.GONE);
-				description2.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-				                                              LayoutParams.WRAP_CONTENT));
-				addView(description2);
-*//*
-				ImageView deleteimg = new ImageView(mContext);
-				deleteimg.setImageResource(R.drawable.delete);
-
-				deleteimg.setMaxWidth(25);
-				deleteimg.setMaxHeight(25);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-				{
-					deleteimg.setForegroundGravity(Gravity.CENTER_VERTICAL);
-				}
-//				deleteimg.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				addView(deleteimg);
-				deleteimg.setOnClickListener(new OnClickListener()
-				{
-					@Override
-					public void onClick(final View v)
-					{
-						try
-						{
-							if (1 < storedProductCategories.size())
-							{
-								int temposition = position + 1;
-								TableRow row = (TableRow) tableLayout.getChildAt(temposition);
-								tableLayout.removeView(row);
-//								productDP.remove(position - 1);
-								storedProductCategories.remove(position - 1);
-								list.remove(position - 1);
-							}
-							else
-							{
-								Toast.makeText(mContext, "At lease one product item must", Toast.LENGTH_SHORT).show();
-							}
-
-
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-						}
-					}
-				});
-
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				Log.e("", e + "");
-			}
-		}*/
 		private void init()
 		{
 			try
@@ -1202,7 +1019,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 						try
 						{
 							int temposition = position + 1;
-							TableRow row = (TableRow) tableLayout.getChildAt(temposition);
+							android.widget.TableRow row = (android.widget.TableRow) tableLayout.getChildAt(temposition);
 							tableLayout.removeView(row);
 							productDP.remove(position - 1);
 							storedProductCategories.remove(position - 1);
@@ -1214,19 +1031,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 						{
 							e.printStackTrace();
 						}
-
-//						notifyDataSetChanged();
-						//notifyAll();
-						/*int childCount = tableLayout.getChildCount();
-						// Remove all rows except the first one
-						if (childCount > position)
-						{
-//							tableLayout.removeViews(position, childCount - position);
-//							int ll = position;
-							tableLayout.removeViews(0, position);
-						}*/
-						/*storedProductCategories.get(position).getQuantity();
-						tableLayout.removeView(position);*/
 					}
 				});
 
@@ -1357,26 +1161,12 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			ret = false;
 			return ret;
 		}
-		/*if (!cameracaptured)
-		{
-
-
-		}*/
-
-		/*if (productCategoryId == null || productCategoryId.isEmpty() || productCategoryId.equals("0"))
-			{
-				Toast.makeText(getApplicationContext(), "Please Select Product Category Name", Toast.LENGTH_SHORT).show();
-				ret = false;
-				return ret;
-			}*/
-		if (selected_paymentNameId == null || selected_paymentNameId.isEmpty() || selected_paymentNameId.equals("0"))
+		if (selected_paymentTermsId == null || selected_paymentTermsId.isEmpty() || selected_paymentTermsId.equals("0"))
 		{
 			Toast.makeText(getApplicationContext(), "Please Select Payment Terms Name", Toast.LENGTH_SHORT).show();
 			ret = false;
 			return ret;
 		}
-
-
 		return ret;
 	}
 
@@ -1427,7 +1217,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
-					Intent in = new Intent(UpdateOrderActvity.this, DashboardActivity.class);
+					Intent in = new Intent(UpdateOrderDetailsActivity.this, DashboardActivity.class);
 					Util.killorderBook();
 					startActivity(in);
 				}
@@ -1442,19 +1232,19 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 				if (check1)
 				{
 
-					Intent in = new Intent(UpdateOrderActvity.this, Order.class);
+					Intent in = new Intent(UpdateOrderDetailsActivity.this, Order.class);
 					Util.killorderBook();
 					startActivity(in);
 				}
 				else if (check2)
 				{
-					Intent inten = new Intent(UpdateOrderActvity.this, Invoice.class);
+					Intent inten = new Intent(UpdateOrderDetailsActivity.this, Invoice.class);
 					Util.killorderBook();
 					startActivity(inten);
 				}
 				else if (check3)
 				{
-					Intent inten = new Intent(UpdateOrderActvity.this, ViewListActivity.class);
+					Intent inten = new Intent(UpdateOrderDetailsActivity.this, ViewListActivity.class);
 					Util.killupdateorderBook();
 					startActivity(inten);
 				}
@@ -1486,13 +1276,10 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		if (type.equals("Days to Cheque"))
 		{
 			daysAccess();
-//			DialogFragment newFragment = new DatePickerFragmentDailog();
-//			newFragment.show(getSupportFragmentManager(), "datePicker");
-
 		}
 		else if (type.equals("Cheque"))
 		{
-			DialogFragment newFragment = new UpdateOrderActvity.DatePickerFragmentDailog();
+			DialogFragment newFragment = new UpdateOrderDetailsActivity.DatePickerFragmentDailog();
 			newFragment.show(getSupportFragmentManager(), "datePicker");
 		}
 		else if (type.equals("Credit-days"))
@@ -1510,9 +1297,8 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
-					selected_paymentNameId = "";
-					payment_sp.setSelection(0);
-//					refreshActivity();
+					selected_paymentTermsId = "";
+					payment_terms_spinner.setSelection(0);
 				}
 			}
 		});
@@ -1522,10 +1308,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			@Override
 			public void onClick(final View v)
 			{
-				//Days to Cheque
-				/*String Days = "Days to Cheque";
-				if (type.equals(Days))
-				{*/
 				String daysCredits = creditdays.getText().toString();
 				if (daysCredits != null && !daysCredits.isEmpty())
 				{
@@ -1534,21 +1316,12 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 				}
 				promoDialog.dismiss();
 				Util.hideSoftKeyboard(mContext, v);
-//				}
-
-
 			}
 		});
-
-
-//		datePicker.
-
-
 	}
 
 	private void daysAccess()
 	{
-
 		promoDialog.show();
 		paymentSelected.setText("");
 		creditDaysLayout.setVisibility(View.VISIBLE);
@@ -1582,14 +1355,13 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			paymentSelected.setText("");
 			paymentSelected.setVisibility(View.VISIBLE);
 			paymentSelected.setText(sectiondate);
-
 			SharedPrefsUtil.setStringPreference(getContext(), "SelectedDate", sectiondate);
-			// Do something with the date chosen by the user
 
 		}
 
 
 	}
+
 
 	private void zoneSpinnerAdapter(JSONArray jsonArray)
 	{
@@ -1618,35 +1390,9 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		{
 			e.printStackTrace();
 		}
-
-		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, zoneNamestitle);
-		dataAdapter_zoneName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		zone_sp.setAdapter(dataAdapter_zoneName);
-
+		SPINNER_SELECTION = "ZONE";
+		adapterDataAssigingToSpinner(zoneNamestitle, SPINNER_SELECTION);
 		autoFillDetails();
-
-		zone_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-			{
-				if (position != 0)
-				{
-					selected_zoneId = _zoneNamesData.get(position - 1).getShopId();
-//					availRoutetxt.setVisibility(View.GONE);
-					availAreatxt.setVisibility(View.GONE);
-//					routeName_sp.setVisibility(View.VISIBLE);
-					areaName_sp.setVisibility(View.VISIBLE);
-					HttpAdapter.getRouteDetails(UpdateOrderActvity.this, "routeName", selected_zoneId);
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-
-			}
-		});
 	}
 
 	private void routeNoSpinnerAdapter(JSONArray jsonArray)
@@ -1655,11 +1401,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		{
 			_routeCodesData.clear();
 			routeNamestitle.clear();
-
-//			_areaNamesData.clear();
-//			areaNamestitle.clear();
-			//selectAreaNameBind();
-
 			_routeCodesData = new ArrayList<ShopNamesData>();
 			for (int i = 0; i < jsonArray.length(); i++)
 			{
@@ -1683,52 +1424,18 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		{
 			e.printStackTrace();
 		}
-		//Routedetails adapter
-		ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
-		dataAdapter_routeName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		routeName_sp.setAdapter(dataAdapter_routeName);
-
-		if (!routeDropDownItemSeleted)
+		SPINNER_SELECTION = "ROUTE";
+		adapterDataAssigingToSpinner(routeNamestitle, SPINNER_SELECTION);
+		if (!zoneTouchClick)
 		{
-			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
-			placingAvailRouteNo(Integer.parseInt(selected_roueId));
+			routeName_spinner.setSelection(getIndex(routeName_spinner, Integer.parseInt(selected_roueId), _routeCodesData), false);
+			HttpAdapter.getAreaDetailsByRoute(UpdateOrderDetailsActivity.this, "areaNameDP", selected_roueId);
 		}
-		else
+		else if (!routeTouchClick)
 		{
-			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
-			areaName_sp.setVisibility(View.VISIBLE);
-			shopName_sp.setVisibility(View.VISIBLE);
+			selectAreaNameBind();
+			selectShopNameBind();
 		}
-
-
-		routeName_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-			{
-				if (position != 0)
-				{
-					availRoutetxt.setVisibility(View.GONE);
-					availAreatxt.setVisibility(View.GONE);
-					availShopnametxt.setVisibility(View.GONE);
-					routeName_sp.setVisibility(View.VISIBLE);
-					areaName_sp.setVisibility(View.VISIBLE);
-					shopName_sp.setVisibility(View.VISIBLE);
-
-					routeDropDownItemSeleted = true;
-					selected_roueId = _routeCodesData.get(position - 1).getShopId(); //3
-					selected_areaNameId = "";
-					selected_ShopId = "";
-					HttpAdapter.getAreaDetailsByRoute(UpdateOrderActvity.this, "areaNameDP", selected_roueId);
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-
-			}
-		});
 	}
 
 	private void areaNameSpinnerAdapter(final JSONArray jsonArray)
@@ -1759,48 +1466,8 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			e.printStackTrace();
 		}
 
-		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
-		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		areaName_sp.setAdapter(dataAdapter_areaName);
-
-		if (!routeDropDownItemSeleted)
-		{
-			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
-			placingAvailAreaName(Integer.parseInt(selected_areaNameId));
-		}
-		else
-		{
-			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
-			areaName_sp.setVisibility(View.VISIBLE);
-			shopName_sp.setVisibility(View.VISIBLE);
-		}
-
-
-		areaName_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-			{
-				if (position != 0)
-				{
-//					availRoutetxt.setVisibility(View.GONE);
-					availAreatxt.setVisibility(View.GONE);
-					availShopnametxt.setVisibility(View.GONE);
-					shopName_sp.setVisibility(View.VISIBLE);
-					areaDropDownItemSeleted = true;
-					selected_areaNameId = _areaNamesData.get(position - 1).getShopId();
-					selected_ShopId = "";
-
-					HttpAdapter.getShopDetailsDP(UpdateOrderActvity.this, "shopName", selected_areaNameId);
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-
-			}
-		});
+		SPINNER_SELECTION = "AREA";
+		adapterDataAssigingToSpinner(areaNamestitle, SPINNER_SELECTION);
 	}
 
 	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
@@ -1831,48 +1498,8 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		catch (Exception e)
 		{
 		}
-		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this,
-		                                                                     android.R.layout.simple_spinner_item,
-		                                                                     shoptypesNamestitle);
-		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		shopName_sp.setAdapter(dataAdapter_shopType);
-
-		if (!areaDropDownItemSeleted)
-		{
-			placingAvailShopName(Integer.parseInt(selected_ShopId));
-		}
-		else
-		{
-			shopName_sp.setVisibility(View.VISIBLE);
-		}
-
-
-		shopName_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-			{
-				try
-				{
-					if (position != 0)
-					{
-						selected_ShopId = _shoptypesData.get(position - 1).getShopId();
-						//HttpAdapter.shopEditDetails(UpdateOrderActvity.this, "editShopDetails", selected_ShopId);
-					}
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-
-			}
-		});
+		SPINNER_SELECTION = "SHOP";
+		adapterDataAssigingToSpinner(shoptypesNamestitle, SPINNER_SELECTION);
 	}
 
 	private void orderStatusSpinnerAdapter(final JSONArray jsonArray)
@@ -1902,37 +1529,8 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		catch (Exception e)
 		{
 		}
-		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this,
-		                                                                     android.R.layout.simple_spinner_item,
-		                                                                     orderStatusTitle);
-		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		orderStatus_sp.setAdapter(dataAdapter_shopType);
-
-		orderStatus_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-			{
-				try
-				{
-					if (position != 0)
-					{
-						selected_orderStatusId = _orderStatusData.get(position - 1).getShopId();
-					}
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-
-			}
-		});
+		SPINNER_SELECTION = "ORDER_STATUS";
+		adapterDataAssigingToSpinner(orderStatusTitle, SPINNER_SELECTION);
 	}
 
 	private void paymentNamesSpinnerAdapter(final JSONArray jsonArray)
@@ -1962,55 +1560,8 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		catch (Exception e)
 		{
 		}
-		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, paymentNamestitle);
-		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		payment_sp.setAdapter(dataAdapter_shopType);
-		payment_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-			{
-				try
-				{
-					if (paymentTermsTouchClick)
-					{
-						if (position != 0)
-						{
-							selected_paymentNameId = _paymentsSelectData.get(position - 1).getShopId();
-							String paymentSelected = _paymentsSelectData.get(position - 1).getShopName();
-							Log.e("paymentSelected", paymentSelected);
-							if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
-							{
-								if (paymentSelected.equalsIgnoreCase("Credit-days"))
-								{
-									dailogBoxforPaymentSelection("Credit-days");
-								}
-								else if (paymentSelected.equalsIgnoreCase("Days to Cheque"))
-								{
-									dailogBoxforPaymentSelection("Days to Cheque");
-								}
-								else if (paymentSelected.equalsIgnoreCase("Cheque"))
-								{
-									dailogBoxforPaymentSelection("Cheque");
-								}
-							}
-						}
-					}
-
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-
-			}
-		});
+		SPINNER_SELECTION = "PAYMENT_SELECT";
+		adapterDataAssigingToSpinner(paymentNamestitle, SPINNER_SELECTION);
 	}
 
 	//By Default Bind Selection Drop downs
@@ -2019,7 +1570,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		zoneDetailsDP_str.add("Select Zone No");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, zoneDetailsDP_str);
 		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		routeName_sp.setAdapter(dataAdapter_areaName);
+		routeName_spinner.setAdapter(dataAdapter_areaName);
 		selectRouteNameBind();
 	}
 
@@ -2028,7 +1579,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		routenostitle.add("Select Route No");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routenostitle);
 		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		routeName_sp.setAdapter(dataAdapter_areaName);
+		routeName_spinner.setAdapter(dataAdapter_areaName);
 		selectAreaNameBind();
 	}
 
@@ -2037,7 +1588,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		areaDetailsDP_str.add("Select Area Name");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaDetailsDP_str);
 		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		areaName_sp.setAdapter(dataAdapter_areaName);
+		areaName_spinner.setAdapter(dataAdapter_areaName);
 		selectShopNameBind();
 	}
 
@@ -2046,7 +1597,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		shopNameDP_str.add("Select Shop Name");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shopNameDP_str);
 		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		shopName_sp.setAdapter(dataAdapter_areaName);
+		shopname_spinner.setAdapter(dataAdapter_areaName);
 	}
 
 	////////
@@ -2082,6 +1633,38 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		}
 		return searchIdIndex; // Not found
 	}
-}
 
+
+	private void adapterDataAssigingToSpinner(ArrayList<String> spinnerTitles, String spinnerSelction)
+	{
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerTitles);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		if (spinnerSelction.equals("ZONE"))
+		{
+			zone_name_spinner.setAdapter(dataAdapter);
+		}
+		else if (spinnerSelction.equals("ROUTE"))
+		{
+			routeName_spinner.setAdapter(dataAdapter);
+		}
+		else if (spinnerSelction.equals("AREA"))
+		{
+			areaName_spinner.setAdapter(dataAdapter);
+		}
+		else if (spinnerSelction.equals("SHOP"))
+		{
+			shopname_spinner.setAdapter(dataAdapter);
+		}
+		else if (spinnerSelction.equals("ORDER_STATUS"))
+		{
+			order_status_spinner.setAdapter(dataAdapter);
+		}
+		else if (spinnerSelction.equals("PAYMENT_SELECT"))
+		{
+			payment_terms_spinner.setAdapter(dataAdapter);
+		}
+
+
+	}
+}
 

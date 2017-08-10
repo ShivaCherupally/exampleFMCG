@@ -68,6 +68,8 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/orderlabeltxt"
+
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -151,11 +153,11 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/orderDateLL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-
-               >
+                >
 
                 <TextView
                     android:layout_width="0dp"
@@ -199,9 +201,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
+                android:orientation="horizontal"
                 android:paddingBottom="@dimen/five"
-                android:paddingTop="@dimen/five"
-                android:orientation="horizontal">
+                android:paddingTop="@dimen/five">
 
                 <TextView
                     android:id="@+id/shopNameLabeltxt"
@@ -310,7 +312,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
-
 
 
                 <LinearLayout
@@ -550,10 +551,10 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center_horizontal|bottom"
+                    android:layout_marginBottom="@dimen/two"
                     android:gravity="bottom"
                     android:paddingBottom="@dimen/layout_margin_default"
                     android:scaleType="fitCenter"
-                    android:layout_marginBottom="@dimen/two"
                     android:src="@drawable/close_list_icon"/>
             </FrameLayout>
 

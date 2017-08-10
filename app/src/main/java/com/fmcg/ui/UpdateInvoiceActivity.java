@@ -180,6 +180,8 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 	String orderStatusName = "";
 	String OrderSalesId = "";
 
+	ProgressDialog progressdailog;
+
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -191,6 +193,8 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+		progressdailog = Utility.setProgressDailog(mContext);
 
 		//initializing the variables
 		tableLayout = (TableLayout) findViewById(R.id.tableRow1);
@@ -334,6 +338,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		});
 	}
 
+
 	public String serviceCallInvoiceCancelOrder()
 	{
 		String responseBody = null;
@@ -470,7 +475,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 						{
 
 							JSONArray cartItemsArray = new JSONArray();
-							JSONArray griddataArray = new JSONArray();
+							JSONArray productGridData = new JSONArray();
 							if (storedProductCategories != null && !storedProductCategories.isEmpty())
 							{
 								Log.d("Order", "Stored_Products" + " : " + storedProductCategories.toString());
@@ -539,15 +544,20 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 									JSONObject categoryData = new JSONObject();
 									for (int i = 0, len = cartItemsArray.length(); i < len; i++)
 									{
+										//{"ProductId":5,"ProductName":"Dishy 500gms ","ProductPrice":10,"VAT":14.5,"GST":0,"Quantity":1,"Frees":0}
 										categoryData.put("ProductId", cartItemsArray.getJSONObject(i).getInt("ProductId"));
+
 										categoryData.put("ProductPrice", cartItemsArray.getJSONObject(i).getInt("ProductPrice"));
 										categoryData.put("Quantity", cartItemsArray.getJSONObject(i).getInt("Quantity"));
+										//categoryData.put("ProductName", cartItemsArray.getJSONObject(i).getString("ProductName"));
 										categoryData.put("Frees", cartItemsArray.getJSONObject(i).getInt("Frees"));
 										categoryData.put("VAT", cartItemsArray.getJSONObject(i).getDouble("VAT"));
 										categoryData.put("GST", cartItemsArray.getJSONObject(i).getInt("GST"));
+										productGridData.put(categoryData);
+										/*{"ProductList":[{"ProductId":3,"ProductPrice":10,"Quantity":1,"Frees":0,"VAT":14.5,"GST":0}]}*/
 									}
-									griddataArray.put(categoryData);
-									Log.e("griddataArray", griddataArray.toString());
+//									griddataArray.put(categoryData);
+									Log.e("griddataArray", productGridData.toString());
 								}
 
 							}
@@ -561,7 +571,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 							                                            selected_ShopId, order_No_Txt.getText().toString(), "Y", "",
 							                                            SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"),
 							                                            TotalAmount, paidAmt.getText().toString(),
-							                                            selected_paymentNameId, chequeDate, CreditDays, griddataArray);
+							                                            selected_paymentNameId, chequeDate, CreditDays, productGridData);
 							Log.e("parameters", jsonString + "");
 							HttpAdapter.updateInvoiceSave(this, "updateInvoiceSubmit", jsonString);
 						}
@@ -819,7 +829,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 	                                       String AreaId, String ShopId, String orderNo, String inVoice,
 	                                       String Remarks, String EmployeeId,
 	                                       String totalAmountStr, String paidAmountstr
-			, String paymentTermsId, String chequeDate, String creditDays, JSONArray cartItemsArray
+			, String paymentTermsId, String chequeDate, String creditDays, JSONArray productGridData
 	)
 	{
 
@@ -839,20 +849,29 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		JSONObject dataObj = new JSONObject();
 		try
 		{
+			//"InVoiceSubmitData":{"ShopId":"353","ZoneId":"2",
+			/*"RouteId":"1","AreaId":"1","OrderNumber":"OB_000017","PaymentTermsId":"3",
+				"OrderSalesId":"8","PaymentDateCheque":"24-07-2017","CreditDays":"0","OrderStatusId":"2"}*/
 			dataObj.putOpt("ShopId", ShopId);
 			dataObj.putOpt("ZoneId", ZoneId);
 			dataObj.putOpt("RouteId", RouteId);
 			dataObj.putOpt("AreaId", AreaId);
 			dataObj.putOpt("OrderNumber", orderNo);
+			dataObj.putOpt("PaymentDateCheque", OrderDeliveryDate);
+
+//			dataObj.putOpt("EmployeeId", EmployeeId);
+
+
 			dataObj.putOpt("PaymentTermsId", paymentTermsId);
-			if (chequeDate != null && !chequeDate.isEmpty())
+			dataObj.putOpt("OrderSalesId", OrderSalesId);
+			/*if (chequeDate != null && !chequeDate.isEmpty())
 			{
 				dataObj.putOpt("PaymentDateCheque", chequeDate);
 			}
 			else
 			{
-				dataObj.putOpt("PaymentDateCheque", null);
-			}
+				dataObj.putOpt("PaymentDateCheque", "");
+			}*/
 
 			if (creditDays != null && !creditDays.isEmpty())
 			{
@@ -860,13 +879,17 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 			}
 			else
 			{
-				dataObj.putOpt("CreditDays", null);
+				dataObj.putOpt("CreditDays", "0");
 			}
-			dataObj.putOpt("OrderSalesId", OrderSalesId);
-			dataObj.putOpt("OrderDeliveryDate", OrderDeliveryDate);
 			dataObj.putOpt("OrderStatusId", selected_orderStatusId);
-			productListObj.put("ProductList", cartItemsArray);
+			productListObj.put("ProductList", productGridData);
 			productListObj.put("InVoiceSubmitData", dataObj);
+
+			/*{"ProductList":[{"ProductId":3,"ProductPrice":10,"Quantity":1,"Frees":0,"VAT":14.5,"GST":0}],
+"InVoiceSubmitData":{"ShopId":"353","ZoneId":"2",
+"RouteId":"1","AreaId":"1","OrderNumber":"OB_000017","PaymentTermsId":"3",
+"OrderSalesId":"8","PaymentDateCheque":"24-07-2017","CreditDays":"0","OrderStatusId":"2"}}*/
+
 		}
 		catch (JSONException e)
 		{
@@ -876,6 +899,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		Log.e("params", productListObj.toString());
 		return productListObj.toString();
 	}
+
 
 	private boolean validationEntryData()
 	{
@@ -1334,8 +1358,8 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
-					//paymentTermsId = "";
-					//payment_sp.setSelection(0);
+					selected_paymentNameId = "";
+					payment_sp.setSelection(0);
 //					refreshActivity();
 				}
 			}
@@ -1484,10 +1508,14 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 			int zoneId = editDatajsonObj.getInt("ZoneId");
 			int RouteId = editDatajsonObj.getInt("RouteId");
 			int AreaId = editDatajsonObj.getInt("AreaId");
+			int orderStatusID = editDatajsonObj.getInt("OrderStatusId"); //PaymentTermsId OrderStatusId
+			int PaymentTermsId = editDatajsonObj.getInt("PaymentTermsId");
+
 			selected_zoneId = String.valueOf(zoneId);
 			selected_roueId = String.valueOf(RouteId);
 			selected_areaNameId = String.valueOf(AreaId);
 			selected_ShopId = String.valueOf(ShopId);
+
 
 			zone_sp.setBackgroundColor(Color.TRANSPARENT);
 			zone_sp.setClickable(false);
@@ -1496,8 +1524,6 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 
 			try
 			{
-				int PaymentTermsId = editDatajsonObj.getInt("PaymentTermsId");
-				PaymentTermsId = 2;
 				selected_paymentNameId = String.valueOf(PaymentTermsId);
 				payment_sp.setSelection(getIndexWithId(payment_sp, PaymentTermsId, _paymentsSelectData), false);
 			}
@@ -1506,13 +1532,9 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 			}
 			try
 			{
-				int orderStatusID = editDatajsonObj.getInt("orderStatusID");
 				selected_orderStatusId = String.valueOf(orderStatusID);
-				if (Status != null && !Status.equalsIgnoreCase("null"))
-				{
-					orderStatusName = Status;
-				}
-				orderStatus_sp.setSelection(getIndexWithName(orderStatus_sp, orderStatusName, _orderStatusData), false);
+				orderStatus_sp.setSelection(getIndexWithId(orderStatus_sp, orderStatusID, _orderStatusData), false);
+				//orderStatus_sp.setSelection(getIndexWithName(orderStatus_sp, orderStatusName, _orderStatusData), false);
 			}
 			catch (Exception e)
 			{
@@ -1920,6 +1942,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 						{
 							selected_paymentNameId = _paymentsSelectData.get(position - 1).getShopId();
 							String paymentSelected = _paymentsSelectData.get(position - 1).getShopName();
+							SharedPrefsUtil.setStringPreference(mContext, "paymentSelected", paymentSelected);
 							Log.e("paymentSelected", paymentSelected);
 							if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
 							{
