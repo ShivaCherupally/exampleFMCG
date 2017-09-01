@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -190,6 +191,8 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	String selected_paymentTermsId = "";
 	String SPINNER_SELECTION = "";
 
+	AutoCompleteTextView shopName_autoComplete;
+
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -210,10 +213,10 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
 		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
 		areaName_sp = (Spinner) findViewById(R.id.areaName_spinner);
-		shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
+		//shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
+		shopName_autoComplete = (AutoCompleteTextView) findViewById(R.id.shopName_autoComplete);
 		orderStatus_sp = (Spinner) findViewById(R.id.order_status_spinner);
 		payment_sp = (Spinner) findViewById(R.id.payment_terms_spinner);
-
 
 
 		isShopClosed = (CheckBox) findViewById(R.id.isClosed);
@@ -271,7 +274,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		zone_sp.setOnItemSelectedListener(this);
 		routeName_sp.setOnItemSelectedListener(this);
 		areaName_sp.setOnItemSelectedListener(this);
-		shopName_sp.setOnItemSelectedListener(this);
+//		shopName_sp.setOnItemSelectedListener(this);
 		orderStatus_sp.setOnItemSelectedListener(this);
 		payment_sp.setOnItemSelectedListener(this);
 	}
@@ -340,10 +343,10 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				selectedSpinner = "AREA";
 				dropDownValueSelection(position, _areaNamesData, selectedSpinner);
 				break;
-			case R.id.shopname_spinner:
+			/*case R.id.shopname_spinner:
 				selectedSpinner = "SHOP";
 				dropDownValueSelection(position, _shopNamesData, selectedSpinner);
-				break;
+				break;*/
 			case R.id.order_status_spinner:
 				selectedSpinner = "ORDER_STATUS";
 				dropDownValueSelection(position, _orderStatusData, selectedSpinner);
@@ -384,11 +387,11 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 						selected_areaNameId = _dropDownData.get(position - 1).getShopId();
 						HttpAdapter.getShopDetailsDP(Invoice.this, "shopName", selected_areaNameId);
 					}
-					else if (selectedSpinner.equals("SHOP"))
+					/*else if (selectedSpinner.equals("SHOP"))
 					{
 						selected_ShopId = _dropDownData.get(position - 1).getShopId();
 						HttpAdapter.getOrderNumberDp(Invoice.this, "orderNumber", selected_ShopId);
-					}
+					}*/
 					else if (selectedSpinner.equals("ORDER_STATUS"))
 					{
 						selected_orderStatusId = _dropDownData.get(position - 1).getShopId();
@@ -749,21 +752,17 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				{
 					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
 					{
+						//SI_00002
 						Log.e("Invoiceresponse", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
-						Toast.makeText(mContext, "Successfully Uploaded.", Toast.LENGTH_SHORT).show();
-						//com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Successfully Uploaded..", "OK");
-						/*Intent i = new Intent(Invoice.this, Invoice.class);
-						startActivity(i);*/
+						Toast.makeText(mContext, "Successfully Saved", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "Your Invoice Number is " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
 						dailogBoxAfterSubmit();
 					}
 					else
 					{
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
-						Toast.makeText(mContext, "UnSuccessfully Uploaded.", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "UnSuccessfully Saved.", Toast.LENGTH_SHORT).show();
 						dailogBoxAfterSubmit();
-						//	com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Failed Uploaded", "OK");
-						/*Intent i = new Intent(Order.this, Order.class);
-						startActivity(i);*/
 					}
 
 				}
@@ -920,7 +919,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		JSONObject dataObj = new JSONObject();
 		try
 		{
-			dataObj.putOpt("OrderInvoiceNumber", OrderNumber);
+//			dataObj.putOpt("OrderInvoiceNumber", OrderNumber);
 			dataObj.putOpt("ZoneId", ZoneId);
 			dataObj.putOpt("RouteId", RouteId);
 			dataObj.putOpt("AreaId", AreaId);
@@ -1019,7 +1018,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				double paidValue = Double.parseDouble(paidAmount);
 				if (totalValue >= paidValue)
 				{
-					Toast.makeText(getApplicationContext(), "Paid Amount " + paidValue, Toast.LENGTH_SHORT).show();
+					//Toast.makeText(getApplicationContext(), "Paid Amount " + paidValue, Toast.LENGTH_SHORT).show();
 					/*Toast.makeText(getApplicationContext(), "Please Check Paid Amount", Toast.LENGTH_SHORT).show();
 					ret = false;
 					return ret;*/
@@ -1566,7 +1565,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				String shopNamee = jsnobj.getString("ShopName");
 				_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			shooNamestitle.add("Select Shop Name");
+			//shooNamestitle.add("Select Shop Name");
 			if (_shopNamesData.size() > 0)
 			{
 				for (int i = 0; i < _shopNamesData.size(); i++)
@@ -1578,8 +1577,42 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		catch (Exception e)
 		{
 		}
-		SPINNER_SELECTION = "SHOP";
-		adapterDataAssigingToSpinner(shooNamestitle, SPINNER_SELECTION);
+		/*SPINNER_SELECTION = "SHOP";
+		adapterDataAssigingToSpinner(shooNamestitle, SPINNER_SELECTION);*/
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
+		shopName_autoComplete.setThreshold(1);
+		shopName_autoComplete.setAdapter(adapter);
+		shopName_autoComplete.setTextColor(Color.BLACK);
+		shopName_autoComplete.setTextSize(16);
+
+		shopName_autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
+			{
+				try
+				{
+					String selectedName = shopName_autoComplete.getText().toString();
+					Log.e("entryShopName", selectedName);
+					for (int i = 0; i < _shopNamesData.size(); i++)
+					{
+						String availName = _shopNamesData.get(i).getShopName();
+						if (availName.equals(selectedName))
+						{
+							selected_ShopId = _shopNamesData.get(i).getShopId();
+							Log.e("selected_ShopId", selected_ShopId + "");
+							HttpAdapter.getOrderNumberDp(Invoice.this, "orderNumber", selected_ShopId);
+							break;
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	private void orderStatusSpinnerAdapter(final JSONArray jsonArray)
@@ -1661,10 +1694,10 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		{
 			areaName_sp.setAdapter(dataAdapter);
 		}
-		else if (spinnerSelction.equals("SHOP"))
+		/*else if (spinnerSelction.equals("SHOP"))
 		{
 			shopName_sp.setAdapter(dataAdapter);
-		}
+		}*/
 		else if (spinnerSelction.equals("ORDER_STATUS"))
 		{
 			orderStatus_sp.setAdapter(dataAdapter);

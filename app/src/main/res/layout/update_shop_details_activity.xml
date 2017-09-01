@@ -48,15 +48,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
                     android:background="@color/empty"
+                    android:drawableRight="@drawable/dropdownarrowsmall"
                     android:hint="@string/select_zone"
                     android:maxLines="1"
                     android:padding="8dp"
                     android:textColor="@color/HeaderColor"
                     android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="17sp"
-                    android:drawableRight="@drawable/dropdownarrowsmall"
-                    android:layout_marginRight="10dp"
                     android:visibility="gone"
                     />
 
@@ -114,11 +114,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
                     android:background="@color/empty"
+                    android:drawableRight="@drawable/dropdownarrowsmall"
                     android:hint="@string/select_route"
                     android:maxLines="1"
-                    android:drawableRight="@drawable/dropdownarrowsmall"
-                    android:layout_marginRight="10dp"
                     android:padding="8dp"
                     android:textColor="@color/HeaderColor"
                     android:textCursorDrawable="@drawable/color_cursor"
@@ -140,15 +140,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
                     android:background="@color/empty"
+                    android:drawableRight="@drawable/dropdownarrowsmall"
                     android:hint="@string/select_area"
                     android:maxLines="1"
                     android:padding="8dp"
                     android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="17sp"
                     android:visibility="gone"
-                    android:drawableRight="@drawable/dropdownarrowsmall"
-                    android:layout_marginRight="10dp"
                     />
 
                 <Spinner
@@ -184,7 +184,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edittext_whites"
                 android:orientation="horizontal"
-              >
+                >
 
                 <Spinner
                     android:id="@+id/shop_type_dp"

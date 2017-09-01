@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -89,8 +90,7 @@ import java.util.Map;
 
 public class UpdateCustomerNewActivity extends AppCompatActivity implements View.OnClickListener, LocationListener,
                                                                             GoogleApiClient.OnConnectionFailedListener,
-                                                                            GoogleApiClient.ConnectionCallbacks,
-                                                                            NetworkOperationListener
+                                                                            GoogleApiClient.ConnectionCallbacks, NetworkOperationListener
 {
 	SharedPreferences sharedPreferences;
 	public List<GetZoneDetails> zoneDetailsDP;
@@ -106,6 +106,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	private LocationManager locationManager;
 	public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 	Context mContext;
+	AutoCompleteTextView shopName_autoComplete;
 	ArrayList<ShopNamesData> _shopNamesData = new ArrayList<ShopNamesData>(); //Shop Names Newly added
 	ArrayList<ShopNamesData> _zoneNamesData = new ArrayList<ShopNamesData>(); //Zone Drop down
 	ArrayList<ShopNamesData> _routeCodesData = new ArrayList<ShopNamesData>(); //Route Drop Down
@@ -179,6 +180,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 		zoneDetailsDP = new ArrayList<>();
 		routeDetailsDP = new ArrayList<>();
+
+		shopName_autoComplete = (AutoCompleteTextView) findViewById(R.id.shopName_autoComplete);
 
 		HttpAdapter.getShopDetailsDP(UpdateCustomerNewActivity.this, "shopNames", "0");
 		HttpAdapter.getZoneDetailsDP(UpdateCustomerNewActivity.this, "zoneName");
@@ -404,10 +407,10 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	{
 		try
 		{
-			Log.e("response", jsnobj.toString() + "");
+			Log.e("responseShopDetails", jsnobj.toString() + "");
 			int shopId = jsnobj.getInt("ShopId");
 			String ShopCode = jsnobj.getString("ShopCode");
-			int ShopCategoryId = jsnobj.getInt("ShopCategoryId");
+//			int ShopCategoryId = jsnobj.getString("ShopCategoryId");
 			String ShopName = jsnobj.getString("ShopName");
 			String ShopDescription = jsnobj.getString("ShopDescription");
 			String OwnerName = jsnobj.getString("OwnerName");
@@ -462,6 +465,10 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 					{
 						shopname.setText(ShopName + "");
 					}
+					else
+					{
+						shopname.setText("");
+					}
 				}
 
 				//Owner Name
@@ -469,17 +476,29 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				{
 					ownername.setText(OwnerName + "");
 				}
+				else
+				{
+					ownername.setText("");
+				}
 
 				//LandMark
 				if (LocationName != null && !LocationName.isEmpty() && !LocationName.equalsIgnoreCase("null"))
 				{
 					locationName.setText(LocationName + "");
 				}
+				else
+				{
+					locationName.setText("");
+				}
 
 				//Address
 				if (Address != null && !Address.isEmpty() && !Address.equalsIgnoreCase("null"))
 				{
 					shop_address.setText(Address + "");
+				}
+				else
+				{
+					shop_address.setText("");
 				}
 
 				try
@@ -488,6 +507,10 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 					if (PinCode != null && !PinCode.isEmpty() && !PinCode.equalsIgnoreCase("null"))
 					{
 						pin.setText(PinCode + "");
+					}
+					else
+					{
+						pin.setText("");
 					}
 				}
 				catch (Exception e)
@@ -513,17 +536,29 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				{
 					emailId.setText(emailIdStr + "");
 				}
+				else
+				{
+					emailId.setText("");
+				}
 
 				//Mobile No
 				if (MobileNumber != null && !MobileNumber.isEmpty() && !MobileNumber.equalsIgnoreCase("null"))
 				{
 					mobile.setText(MobileNumber + "");
 				}
+				else
+				{
+					mobile.setText("");
+				}
 
 				//Phone Number phone
 				if (PhoneNumber != null && !PhoneNumber.isEmpty() && !PhoneNumber.equalsIgnoreCase("null"))
 				{
 					phone.setText(PhoneNumber + "");
+				}
+				else
+				{
+					phone.setText("");
 				}
 
 			}
@@ -761,6 +796,13 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	{
 		boolean ret = true;
 		Log.e("ZoneId", selected_zoneId);
+		if (selected_ShopId == null || selected_ShopId.isEmpty() || selected_ShopId.equals("0"))
+		{
+			Toast.makeText(getApplicationContext(), "Please Enter Shop Name", Toast.LENGTH_SHORT).show();
+			ret = false;
+			return ret;
+		}
+
 		if (selected_zoneId == null || selected_zoneId.isEmpty() || selected_zoneId.equals("0"))
 		{
 			Toast.makeText(getApplicationContext(), "Please Select Zone Name", Toast.LENGTH_SHORT).show();
@@ -790,12 +832,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 
 
-		if (selected_ShopId == null || selected_ShopId.isEmpty() || selected_ShopId.equals("0"))
-		{
-			Toast.makeText(getApplicationContext(), "Please Select Shop Name", Toast.LENGTH_SHORT).show();
-			ret = false;
-			return ret;
-		}
 		if (selected_ShopTypeId == null || selected_ShopTypeId.isEmpty() || selected_ShopTypeId.equals("0"))
 		{
 			Toast.makeText(getApplicationContext(), "Please Select Shop Type", Toast.LENGTH_SHORT).show();
@@ -1109,7 +1145,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				String shopNamee = jsnobj.getString("ShopName");
 				_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			shooNamestitle.add("Select Shop Name");
+//			shooNamestitle.add("Select Shop Name");
 			if (_shopNamesData.size() > 0)
 			{
 				for (int i = 0; i < _shopNamesData.size(); i++)
@@ -1124,7 +1160,50 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shooNamestitle);
 		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		shopName_spinner.setAdapter(dataAdapter_shopType);
-		shopName_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
+		shopName_autoComplete.setThreshold(1);//will start working from first character
+		shopName_autoComplete.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
+//		shopName_autoComplete.setTextColor(Color.RED);
+
+		shopName_autoComplete.setTextColor(Color.BLACK);
+		shopName_autoComplete.setTextSize(16);
+
+		shopName_autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
+			{
+				try
+				{
+					String selectedName = shopName_autoComplete.getText().toString();
+					Log.e("entryShopName", selectedName);
+					for (int i = 0; i < _shopNamesData.size(); i++)
+					{
+						String availName = _shopNamesData.get(i).getShopName();
+						if (availName.equals(selectedName))
+						{
+							selected_ShopId = _shopNamesData.get(i).getShopId();
+							Log.e("selected_ShopId", selected_ShopId + "");
+							HttpAdapter.shopEditDetails(UpdateCustomerNewActivity.this, "editShopDetails", selected_ShopId);
+							break;
+						}
+					}
+					/*if (position != 0)
+					{
+						selected_ShopId = _shopNamesData.get(position - 1).getShopId();
+						Log.e("selected_ShopId", selected_ShopId + "Selected");
+						HttpAdapter.shopEditDetails(UpdateCustomerNewActivity.this, "editShopDetails", selected_ShopId);
+					}*/
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+
+		/*shopName_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
@@ -1149,7 +1228,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			{
 
 			}
-		});
+		});*/
 	}
 
 	private void shopTypeNameSpinnerAdapter(final JSONArray jsonArray)

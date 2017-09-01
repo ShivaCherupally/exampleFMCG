@@ -46,8 +46,6 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 	{
 		mActivity = activity;
 		this._orderBookOrInvoiceListData = listdata;
-
-
 	}
 
 	// Create new views

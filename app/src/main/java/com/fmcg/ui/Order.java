@@ -191,6 +191,8 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 	String selected_paymentTermsId = "";
 	String SPINNER_SELECTION = "";
 
+	AutoCompleteTextView shopName_autoComplete;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -208,7 +210,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
 		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
 		areaName_sp = (Spinner) findViewById(R.id.areaName_spinner);
-		shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
+//		shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
 		orderStatus_sp = (Spinner) findViewById(R.id.order_status_spinner);
 		payment_sp = (Spinner) findViewById(R.id.payment_terms_spinner);
 
@@ -221,6 +223,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		orderNumInvoice = (TextView) findViewById(R.id.orderNumber_invoice);
 		submit = (TextView) findViewById(R.id.submit);
 
+		shopName_autoComplete = (AutoCompleteTextView) findViewById(R.id.shopName_autoComplete);
 
 		paymentSelected = (TextView) findViewById(R.id.paymentSelected);
 		paymentSelected.setVisibility(View.GONE);
@@ -280,9 +283,10 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		zone_sp.setOnItemSelectedListener(this);
 		routeName_sp.setOnItemSelectedListener(this);
 		areaName_sp.setOnItemSelectedListener(this);
-		shopName_sp.setOnItemSelectedListener(this);
+//		shopName_sp.setOnItemSelectedListener(this);
 		orderStatus_sp.setOnItemSelectedListener(this);
 		payment_sp.setOnItemSelectedListener(this);
+
 
 		submit.setOnClickListener(new View.OnClickListener()
 		{
@@ -472,7 +476,8 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 		String jsonString = createJsonOrderSubmit(orderNumber, selected_zoneId, selected_roueId, selected_areaNameId,
 		                                          selected_ShopId, IsShopClosed, ShopClosedImage, OrderDeliveryDate,
-		                                          selected_orderStatusId, selected_paymentTermsId, IsOrdered, IsInvoice, remarksET.getText().toString(),
+		                                          selected_orderStatusId, selected_paymentTermsId,
+		                                          IsOrdered, IsInvoice, remarksET.getText().toString(),
 		                                          EmployeeId, cartItemsArray);
 		Log.e("parameters", jsonString + "");
 		HttpAdapter.orderbook(this, "orderbook", jsonString);
@@ -670,9 +675,9 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
 					{
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
-						Toast.makeText(mContext, "Successfully Uploaded.", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "Successfully Your Order Booked.", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "Your Order Number is " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
 						dailogBoxAfterSubmit();
-//						refreshActivity();
 					}
 					else
 					{
@@ -741,7 +746,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		JSONObject dataObj = new JSONObject();
 		try
 		{
-			dataObj.putOpt("OrderNumber", OrderNumber);
+//			dataObj.putOpt("OrderNumber", OrderNumber);
 			dataObj.putOpt("ZoneId", ZoneId);
 			dataObj.putOpt("RouteId", RouteId);
 			dataObj.putOpt("AreaId", AreaId);
@@ -931,10 +936,10 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				selectedSpinner = "AREA";
 				dropDownValueSelection(position, _areaNamesData, selectedSpinner);
 				break;
-			case R.id.shopname_spinner:
+			/*case R.id.shopName_autoComplete:
 				selectedSpinner = "SHOP";
 				dropDownValueSelection(position, _shopNamesData, selectedSpinner);
-				break;
+				break;*/
 			case R.id.order_status_spinner:
 				selectedSpinner = "ORDER_STATUS";
 				dropDownValueSelection(position, _orderStatusData, selectedSpinner);
@@ -971,10 +976,10 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 						selected_areaNameId = _dropDownData.get(position - 1).getShopId();
 						HttpAdapter.getShopDetailsDP(Order.this, "shopName", selected_areaNameId);
 					}
-					else if (selectedSpinner.equals("SHOP"))
+					/*else if (selectedSpinner.equals("SHOP"))
 					{
 						selected_ShopId = _dropDownData.get(position - 1).getShopId();
-					}
+					}*/
 					else if (selectedSpinner.equals("ORDER_STATUS"))
 					{
 						selected_orderStatusId = _dropDownData.get(position - 1).getShopId();
@@ -1745,7 +1750,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				String shopNamee = jsnobj.getString("ShopName");
 				_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			shooNamestitle.add("Select Shop Name");
+//			shooNamestitle.add("Select Shop Name");
 			if (_shopNamesData.size() > 0)
 			{
 				for (int i = 0; i < _shopNamesData.size(); i++)
@@ -1757,8 +1762,43 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		catch (Exception e)
 		{
 		}
-		SPINNER_SELECTION = "SHOP";
-		adapterDataAssigingToSpinner(shooNamestitle, SPINNER_SELECTION);
+		/*SPINNER_SELECTION = "SHOP";
+		adapterDataAssigingToSpinner(shooNamestitle, SPINNER_SELECTION);*/
+
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
+		shopName_autoComplete.setThreshold(1);
+		shopName_autoComplete.setAdapter(adapter);
+		shopName_autoComplete.setTextColor(Color.BLACK);
+		shopName_autoComplete.setTextSize(16);
+
+		shopName_autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
+			{
+				try
+				{
+					String selectedName = shopName_autoComplete.getText().toString();
+					Log.e("entryShopName", selectedName);
+					for (int i = 0; i < _shopNamesData.size(); i++)
+					{
+						String availName = _shopNamesData.get(i).getShopName();
+						if (availName.equals(selectedName))
+						{
+							selected_ShopId = _shopNamesData.get(i).getShopId();
+							Log.e("selected_ShopId", selected_ShopId + "");
+							break;
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+
 	}
 
 	private void orderStatusSpinnerAdapter(final JSONArray jsonArray)
@@ -1828,6 +1868,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 	{
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerTitles);
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
 		if (spinnerSelction.equals("ZONE"))
 		{
 			zone_sp.setAdapter(dataAdapter);
@@ -1840,10 +1881,16 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		{
 			areaName_sp.setAdapter(dataAdapter);
 		}
-		else if (spinnerSelction.equals("SHOP"))
+		/*else if (spinnerSelction.equals("SHOP"))
 		{
-			shopName_sp.setAdapter(dataAdapter);
-		}
+			ArrayAdapter<String> dataAdapterShops = new ArrayAdapter<String>(this, R.layout.list_item, spinnerTitles);
+			dataAdapterShops.setDropDownViewResource(R.layout.list_item);
+//			shopName_sp.setAdapter(dataAdapter);
+			shopName_autoComplete.setThreshold(1);//will start working from first character
+			shopName_autoComplete.setAdapter(dataAdapterShops);//setting the adapter data into the AutoCompleteTextView
+			shopName_autoComplete.setTextColor(Color.BLACK);
+			shopName_autoComplete.setTextSize(16);
+		}*/
 		else if (spinnerSelction.equals("ORDER_STATUS"))
 		{
 			orderStatus_sp.setAdapter(dataAdapter);
@@ -1889,6 +1936,40 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		}
 
 
+	}
+
+	private int searchByName(Spinner spinner, String searchName, ArrayList<ShopNamesData> _availbleDropDownData)
+	{
+		int searchIdIndex = 0;
+		try
+		{
+			//Log.d(LOG_TAG, "getIndex(" + searchString + ")");
+			if (searchName == null || spinner.getCount() == 0)
+			{
+				searchIdIndex = -1;
+				return -1; // Not found
+			}
+			else
+			{
+				for (int i = 0; i < spinner.getCount(); i++)
+				{
+					String availName = _availbleDropDownData.get(i).getShopName();
+					if (availName.equals(searchName))
+					{
+						searchIdIndex = i + 1;
+						Log.e("availbleStringName", _availbleDropDownData.get(i).getShopName() + "");
+						return searchIdIndex;
+					}
+				}
+
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+
+		}
+		return searchIdIndex; // Not found
 	}
 
 

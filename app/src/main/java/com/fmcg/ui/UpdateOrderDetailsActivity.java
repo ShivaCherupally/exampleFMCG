@@ -63,8 +63,7 @@ import static com.fmcg.util.SharedPrefsUtil.getStringPreference;
 public class UpdateOrderDetailsActivity extends AppCompatActivity implements NetworkOperationListener, AdapterView.OnItemSelectedListener, View.OnTouchListener
 {
 	public static Activity orderBookActivity;
-	public List<PaymentDropDown> paymentDP;
-	public List<GetShopDetailsDP> shopsDP;
+	//	public List<PaymentDropDown> paymentDP;
 	public List<OrderStatusDropdown> orderstatusDP;
 	public List<GetProductCategoryInOrderUpdate> productDP;
 	public List<GetProductCategoryInOrderUpdate> storedProductCategories = new ArrayList<GetProductCategoryInOrderUpdate>();
@@ -83,7 +82,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	private List<String> routeDetailsDP_str;
 	private List<String> routeDp_str;
 
-	public Spinner shopname_spinner, order_status_spinner, product_category_spinner, payment_terms_spinner, routeName_spinner, areaName_spinner, zone_name_spinner;
+	public Spinner order_status_spinner, product_category_spinner, payment_terms_spinner, routeName_spinner, areaName_spinner, zone_name_spinner;
 	public TextView orderNumInvoice, submit;
 	private static TextView paymentSelected;
 	private TableLayout tableLayout;
@@ -96,6 +95,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	RadioGroup select_option_radio_grp;
 	RadioButton viewList;
 	Button alert_submit;
+	String AvailShopName = "";
 	boolean check1 = false;
 	boolean check2 = false;
 	boolean check3 = false;
@@ -150,6 +150,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	boolean paymentTermsTouchClick = false;
 
 	String SPINNER_SELECTION = "";
+	AutoCompleteTextView shopName_autoComplete;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -174,7 +175,8 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		zone_name_spinner = (Spinner) findViewById(R.id.zone_name_spinner);
 		routeName_spinner = (Spinner) findViewById(R.id.routeName_spinner);
 		areaName_spinner = (Spinner) findViewById(R.id.areaName_spinner);
-		shopname_spinner = (Spinner) findViewById(R.id.shopname_spinner);
+		//shopname_spinner = (Spinner) findViewById(R.id.shopname_spinner);
+		shopName_autoComplete = (AutoCompleteTextView) findViewById(R.id.shopName_autoComplete);
 		order_status_spinner = (Spinner) findViewById(R.id.order_status_spinner);
 		product_category_spinner = (Spinner) findViewById(R.id.product_category_spinner);
 		payment_terms_spinner = (Spinner) findViewById(R.id.payment_terms_spinner);
@@ -186,8 +188,6 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		paymentSelected.setVisibility(View.GONE);
 
 
-		paymentDP = new ArrayList<>();
-		shopsDP = new ArrayList<>();
 		orderstatusDP = new ArrayList<>();
 		productDP = new ArrayList<>();
 		zoneDetailsDP = new ArrayList<>();
@@ -220,7 +220,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		zone_name_spinner.setOnItemSelectedListener(this);
 		routeName_spinner.setOnItemSelectedListener(this);
 		areaName_spinner.setOnItemSelectedListener(this);
-		shopname_spinner.setOnItemSelectedListener(this);
+//		shopname_spinner.setOnItemSelectedListener(this);
 		order_status_spinner.setOnItemSelectedListener(this);
 		//product_category_spinner.setOnItemSelectedListener(this);
 		payment_terms_spinner.setOnItemSelectedListener(this);
@@ -228,7 +228,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		zone_name_spinner.setOnTouchListener(this);
 		routeName_spinner.setOnTouchListener(this);
 		areaName_spinner.setOnTouchListener(this);
-		shopname_spinner.setOnTouchListener(this);
+		shopName_autoComplete.setOnTouchListener(this);
 		order_status_spinner.setOnTouchListener(this);
 //		product_category_spinner.setOnTouchListener(this);
 		payment_terms_spinner.setOnTouchListener(this);
@@ -245,14 +245,14 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				}
 			}
 		});
-
+/*
 		zone_name_spinner.setOnItemSelectedListener(this);
 		routeName_spinner.setOnItemSelectedListener(this);
 		areaName_spinner.setOnItemSelectedListener(this);
-		shopname_spinner.setOnItemSelectedListener(this);
+//		shopname_spinner.setOnItemSelectedListener(this);
 		order_status_spinner.setOnItemSelectedListener(this);
 		product_category_spinner.setOnItemSelectedListener(this);
-		payment_terms_spinner.setOnItemSelectedListener(this);
+		payment_terms_spinner.setOnItemSelectedListener(this);*/
 
 
 	}
@@ -277,7 +277,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				HttpAdapter.orderSummryProductCategory(UpdateOrderDetailsActivity.this, "productCategoryItems", OrderNumber);
 			}
 			String OrderDate = editDatajsonObj.getString("OrderDate");
-			String ShopName = editDatajsonObj.getString("ShopName");
+			AvailShopName = editDatajsonObj.getString("ShopName");
 			int NoOfProducts = editDatajsonObj.getInt("NoOfProducts");
 			int SubTotalAmount = editDatajsonObj.getInt("SubTotalAmount");
 			double TaxAmount = editDatajsonObj.getDouble("TaxAmount");
@@ -412,6 +412,9 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 
 	private void dataSubmittingInServer()
 	{
+		String paymentSelectedStr = "";
+		String CreditDays = "";
+		String chequeDate = "";
 		JSONArray cartItemsArray = new JSONArray();
 		if (storedProductCategories != null && !storedProductCategories.isEmpty())
 		{
@@ -459,10 +462,41 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		{
 			EmployeeId = employeeId;
 		}
+		try
+		{
+			paymentSelectedStr = SharedPrefsUtil.getStringPreference(mContext, "paymentSelected");
+			if (paymentSelectedStr != null && !paymentSelectedStr.isEmpty() && !paymentSelectedStr.equalsIgnoreCase("null"))
+			{
+
+				if (paymentSelectedStr.equalsIgnoreCase("Credit-days"))
+				{
+					CreditDays = paymentSelected.getText().toString();
+					chequeDate = "";
+				}
+				else if (paymentSelectedStr.equalsIgnoreCase("Days to Cheque"))
+				{
+					CreditDays = paymentSelected.getText().toString();
+					chequeDate = "";
+				}
+				else if (paymentSelectedStr.equalsIgnoreCase("Cheque"))
+				{
+					CreditDays = "0";
+					chequeDate = paymentSelected.getText().toString();
+				}
+			}
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+
+		}
 
 		String jsonString = createJsonOrderSubmit(String.valueOf(OrdersId), selected_zoneId, selected_roueId,
-		                                          selected_areaNameId, selected_ShopId, OrderDeliveryDate,
-		                                          selected_orderStatusId, EmployeeId, cartItemsArray);
+		                                          selected_areaNameId, selected_ShopId,
+		                                          selected_paymentTermsId, OrderDeliveryDate,
+		                                          CreditDays, chequeDate, selected_orderStatusId,
+		                                          EmployeeId, cartItemsArray);
 		Log.e("parameters", jsonString + "");
 		HttpAdapter.updateOrderBooking(this, "updateorderbook", jsonString);
 	}
@@ -688,12 +722,13 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	}
 
 	private String createJsonOrderSubmit(String OrderId, String ZoneId, String RouteId,
-	                                     String AreaId, String ShopId,
-	                                     String OrderDeliveryDate, String OrderStatusId,
+	                                     String AreaId, String ShopId, String PaymentTermsId,
+	                                     String OrderDeliveryDate,
+	                                     String creditDays, String chequeDate, String OrderStatusId,
 	                                     String EmployeeId, JSONArray cartItemsArray
 	)
 	{
-		JSONObject studentsObj = new JSONObject();
+		/*JSONObject studentsObj = new JSONObject();
 		JSONObject dataObj = new JSONObject();
 		try
 		{
@@ -705,6 +740,42 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			dataObj.putOpt("OrderStatusId", OrderStatusId);
 			dataObj.putOpt("EmployeeId", EmployeeId);
 			dataObj.putOpt("OrderId", OrderId);
+			dataObj.putOpt("OrderNumber", orderNumInvoice.getText().toString());
+			studentsObj.put("ProductList", cartItemsArray);
+			studentsObj.put("OrderBookingDate", dataObj);
+		}
+		catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.d("orderjson", studentsObj.toString());
+		return studentsObj.toString();*/
+
+
+		JSONObject studentsObj = new JSONObject();
+		JSONObject dataObj = new JSONObject();
+		try
+		{
+			dataObj.putOpt("ZoneId", ZoneId);
+			dataObj.putOpt("RouteId", RouteId);
+			dataObj.putOpt("AreaId", AreaId);
+			dataObj.putOpt("ShopId", ShopId);
+			dataObj.putOpt("OrderDeliveryDate", OrderDeliveryDate);
+			dataObj.putOpt("OrderStatusId", OrderStatusId);
+			dataObj.putOpt("PaymentTermsId", PaymentTermsId); //PaymentTermsId // Added New param for paymnet tersms
+			dataObj.putOpt("EmployeeId", EmployeeId);
+			dataObj.putOpt("OrderId", OrderId);
+
+			if (creditDays != null && !creditDays.isEmpty())
+			{
+				dataObj.putOpt("CreditDays", creditDays);
+			}
+			else
+			{
+				dataObj.putOpt("CreditDays", "0");
+			}
+
 			dataObj.putOpt("OrderNumber", orderNumInvoice.getText().toString());
 			studentsObj.put("ProductList", cartItemsArray);
 			studentsObj.put("OrderBookingDate", dataObj);
@@ -734,6 +805,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			case R.id.zone_name_spinner:
 				if (zoneTouchClick)
 				{
+					AvailShopName = "";
 					selectedSpinner = "ZONE";
 					dropDownValueSelection(position, _zoneNamesData, selectedSpinner);
 				}
@@ -742,6 +814,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			case R.id.routeName_spinner:
 				if (routeTouchClick)
 				{
+					AvailShopName = "";
 					selectedSpinner = "ROUTE";
 					dropDownValueSelection(position, _routeCodesData, selectedSpinner);
 				}
@@ -749,18 +822,18 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			case R.id.areaName_spinner:
 				if (areaTouchClick)
 				{
+					AvailShopName = "";
 					selectedSpinner = "AREA";
 					dropDownValueSelection(position, _areaNamesData, selectedSpinner);
-
 				}
 				break;
-			case R.id.shopname_spinner:
+			/*case R.id.shopname_spinner:
 				if (shopNamesTouchClick)
 				{
 					selectedSpinner = "SHOP";
 					dropDownValueSelection(position, _shoptypesData, selectedSpinner);
 				}
-				break;
+				break;*/
 			case R.id.order_status_spinner:
 				if (orderStatusTouchClick)
 				{
@@ -799,10 +872,10 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				selected_areaNameId = _dropDownData.get(position - 1).getShopId();
 				HttpAdapter.getShopDetailsDP(UpdateOrderDetailsActivity.this, "shopName", selected_areaNameId);
 			}
-			else if (selectedSpinner.equals("SHOP"))
+			/*else if (selectedSpinner.equals("SHOP"))
 			{
 				selected_ShopId = _dropDownData.get(position - 1).getShopId();
-			}
+			}*/
 			else if (selectedSpinner.equals("ORDER_STATUS"))
 			{
 				selected_orderStatusId = _dropDownData.get(position - 1).getShopId();
@@ -847,20 +920,32 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		{
 			case R.id.zone_name_spinner:
 				zoneTouchClick = true;
+				routeTouchClick = false;
+				areaTouchClick = false;
+				shopNamesTouchClick = false;
 				break;
 			case R.id.routeName_spinner:
+				zoneTouchClick = false;
 				routeTouchClick = true;
+				areaTouchClick = false;
+				shopNamesTouchClick = false;
 				break;
 			case R.id.areaName_spinner:
+				zoneTouchClick = false;
+				routeTouchClick = false;
 				areaTouchClick = true;
+				shopNamesTouchClick = false;
 				break;
 			case R.id.shopname_spinner:
+				zoneTouchClick = false;
+				routeTouchClick = false;
+				areaTouchClick = false;
 				shopNamesTouchClick = true;
 				break;
 			case R.id.order_status_spinner:
 				orderStatusTouchClick = true;
 				break;
-			case R.id.product_category_spinner:
+			case R.id.payment_terms_spinner:
 				paymentTermsTouchClick = true;
 				break;
 
@@ -1231,7 +1316,6 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			{
 				if (check1)
 				{
-
 					Intent in = new Intent(UpdateOrderDetailsActivity.this, Order.class);
 					Util.killorderBook();
 					startActivity(in);
@@ -1362,7 +1446,6 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 
 	}
 
-
 	private void zoneSpinnerAdapter(JSONArray jsonArray)
 	{
 		try
@@ -1426,6 +1509,8 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		}
 		SPINNER_SELECTION = "ROUTE";
 		adapterDataAssigingToSpinner(routeNamestitle, SPINNER_SELECTION);
+
+
 		if (!zoneTouchClick)
 		{
 			routeName_spinner.setSelection(getIndex(routeName_spinner, Integer.parseInt(selected_roueId), _routeCodesData), false);
@@ -1433,9 +1518,33 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		}
 		else if (!routeTouchClick)
 		{
-			selectAreaNameBind();
-			selectShopNameBind();
+			//selectAreaNameBind();
+			selected_areaNameId = "";
+			areaNamestitle.clear();
+			areaNamestitle.add("Select Area Name");
+			shoptypesNamestitle.clear();
+			shopName_autoComplete.setText("");
+			ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+			dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			areaName_spinner.setAdapter(dataAdapter_areaName);
+
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shoptypesNamestitle);
+			shopName_autoComplete.setThreshold(1);
+			shopName_autoComplete.setAdapter(adapter);
+			shopName_autoComplete.setTextColor(Color.BLACK);
+			shopName_autoComplete.setTextSize(16);
+
+
 		}
+		else if (zoneTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (routeTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+
 	}
 
 	private void areaNameSpinnerAdapter(final JSONArray jsonArray)
@@ -1468,39 +1577,128 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 
 		SPINNER_SELECTION = "AREA";
 		adapterDataAssigingToSpinner(areaNamestitle, SPINNER_SELECTION);
+		if (zoneTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (routeTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (!zoneTouchClick && !routeTouchClick && !areaTouchClick)
+		{
+			areaName_spinner.setSelection(getIndex(areaName_spinner, Integer.valueOf(selected_areaNameId), _areaNamesData), false);
+			HttpAdapter.getShopDetailsDP(UpdateOrderDetailsActivity.this, "shopName", selected_areaNameId);
+		}
 	}
 
 	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
 	{
-		Log.e("shopDropdown", jsonArray.toString() + "");
-		try
+
+		/*SPINNER_SELECTION = "SHOP";
+		adapterDataAssigingToSpinner(shoptypesNamestitle, SPINNER_SELECTION);*/
+		if (zoneTouchClick)
 		{
-			_shoptypesData.clear();
-			shoptypesNamestitle.clear();
-			_shoptypesData = new ArrayList<ShopNamesData>();
-			for (int i = 0; i < jsonArray.length(); i++)
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (routeTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else
+		{
+			Log.e("shopDropdown", jsonArray.toString() + "");
+			try
 			{
-				JSONObject jsnobj = jsonArray.getJSONObject(i);
-				int shopId = jsnobj.getInt("ShopId");
-				Log.e("ShopIdList", String.valueOf(shopId));
-				String shopNamee = jsnobj.getString("ShopName");
-				_shoptypesData.add(new ShopNamesData(String.valueOf(shopId), shopNamee));
-			}
-			shoptypesNamestitle.add("Select Shop Name");
-			if (_shoptypesData.size() > 0)
-			{
-				for (int i = 0; i < _shoptypesData.size(); i++)
+				_shoptypesData.clear();
+				shoptypesNamestitle.clear();
+				_shoptypesData = new ArrayList<ShopNamesData>();
+				for (int i = 0; i < jsonArray.length(); i++)
 				{
-					shoptypesNamestitle.add(_shoptypesData.get(i).getShopName());
+					JSONObject jsnobj = jsonArray.getJSONObject(i);
+					int shopId = jsnobj.getInt("ShopId");
+					Log.e("ShopIdList", String.valueOf(shopId));
+					String shopNamee = jsnobj.getString("ShopName");
+					_shoptypesData.add(new ShopNamesData(String.valueOf(shopId), shopNamee));
+				}
+//			shoptypesNamestitle.add("Select Shop Name");
+				if (_shoptypesData.size() > 0)
+				{
+					for (int i = 0; i < _shoptypesData.size(); i++)
+					{
+						shoptypesNamestitle.add(_shoptypesData.get(i).getShopName());
+					}
 				}
 			}
+			catch (Exception e)
+			{
+			}
+			shopDataBinding(shoptypesNamestitle);
 		}
-		catch (Exception e)
+		shopName_autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener()
 		{
-		}
-		SPINNER_SELECTION = "SHOP";
-		adapterDataAssigingToSpinner(shoptypesNamestitle, SPINNER_SELECTION);
+			@Override
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
+			{
+				try
+				{
+					if (shoptypesNamestitle.size() != 0)
+					{
+						String selectedName = shopName_autoComplete.getText().toString();
+						Log.e("entryShopName", selectedName);
+						for (int i = 0; i < _shoptypesData.size(); i++)
+						{
+							String availName = _shoptypesData.get(i).getShopName();
+							if (availName.equals(selectedName))
+							{
+								selected_ShopId = _shoptypesData.get(i).getShopId();
+								Log.e("selected_ShopId", selected_ShopId + "");
+								break;
+							}
+						}
+					}
+
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
 	}
+
+	private void shopDataBinding(final ArrayList<String> shoptypesNamestitle)
+	{
+		if (!AvailShopName.isEmpty())
+		{
+
+			shopName_autoComplete.setText(AvailShopName);
+		}
+		else
+		{
+			selected_ShopId = "";
+			shopName_autoComplete.setText("");
+		}
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shoptypesNamestitle);
+		shopName_autoComplete.setThreshold(1);
+		shopName_autoComplete.setAdapter(adapter);
+		shopName_autoComplete.setTextColor(Color.BLACK);
+		shopName_autoComplete.setTextSize(16);
+	}
+
+	private void clearShopNamesData(final ArrayList<String> shoptypesNamestitles)
+	{
+		shoptypesNamestitles.clear();
+		selected_ShopId = "";
+		_shoptypesData.clear();
+		shopName_autoComplete.setText("");
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shoptypesNamestitle);
+		shopName_autoComplete.setThreshold(1);
+		shopName_autoComplete.setAdapter(adapter);
+		shopName_autoComplete.setTextColor(Color.BLACK);
+		shopName_autoComplete.setTextSize(16);
+	}
+
 
 	private void orderStatusSpinnerAdapter(final JSONArray jsonArray)
 	{
@@ -1585,20 +1783,23 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 
 	private void selectAreaNameBind()
 	{
+		_shoptypesData.clear();
+		shoptypesNamestitle.clear();
+		_shoptypesData = new ArrayList<ShopNamesData>();
 		areaDetailsDP_str.add("Select Area Name");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaDetailsDP_str);
 		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		areaName_spinner.setAdapter(dataAdapter_areaName);
-		selectShopNameBind();
+		//selectShopNameBind();
 	}
 
-	private void selectShopNameBind()
+	/*private void selectShopNameBind()
 	{
 		shopNameDP_str.add("Select Shop Name");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shopNameDP_str);
 		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		shopname_spinner.setAdapter(dataAdapter_areaName);
-	}
+	}*/
 
 	////////
 	private int getIndex(Spinner spinner, int searchId, ArrayList<ShopNamesData> _availbleDropDownData)
@@ -1653,7 +1854,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		}
 		else if (spinnerSelction.equals("SHOP"))
 		{
-			shopname_spinner.setAdapter(dataAdapter);
+			//shopname_spinner.setAdapter(dataAdapter);
 		}
 		else if (spinnerSelction.equals("ORDER_STATUS"))
 		{

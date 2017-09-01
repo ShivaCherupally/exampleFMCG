@@ -516,13 +516,16 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 									if (paymentSelected.equalsIgnoreCase("Credit-days"))
 									{
 										CreditDays = paymentSelectedvalue.getText().toString();
+										chequeDate = "";
 									}
 									else if (paymentSelected.equalsIgnoreCase("Days to Cheque"))
 									{
 										CreditDays = paymentSelectedvalue.getText().toString();
+										chequeDate = "";
 									}
 									else if (paymentSelected.equalsIgnoreCase("Cheque"))
 									{
+										CreditDays = "0";
 										chequeDate = paymentSelectedvalue.getText().toString();
 									}
 								}
@@ -1765,7 +1768,8 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 			for (int i = 0; i < jsonArray.length(); i++)
 			{
 				JSONObject jsnobj = jsonArray.getJSONObject(i);
-				String shopId = jsnobj.getString("ShopId");
+				String shopId = jsnobj.getString("ShopId"); //556
+				Log.e("shopId", shopId);
 				String shopNamee = jsnobj.getString("ShopName");
 				_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}

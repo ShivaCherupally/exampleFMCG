@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -123,6 +124,7 @@ public class UpdateCustomerActivity extends AppCompatActivity implements View.On
 	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, location, createdby, locationName, payment, emailId;
 	private TextView submit;
 	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp, shopName_spinner;
+	AutoCompleteTextView shopName_autoComplete;
 	//Define a request code to send to Google Play services
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	private GoogleApiClient mGoogleApiClient;
@@ -204,6 +206,9 @@ public class UpdateCustomerActivity extends AppCompatActivity implements View.On
 
 
 		shopName_spinner = (Spinner) findViewById(R.id.shopName_spinner);
+
+		shopName_autoComplete = (AutoCompleteTextView) findViewById(R.id.shopName_autoComplete);
+
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
 		routecd = (Spinner) findViewById(R.id.routecd);
 		areaName_sp = (Spinner) findViewById(R.id.area_name);
@@ -1034,7 +1039,7 @@ public class UpdateCustomerActivity extends AppCompatActivity implements View.On
 
 		if (selected_ShopId == null || selected_ShopId.isEmpty() || selected_ShopId.equals("0"))
 		{
-			Toast.makeText(getApplicationContext(), "Please Select Shop Name", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "Please Enter Shop Name", Toast.LENGTH_SHORT).show();
 			ret = false;
 			return ret;
 		}
@@ -1518,11 +1523,12 @@ public class UpdateCustomerActivity extends AppCompatActivity implements View.On
 				String shopNamee = jsnobj.getString("ShopName");
 				_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			shooNamestitle.add("Select Shop Name");
+			//shooNamestitle.add("Select Shop Name");
 			if (_shopNamesData.size() > 0)
 			{
 				for (int i = 0; i < _shopNamesData.size(); i++)
 				{
+					Log.e("ShopNames", _shopNamesData.get(i).getShopName());
 					shooNamestitle.add(_shopNamesData.get(i).getShopName());
 				}
 			}
@@ -1535,7 +1541,14 @@ public class UpdateCustomerActivity extends AppCompatActivity implements View.On
 
 		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		shopName_spinner.setAdapter(dataAdapter_shopType);
-		shopName_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, shooNamestitle);
+		shopName_autoComplete.setThreshold(1);//will start working from first character
+		shopName_autoComplete.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
+		shopName_autoComplete.setTextColor(Color.RED);
+
+		shopName_autoComplete.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)

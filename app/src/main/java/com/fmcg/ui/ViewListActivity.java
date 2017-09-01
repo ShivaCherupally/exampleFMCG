@@ -73,7 +73,7 @@ public class ViewListActivity extends AppCompatActivity implements View.OnClickL
 	public void onBackPressed()
 	{
 		super.onBackPressed();
-		Intent intent = new Intent(this, OrderBookList.class);
+		Intent intent = new Intent(this, DashboardActivity.class);
 		startActivity(intent);
 		finish();
 	}

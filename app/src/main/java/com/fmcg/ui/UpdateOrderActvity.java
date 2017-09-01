@@ -159,6 +159,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	boolean orderStatusTouchClick = false;
 	boolean paymentTermsTouchClick = false;
 
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -202,7 +203,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		availZonenametxt = (EditText) findViewById(R.id.availZonenametxt);
 		availRoutetxt = (EditText) findViewById(R.id.availRoutetxt);
 		availAreatxt = (EditText) findViewById(R.id.availAreatxt);
-		availShopnametxt = (EditText) findViewById(R.id.availShopnametxt);
+//		availShopnametxt = (EditText) findViewById(R.id.availShopnametxt);
 
 		paymentDP = new ArrayList<>();
 		shopsDP = new ArrayList<>();
@@ -241,7 +242,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			@Override
 			public boolean onTouch(final View v, final MotionEvent event)
 			{
-
 				availRoutetxt.setVisibility(View.GONE);
 				routeName_sp.hasFocusable();
 				routeName_sp.performClick();
@@ -266,7 +266,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			}
 		});
 
-		availShopnametxt.setOnTouchListener(new View.OnTouchListener()
+		/*availShopnametxt.setOnTouchListener(new View.OnTouchListener()
 		{
 			@Override
 			public boolean onTouch(final View v, final MotionEvent event)
@@ -278,7 +278,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 				shopName_sp.setVisibility(View.VISIBLE);
 				return false;
 			}
-		});
+		});*/
 
 		payment_sp.setOnTouchListener(new View.OnTouchListener()
 		{
@@ -595,6 +595,10 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	{
 		if (v.getId() == R.id.submit)
 		{
+			String paymentSelectedStr = "";
+			String CreditDays = "";
+			String chequeDate = "";
+
 			boolean validated = validationEntryData();
 			if (validated)
 			{
@@ -646,9 +650,44 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 					EmployeeId = employeeId;
 				}
 
+
+				try
+				{
+					paymentSelectedStr = SharedPrefsUtil.getStringPreference(mContext, "paymentSelected");
+					if (paymentSelectedStr != null && !paymentSelectedStr.isEmpty() && !paymentSelectedStr.equalsIgnoreCase("null"))
+					{
+
+						if (paymentSelectedStr.equalsIgnoreCase("Credit-days"))
+						{
+							CreditDays = paymentSelected.getText().toString();
+							chequeDate = "";
+						}
+						else if (paymentSelectedStr.equalsIgnoreCase("Days to Cheque"))
+						{
+							CreditDays = paymentSelected.getText().toString();
+							chequeDate = "";
+						}
+						else if (paymentSelectedStr.equalsIgnoreCase("Cheque"))
+						{
+							CreditDays = "0";
+							chequeDate = paymentSelected.getText().toString();
+						}
+					}
+					else
+					{
+						paymentSelectedStr = "";
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+
+				}
+
 				String jsonString = createJsonOrderSubmit(String.valueOf(OrdersId), selected_zoneId, selected_roueId,
 				                                          selected_areaNameId, selected_ShopId, OrderDeliveryDate,
-				                                          selected_orderStatusId, EmployeeId, cartItemsArray);
+				                                          selected_orderStatusId, EmployeeId,
+				                                          cartItemsArray, CreditDays, chequeDate);
 				Log.e("parameters", jsonString + "");
 				HttpAdapter.updateOrderBooking(this, "updateorderbook", jsonString);
 			}
@@ -889,7 +928,7 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 	private String createJsonOrderSubmit(String OrderId, String ZoneId, String RouteId,
 	                                     String AreaId, String ShopId,
 	                                     String OrderDeliveryDate, String OrderStatusId,
-	                                     String EmployeeId, JSONArray cartItemsArray
+	                                     String EmployeeId, JSONArray cartItemsArray, String creditDays, String chequeDate
 	)
 	{
 		JSONObject studentsObj = new JSONObject();
@@ -904,6 +943,17 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 			dataObj.putOpt("OrderStatusId", OrderStatusId);
 			dataObj.putOpt("EmployeeId", EmployeeId);
 			dataObj.putOpt("OrderId", OrderId);
+
+
+			if (creditDays != null && !creditDays.isEmpty())
+			{
+				dataObj.putOpt("CreditDays", creditDays);
+			}
+			else
+			{
+				dataObj.putOpt("CreditDays", "0");
+			}
+
 			dataObj.putOpt("OrderNumber", orderNumInvoice.getText().toString());
 			studentsObj.put("ProductList", cartItemsArray);
 			studentsObj.put("OrderBookingDate", dataObj);
@@ -917,7 +967,6 @@ public class UpdateOrderActvity extends AppCompatActivity implements View.OnClic
 		return studentsObj.toString();
 	}
 	//ZoneId, RouteId, AreaId, ShopId,OrderDeliveryDate, OrderStatusId, EmployeeId,OrderId
-
 
 
 	@Override

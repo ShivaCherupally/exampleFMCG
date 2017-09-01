@@ -95,6 +95,9 @@ public class GetShopsByRoute extends AppCompatActivity
 	private LocationRequest mLocationRequest;
 	Marker markerName;
 	Location locationCt;
+	//PolylineOptions polyLineOptions;
+	JSONArray setColorArray;
+	GetShopsArray getShopsColorArray;
 	private static final String[] INITIAL_PERMS = {
 			Manifest.permission.ACCESS_FINE_LOCATION,
 			Manifest.permission.ACCESS_COARSE_LOCATION
@@ -113,6 +116,9 @@ public class GetShopsByRoute extends AppCompatActivity
 	ArrayList<String> areaNamestitle = new ArrayList<String>();
 	String selected_areaNameId = "";
 
+	ArrayList<ShopNamesData> _setColorData = new ArrayList<ShopNamesData>(); //Color Data
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -130,6 +136,7 @@ public class GetShopsByRoute extends AppCompatActivity
 		if (Utility.isOnline(mContext))
 		{
 			HttpAdapter.getRoutedetails(GetShopsByRoute.this, "routeNoDropDown", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
+			HttpAdapter.getShopColors(GetShopsByRoute.this, "GET_COLOR");
 		}
 		else
 		{
@@ -142,16 +149,12 @@ public class GetShopsByRoute extends AppCompatActivity
 		startTripActivity = GetShopsByRoute.this;
 
 		bounds = new LatLngBounds.Builder();
-		mapFragment = (MapFragment) getFragmentManager()
-				.findFragmentById(R.id.map);
-
+		mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 		{
-
 			PackageManager pm = this.getPackageManager();
-			int hasPerm = pm.checkPermission(
-					Manifest.permission.READ_EXTERNAL_STORAGE,
-					this.getPackageName());
+			int hasPerm = pm.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+			                                 this.getPackageName());
 			if (hasPerm != PackageManager.PERMISSION_GRANTED)
 			{
 				requestPermissions(INITIAL_PERMS, 1);
@@ -191,7 +194,6 @@ public class GetShopsByRoute extends AppCompatActivity
 		{
 			endTime = System.currentTimeMillis();
 			duration = (endTime - startTime);
-
 			Log.d("duration", "" + duration);
 			timer.cancel();
 			showAlertOnly(this, "EndTrip Duration", "" + duration, "Ok");
@@ -430,6 +432,19 @@ public class GetShopsByRoute extends AppCompatActivity
 					}
 
 				}
+				else if (response.getTag().equals("GET_COLOR"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						JSONObject result = new JSONObject(response.getResponseString());
+						JSONArray shopsData = result.getJSONArray("Data");
+						Log.e("responeDATACOLoR", shopsData.toString());
+						getColorData(shopsData);
+//						allShopColor(shopsData);
+					}
+
+				}
+				//"GET_COLOR"
 
 			}
 			catch (Exception e)
@@ -631,7 +646,9 @@ public class GetShopsByRoute extends AppCompatActivity
 				if (position != 0)
 				{
 					selected_areaNameId = _areaNamesData.get(position - 1).getShopId();
+					//HttpAdapter.getShopColors(GetShopsByRoute.this, "GET_COLOR");
 					HttpAdapter.getShopDetailsByAreaId(GetShopsByRoute.this, "getAllShopDetails", selected_areaNameId);
+
 				}
 			}
 
@@ -645,9 +662,9 @@ public class GetShopsByRoute extends AppCompatActivity
 
 	private void allShopdetails(final JSONArray shopsData)
 	{
-
 		try
 		{
+			Log.e("responseByAreaName", shopsData.toString());
 			googleMap.clear();
 			currentLocationAccessWithNavigationMarker(googleMap);
 			PolylineOptions polyLineOptions = new PolylineOptions();
@@ -668,7 +685,6 @@ public class GetShopsByRoute extends AppCompatActivity
 						points.add(latLng);
 						Log.e("latlang", String.valueOf(latLng));
 						MarkerOptions markerOptions = new MarkerOptions();
-
 						// Setting latitude and longitude of the marker position
 						markerOptions.position(latLng);
 
@@ -679,7 +695,7 @@ public class GetShopsByRoute extends AppCompatActivity
 						markerOptions.title(getShopsArray.ShopName);
 						polyLineOptions.width(8);
 
-						if (getShopsArray.Active != null && !getShopsArray.Active.equalsIgnoreCase("null"))
+						/*if (getShopsArray.Active != null && !getShopsArray.Active.equalsIgnoreCase("null"))
 						{
 							if (getShopsArray.Active.equalsIgnoreCase("N"))
 							{
@@ -691,17 +707,51 @@ public class GetShopsByRoute extends AppCompatActivity
 							else
 							{
 								polyLineOptions.color(Color.RED);
-//									markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
+									markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
 							}
-						}
-						else
+						}*/
+
+
+						//getShopsColorArray
+//						Log.e("getShopsColorArray.BookedFlag", getShopsColorArray.BookedFlag + "");
+
+//						checkingEqualShopId(Integer.parseInt(getShopsArray.ShopId), _setColorData);
+
+						for (int k = 0; i < _setColorData.size(); k++)
 						{
-//								markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
+							String availShopId = _setColorData.get(k).getShopId();
+							Log.e("SearchingShopId", String.valueOf(getShopsArray.ShopId));
+							Log.e("availShopId", availShopId);
+							if (availShopId.equals(String.valueOf(getShopsArray.ShopId)))
+							{
+								if (_setColorData.get(k).getShopName().equalsIgnoreCase("N"))
+								{
+									polyLineOptions.color(Color.RED);
+									Drawable circleDrawable = getResources().getDrawable(R.drawable.map_iconred);
+									BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+									markerOptions.icon(markerIcon);
+								}
+								else
+								{
+									polyLineOptions.color(Color.RED);
+									markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.greenlocator));
+								}
+								break;
+							}
+							/*else
+							{
+								polyLineOptions.color(Color.RED);
+								markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
+							}*/
 						}
-						bounds.include(latLng);
-						googleMap.addMarker(markerOptions);
-						polyLineOptions.addAll(points).color(Color.BLACK).width(5);
-						drawPolyLineOnMap(points);
+						if (points.size() != 0)
+						{
+							bounds.include(latLng);
+							polyLineOptions.addAll(points).color(Color.BLACK).width(5);
+							googleMap.addMarker(markerOptions);
+						}
+
+						//drawPolyLineOnMap(points);
 //							googleMap.addPolyline(polyLineOptions);
 					}
 				}
@@ -710,6 +760,28 @@ public class GetShopsByRoute extends AppCompatActivity
 			googleMap.addPolyline(polyLineOptions);
 			googleMapszoom();
 			requestDirection();
+		}
+		catch (Exception e)
+		{
+			Log.e("error", e.toString() + "");
+		}
+
+
+	}
+
+	//Get All Color
+	private void allShopColor(final JSONArray setColordata)
+	{
+		setColorArray = setColordata;
+		try
+
+		{
+			Log.e("responseColor", setColorArray.toString());
+			for (int i = 0; i < setColorArray.length(); i++)
+			{
+				JSONObject statuss = setColorArray.getJSONObject(i);
+				getShopsColorArray = new Gson().fromJson(statuss.toString(), GetShopsArray.class);
+			}
 		}
 		catch (Exception e)
 		{
@@ -773,6 +845,61 @@ public class GetShopsByRoute extends AppCompatActivity
 		drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 		drawable.draw(canvas);
 		return BitmapDescriptorFactory.fromBitmap(bitmap);
+	}
+
+
+	private int checkingEqualShopId(int searchId, ArrayList<ShopNamesData> _availbleDropDownData)
+	{
+		int searchIdIndex = 0;
+		try
+		{
+			if (searchId == 0)
+			{
+				searchIdIndex = -1;
+				return -1; // Not found
+			}
+			else
+			{
+				for (int i = 0; i < _availbleDropDownData.size(); i++)
+				{
+					String avaliableListDataid = _availbleDropDownData.get(i).getShopId();
+					if (avaliableListDataid.equals(String.valueOf(searchId)))
+					{
+						searchIdIndex = i + 1;
+						Log.e("availbleId", _availbleDropDownData.get(i).getShopId() + "");
+						return searchIdIndex;
+					}
+				}
+
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+
+		}
+		return searchIdIndex; // Not found
+	}
+
+	private void getColorData(JSONArray jsonArray)
+	{
+		Log.e("responseColorData", jsonArray.toString());
+		try
+		{
+			_setColorData.clear();
+			_setColorData = new ArrayList<ShopNamesData>();
+			for (int i = 0; i < jsonArray.length(); i++)
+			{
+				JSONObject jsnobj = jsonArray.getJSONObject(i);
+				String shopId = String.valueOf(jsnobj.getInt("ShopId"));
+				String shopNamee = jsnobj.getString("BookedFlag");
+				_setColorData.add(new ShopNamesData(shopId, shopNamee));
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
 

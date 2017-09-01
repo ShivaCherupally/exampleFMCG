@@ -9,10 +9,10 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_above="@+id/bottomHRLID"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,6 +22,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/edittext_whites"
                 android:orientation="horizontal">
 
@@ -51,16 +52,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
                     android:background="@color/empty"
                     android:editable="false"
                     android:hint="@string/select_zone"
                     android:maxLines="1"
-                    android:layout_marginRight="10dp"
-                    android:visibility="gone"
                     android:padding="8dp"
                     android:textColor="@color/HeaderColor"
                     android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="17sp"
+                    android:visibility="gone"
                     />
 
                 <Spinner
@@ -103,17 +104,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
                     android:background="@color/empty"
+                    android:drawableRight="@drawable/dropdownarrowsmall"
                     android:hint="@string/select_route"
+
                     android:maxLines="1"
                     android:padding="8dp"
-
                     android:textColor="@color/HeaderColor"
                     android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="17sp"
                     android:visibility="gone"
-                    android:drawableRight="@drawable/dropdownarrowsmall"
-                    android:layout_marginRight="10dp"
                     />
 
                 <Spinner
@@ -138,14 +139,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
                     android:background="@color/empty"
+                    android:drawableRight="@drawable/dropdownarrowsmall"
                     android:hint="@string/select_area"
                     android:maxLines="1"
                     android:padding="8dp"
                     android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="17sp"
-                    android:drawableRight="@drawable/dropdownarrowsmall"
-                    android:layout_marginRight="10dp"
                     android:visibility="gone"
                     />
 
@@ -155,13 +156,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-
                     android:hint="Area Name"
                     android:singleLine="true"/>
             </LinearLayout>
 
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@drawable/rect_bg_black"
@@ -172,14 +172,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
                     android:background="@color/empty"
+                    android:drawableRight="@drawable/dropdownarrowsmall"
                     android:hint="@string/select_area"
                     android:maxLines="1"
                     android:padding="8dp"
                     android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="17sp"
-                    android:drawableRight="@drawable/dropdownarrowsmall"
-                    android:layout_marginRight="10dp"
                     android:visibility="gone"
                     />
 
@@ -190,21 +190,33 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:hint="Shop Name"
-
                     android:singleLine="true"/>
+            </LinearLayout>-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rect_bg_black"
+                android:orientation="vertical">
+
+
+                <AutoCompleteTextView
+                    android:id="@+id/shopName_autoComplete"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/textView1"
+                    android:background="@drawable/rect_white"
+                    android:hint="Enter Shop Name"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/HeaderColor"
+                    android:textCursorDrawable="@drawable/color_cursor">
+
+                    <requestFocus/>
+                </AutoCompleteTextView>
+
             </LinearLayout>
 
-            <!--
-                    <TextView
-                        android:id="@+id/order_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/rect_bg_black"
-                        android:gravity="center"
-                        android:text="Order Date"
-                        android:textColor="@color/black" />
-            -->
 
             <DatePicker
                 android:id="@+id/dpResult"

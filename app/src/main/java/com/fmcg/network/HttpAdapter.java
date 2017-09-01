@@ -106,7 +106,11 @@ public class HttpAdapter
 
 	public static final String UPDATE_INVOICE_SUBMIT = "http://182.156.90.123/oreso/web_services/dev/services/login";
 
-//CancelOrderNumber
+
+	public static final String SHOP_COLORS_URL = BASE_URL + "GetShopColorForOrders";
+//	public static final String SHOP_COLORS_URL = "http://www.mocky.io/v2/5994a54e110000f103723163";
+
+	//CancelOrderNumber
 	//http://202.143.96.20/Orderstest/Api/Services/GetRouteDataAgent?AgentCode
 	//http://202.143.96.20/Orderstest/api/Services/GetShopeDetailsByRouteID?RouteID=1
 	//http://202.143.96.20/Orderstest/api/Services/InsertFeedback?EmployeeId=4&FeedbackMessages=hello
@@ -444,6 +448,15 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(GET_AREA_NAME + "?RouteId=" + value, METHOD_GET, "NONE");
+	}
+
+	//Get Shop Color
+	public static void getShopColors(NetworkOperationListener listener, Object tag)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(SHOP_COLORS_URL, METHOD_GET, "NONE");
 	}
 
 	//Route Drop down

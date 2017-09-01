@@ -7,7 +7,7 @@ public class GetShopsArray {
     public String MobileNumber;
     public String Latitude;
     public String Longitude;
-    public String ShopId;
+    public int ShopId;
     public String ShopCode;
     public String ShopCategoryId;
     public String ShopDescription;
@@ -24,4 +24,5 @@ public class GetShopsArray {
     public String PaymentName;
     public String Active;
     public String PhoneNumber;
+    public String BookedFlag;
 }

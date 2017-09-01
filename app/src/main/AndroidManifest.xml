@@ -198,6 +198,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden"/>
+
+        <activity
+            android:name="com.fmcg.ui.UpdateOrderDetailsActivity"
+            android:label="@string/update_order"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden"/>
+
         <!--Google MAP API key-->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

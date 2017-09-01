@@ -232,7 +232,8 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 								{
 									SharedPrefsUtil.setStringPreference(mContext, "EDIT_ORDER_DATA_STRING", editOrderJsonDataToString);
 									Toast.makeText(mContext, "Successfully Order Editing", Toast.LENGTH_SHORT).show();
-									Intent i = new Intent(OrderBookList.this, UpdateOrderActvity.class);
+//									Intent i = new Intent(OrderBookList.this, UpdateOrderActvity.class);
+									Intent i = new Intent(OrderBookList.this, UpdateOrderDetailsActivity.class);
 									startActivity(i);
 								}
 								else
@@ -467,7 +468,7 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 	public void onBackPressed()
 	{
 		super.onBackPressed();
-		Intent intent = new Intent(this, ViewListActivity.class);
+		Intent intent = new Intent(OrderBookList.this, ViewListActivity.class);
 		startActivity(intent);
 		finish();
 	}

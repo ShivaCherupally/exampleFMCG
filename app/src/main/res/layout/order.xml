@@ -26,9 +26,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-
                 android:background="@drawable/edittext_whites"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/orderNumber_invoice"
@@ -47,15 +47,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+
                 android:background="@drawable/order_rectangle"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/zone_name_spinner"
                     style="@style/spinner_style"
-                    android:spinnerMode="dialog"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -66,6 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/order_rectangle"
                 android:orientation="horizontal">
 
@@ -97,20 +96,59 @@
             </LinearLayout>
 
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="wrap_content"
                 android:background="@drawable/order_rectangle"
                 android:orientation="horizontal">
 
-                <Spinner
+                &lt;!&ndash;<Spinner
                     android:id="@+id/shopname_spinner"
                     style="@style/spinner_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:hint="Shop Name"
-                    android:singleLine="true"/>
+                    android:singleLine="true"/>&ndash;&gt;
+
+                <AutoCompleteTextView
+                    android:id="@+id/shopName_autoComplete"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/textView1"
+                    android:background="@color/empty"
+                    android:hint="Enter Shop Name"
+                    android:textColor="@color/HeaderColor"
+                    android:textCursorDrawable="@drawable/color_cursor">
+
+                    <requestFocus/>
+                </AutoCompleteTextView>
+            </LinearLayout>-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rect_bg_black"
+                android:orientation="vertical">
+
+
+                <AutoCompleteTextView
+                    android:id="@+id/shopName_autoComplete"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/textView1"
+                    android:background="@drawable/rect_white"
+                    android:hint="Enter Shop Name"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/HeaderColor"
+                    android:textCursorDrawable="@drawable/color_cursor">
+
+                    <requestFocus/>
+                </AutoCompleteTextView>
+
             </LinearLayout>
 
             <!--
@@ -501,30 +539,31 @@
                         android:hint="Payment Terms Name"
                         android:singleLine="true"/>
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/paymentSelected"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="10dp"
-                    android:padding="3dp"
-                    android:visibility="gone"
-
                     android:gravity="center_vertical"
+                    android:padding="3dp"
+
                     android:text="Selecte Payment Status"
                     android:textColor="@color/HeaderColor"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp"
+                    android:visibility="gone"/>
 
                 <EditText
                     android:id="@+id/Remarks_et"
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/order_rectangle"
                     android:gravity="start"
                     android:hint="Remarks"
                     android:inputType="text"
-                    android:layout_marginBottom="10dp"
 
                     android:padding="8dp"
                     android:textColor="@color/black"/>
