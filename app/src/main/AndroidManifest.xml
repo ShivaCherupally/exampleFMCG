@@ -123,7 +123,7 @@
 
         <activity
             android:name="com.fmcg.ui.Invoice"
-            android:label="Invoice"
+            android:label="Billing"
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden|adjustResize">

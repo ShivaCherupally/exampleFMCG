@@ -861,10 +861,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 			dataObj.putOpt("AreaId", AreaId);
 			dataObj.putOpt("OrderNumber", orderNo);
 			dataObj.putOpt("PaymentDateCheque", OrderDeliveryDate);
-
 //			dataObj.putOpt("EmployeeId", EmployeeId);
-
-
 			dataObj.putOpt("PaymentTermsId", paymentTermsId);
 			dataObj.putOpt("OrderSalesId", OrderSalesId);
 			/*if (chequeDate != null && !chequeDate.isEmpty())
@@ -1584,7 +1581,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		}
 
 		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this, R.layout.spinner_item, zoneNamestitle);
-		dataAdapter_zoneName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_zoneName.setDropDownViewResource(R.layout.list_item);
 		zone_sp.setAdapter(dataAdapter_zoneName);
 
 		autoFillDetails();
@@ -1650,7 +1647,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		}
 		//Routedetails adapter
 		ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this, R.layout.spinner_item, routeNamestitle);
-		dataAdapter_routeName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_routeName.setDropDownViewResource(R.layout.list_item);
 		routecd.setAdapter(dataAdapter_routeName);
 
 		if (!zoneTouchClick)
@@ -1719,7 +1716,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		}
 
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, R.layout.spinner_item, areaNamestitle);
-		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
 
 		if (!zoneTouchClick && !routeTouchClick && !areaTouchClick)
@@ -1786,7 +1783,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		{
 		}
 		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this, R.layout.spinner_item, shooNamestitle);
-		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_shopType.setDropDownViewResource(R.layout.list_item);
 		shopName_sp.setAdapter(dataAdapter_shopType);
 
 		if (!zoneTouchClick && !routeTouchClick && !areaTouchClick && !shopNamesTouchClick)
@@ -1862,7 +1859,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this,
 		                                                                     android.R.layout.simple_spinner_item,
 		                                                                     orderStatusTitle);
-		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_shopType.setDropDownViewResource(R.layout.list_item);
 		orderStatus_sp.setAdapter(dataAdapter_shopType);
 
 		/*if (!areaDropDownItemSeleted)
@@ -1933,7 +1930,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this,
 		                                                                     android.R.layout.simple_spinner_item,
 		                                                                     paymentNamestitle);
-		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_shopType.setDropDownViewResource(R.layout.list_item);
 		payment_sp.setAdapter(dataAdapter_shopType);
 		payment_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
@@ -1990,7 +1987,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		areaNamestitle.clear();
 		areaNamestitle.add("Select Area Name");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
-		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
 	}
 

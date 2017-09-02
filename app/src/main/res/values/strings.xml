@@ -59,6 +59,7 @@
     <string name="route_code">Route Code</string>
     <string name="area_code">Area Code</string>
     <string name="shop_code">Shop Id</string>
+    <string name="welcomenote">Welcome \n to our \n Bright Udyog</string>
 
 
     <string name="zone_name">Zone Name</string>
@@ -112,9 +113,6 @@
     <string name="shopname_txt">Shop Name</string>
     <string name="amounttxt">Amount </string>
     <string name="payamount">Pay Amount</string>
-
-
-
 
 
     <string name="edit_btn">Edit</string>

@@ -270,6 +270,10 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		submit.setOnClickListener(this);
 		cancel.setOnClickListener(this);
 
+		selectRouteNameBind();
+		selectAreaNameBind();
+		selectOrderNumber();
+
 
 		zone_sp.setOnItemSelectedListener(this);
 		routeName_sp.setOnItemSelectedListener(this);
@@ -428,6 +432,37 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 
 	}
+
+
+	private void selectRouteNameBind()
+	{
+		routeNamestitle.clear();
+		routeNamestitle.add("Select Route No");
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+		routeName_sp.setAdapter(dataAdapter_areaName);
+	}
+
+	private void selectAreaNameBind()
+	{
+		areaNamestitle.clear();
+		areaNamestitle.add("Select Area Name");
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+		areaName_sp.setAdapter(dataAdapter_areaName);
+		//selectShopNameBind();
+	}
+
+	private void selectOrderNumber()
+	{
+		orderNumberDP_str.clear();
+		orderNumberDP_str.add("Select Order Number");
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, orderNumberDP_str);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+		areaName_sp.setAdapter(dataAdapter_areaName);
+		//selectShopNameBind();
+	}
+
 
 	public class InvoiceCancel extends AsyncTask<String, String, String>
 	{
@@ -669,7 +704,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 						//orderNumber adapter
 						ArrayAdapter<String> dataAdapter_orderNumber = new ArrayAdapter<String>(this,
 						                                                                        android.R.layout.simple_spinner_item, orderNumberDP_str);
-						dataAdapter_orderNumber.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+						dataAdapter_orderNumber.setDropDownViewResource(R.layout.list_item);
 						orderNumber_sp.setAdapter(dataAdapter_orderNumber);
 						orderNumber_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 						{
@@ -1681,7 +1716,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	private void adapterDataAssigingToSpinner(ArrayList<String> spinnerTitles, String spinnerSelction)
 	{
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerTitles);
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter.setDropDownViewResource(R.layout.list_item);
 		if (spinnerSelction.equals("ZONE"))
 		{
 			zone_sp.setAdapter(dataAdapter);

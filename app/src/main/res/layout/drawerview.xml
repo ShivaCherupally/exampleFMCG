@@ -27,13 +27,13 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/edittext_whites"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal"
                 android:visibility="gone">
 
                 <Spinner
                     android:id="@+id/shopName_spinner"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -47,12 +47,12 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/edittext_whites"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/zone_name_spinner"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -66,13 +66,13 @@
                   android:layout_marginLeft="10dp"
                   android:layout_marginRight="10dp"
                   android:layout_marginTop="10dp"
-                  android:background="@drawable/edittext_whites"
+                  android:background="@drawable/rect_bg_black"
                   android:orientation="horizontal"
                   android:visibility="gone">
 
                   <Spinner
                       android:id="@+id/routeName_spinner"
-                      style="@style/spinner_style"
+                      style="@style/spinner_bg_style"
                       android:layout_width="match_parent"
                       android:layout_height="40dp"
                       android:layout_gravity="center"
@@ -86,13 +86,13 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/edittext_whites"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal"
                 android:visibility="visible">
 
                 <Spinner
                     android:id="@+id/routecd"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -106,12 +106,12 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/edittext_whites"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/area_name"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -131,7 +131,7 @@
                 android:background="@drawable/rect_white"
                 android:hint="@string/shop_name"
                 android:maxLines="1"
-                android:paddingLeft="25dp"
+                android:paddingLeft="10dp"
                 android:textCursorDrawable="@drawable/color_cursor"
                 />
 
@@ -141,12 +141,12 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/edittext_whites"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/shop_type_dp"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -164,7 +164,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:hint="@string/owner"
-                android:paddingLeft="25dp"
+                android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"/>
 
@@ -178,7 +178,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:hint="Land mark"
-                android:paddingLeft="25dp"
+                android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"/>
 
@@ -187,14 +187,18 @@
                 android:id="@+id/shop_address"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:background="@drawable/rect_white"
+                android:cursorVisible="true"
+                android:gravity="start"
+                android:hint="Shop Address"
+                android:inputType="text|textCapSentences"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/rect_white"
-                android:hint="@string/shop_address"
-                android:paddingLeft="15dp"
-                android:singleLine="true"
-                android:textCursorDrawable="@drawable/color_cursor"/>
+                android:padding="8sp"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="17sp"/>
 
             <EditText
                 android:id="@+id/pin"
@@ -208,7 +212,7 @@
                 android:hint="@string/pin"
                 android:inputType="number"
                 android:maxLength="6"
-                android:paddingLeft="25dp"
+                android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"/>
 
@@ -218,12 +222,12 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/edittext_whites"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/religion"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -238,12 +242,12 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/edittext_whites"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/payment_sp"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
 
@@ -264,7 +268,7 @@
                 android:background="@drawable/rect_white"
                 android:hint="@string/paymentmode"
                 android:inputType="number"
-                android:paddingLeft="25dp"
+                android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:visibility="gone"/>
 
@@ -278,7 +282,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:hint="@string/emailid"
-                android:paddingLeft="25dp"
+                android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"/>
 
@@ -294,7 +298,7 @@
                 android:hint="@string/mobile"
                 android:inputType="number"
                 android:maxLength="10"
-                android:paddingLeft="25dp"
+                android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"/>
 
@@ -309,7 +313,7 @@
                 android:background="@drawable/rect_white"
                 android:hint="@string/ph"
                 android:inputType="number"
-                android:paddingLeft="25dp"
+                android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"/>
 
@@ -323,7 +327,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:hint="@string/lat"
-                android:paddingLeft="25dp"
+                android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:visibility="gone"/>
 
@@ -337,7 +341,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:hint="@string/lan"
-                android:paddingLeft="25dp"
+                android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:visibility="gone"/>
 
@@ -352,7 +356,7 @@
                 android:background="@drawable/rect_white"
                 android:hint="@string/createdby"
                 android:inputType="number"
-                android:paddingLeft="25dp"
+                android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:visibility="gone"/>
 

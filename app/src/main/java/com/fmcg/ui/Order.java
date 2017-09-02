@@ -231,6 +231,9 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 		list_li = (LinearLayout) findViewById(R.id.items_li);
 
+		selectRouteNameBind();
+		selectAreaNameBind();
+
 		if (Utility.isOnline(mContext))
 		{
 			HttpAdapter.getPayment(Order.this, "payment");
@@ -405,6 +408,9 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 	private void dataUploadInServer()
 	{
+		String paymentSelectedStr = "";
+		String CreditDays = "";
+		String chequeDate = "";
 		JSONArray cartItemsArray = new JSONArray();
 		if (storedProductCategories != null && !storedProductCategories.isEmpty())
 		{
@@ -474,9 +480,40 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 			EmployeeId = employeeId;
 		}
 
+		try
+		{
+			paymentSelectedStr = SharedPrefsUtil.getStringPreference(mContext, "paymentSelected");
+			if (paymentSelectedStr != null && !paymentSelectedStr.isEmpty() && !paymentSelectedStr.equalsIgnoreCase("null"))
+			{
+
+				if (paymentSelectedStr.equalsIgnoreCase("Credit-days"))
+				{
+					CreditDays = paymentSelected.getText().toString();
+					chequeDate = "";
+				}
+				else if (paymentSelectedStr.equalsIgnoreCase("Days to Cheque"))
+				{
+					CreditDays = paymentSelected.getText().toString();
+					chequeDate = "";
+				}
+				else if (paymentSelectedStr.equalsIgnoreCase("Cheque"))
+				{
+					CreditDays = "0";
+					chequeDate = paymentSelected.getText().toString();
+				}
+			}
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+
+		}
+
 		String jsonString = createJsonOrderSubmit(orderNumber, selected_zoneId, selected_roueId, selected_areaNameId,
 		                                          selected_ShopId, IsShopClosed, ShopClosedImage, OrderDeliveryDate,
 		                                          selected_orderStatusId, selected_paymentTermsId,
+		                                          CreditDays, chequeDate,
 		                                          IsOrdered, IsInvoice, remarksET.getText().toString(),
 		                                          EmployeeId, cartItemsArray);
 		Log.e("parameters", jsonString + "");
@@ -550,6 +587,23 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 	}
 
+	private void selectRouteNameBind()
+	{
+		routeNamestitle.add("Select Route No");
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+		routeName_sp.setAdapter(dataAdapter_areaName);
+	}
+
+	private void selectAreaNameBind()
+	{
+		areaNamestitle.add("Select Area Name");
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+		areaName_sp.setAdapter(dataAdapter_areaName);
+		//selectShopNameBind();
+	}
+
 	@Override
 	public void operationCompleted(NetworkResponse response)
 	{
@@ -598,7 +652,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 						//Product category adapter
 						ArrayAdapter<String> dataAdapter_productName = new ArrayAdapter<String>(this,
 						                                                                        android.R.layout.simple_spinner_item, productDP_str);
-						dataAdapter_productName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+						dataAdapter_productName.setDropDownViewResource(R.layout.list_item);
 						category_sp.setAdapter(dataAdapter_productName);
 
 						category_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -738,7 +792,9 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 	private String createJsonOrderSubmit(String OrderNumber, String ZoneId, String RouteId,
 	                                     String AreaId, String ShopId, String IsShopClosed, String ShopClosedImage,
-	                                     String OrderDeliveryDate, String OrderStatusId, String PaymentTermsId, String IsOrdered, String IsInvoice,
+	                                     String OrderDeliveryDate, String OrderStatusId, String PaymentTermsId,
+	                                     String creditDays, String chequeDate, String IsOrdered,
+	                                     String IsInvoice,
 	                                     String Remarks, String EmployeeId, JSONArray cartItemsArray
 	)
 	{
@@ -756,6 +812,23 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 			dataObj.putOpt("OrderDeliveryDate", OrderDeliveryDate);
 			dataObj.putOpt("OrderStatusId", OrderStatusId);
 			dataObj.putOpt("PaymentTermsId", PaymentTermsId); //PaymentTermsId // Added New param for paymnet tersms
+			if (chequeDate != null && !chequeDate.isEmpty())
+			{
+				dataObj.putOpt("PaymentDateCheque", chequeDate);
+			}
+			else
+			{
+				dataObj.putOpt("ChequeDate", null);
+			}
+			if (creditDays != null && !creditDays.isEmpty())
+			{
+				dataObj.putOpt("CreditDays", creditDays);
+			}
+			else
+			{
+				dataObj.putOpt("CreditDays", "0");
+			}
+
 			dataObj.putOpt("IsOrdered", IsOrdered);
 			dataObj.putOpt("IsInvoice", IsInvoice);
 			dataObj.putOpt("Remarks", Remarks);
@@ -1867,7 +1940,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 	private void adapterDataAssigingToSpinner(ArrayList<String> spinnerTitles, String spinnerSelction)
 	{
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerTitles);
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter.setDropDownViewResource(R.layout.list_item);
 
 		if (spinnerSelction.equals("ZONE"))
 		{

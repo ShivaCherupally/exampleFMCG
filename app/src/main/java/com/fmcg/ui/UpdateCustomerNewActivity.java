@@ -98,7 +98,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	private String religionDropdown, paymentDropDown;
 	TextView shop, order, invoice;
 	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, createdby, locationName, payment, emailId;
-	private TextView submit;
+	private Button submit;
 	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp, shopName_spinner;
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	private GoogleApiClient mGoogleApiClient;
@@ -145,6 +145,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	boolean zoneTouchClick = false;
 	boolean routeTouchClick = false;
 	boolean areaTouchClick = false;
+	ProgressDialog progressdailog;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -166,7 +167,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		createdby = (EditText) findViewById(R.id.createdby);
 		locationName = (EditText) findViewById(R.id.location_name);
 		payment = (EditText) findViewById(R.id.payment);
-		submit = (TextView) findViewById(R.id.submit);
+		submit = (Button) findViewById(R.id.submit);
 
 
 		shopName_spinner = (Spinner) findViewById(R.id.shopName_spinner);
@@ -182,6 +183,10 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		routeDetailsDP = new ArrayList<>();
 
 		shopName_autoComplete = (AutoCompleteTextView) findViewById(R.id.shopName_autoComplete);
+
+
+		selectRouteNameBind();
+		defaultAreaNameSelect();
 
 		HttpAdapter.getShopDetailsDP(UpdateCustomerNewActivity.this, "shopNames", "0");
 		HttpAdapter.getZoneDetailsDP(UpdateCustomerNewActivity.this, "zoneName");
@@ -258,6 +263,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				{
 					if (Utility.isOnline(mContext))
 					{
+						progressdailog = Utility.setProgressDailog(mContext);
+						progressdailog.show();
 						new UpdateCustomerNewActivity.CreateShopTask().execute();
 					}
 					else
@@ -269,13 +276,22 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		});
 	}
 
+
+	private void selectRouteNameBind()
+	{
+		routeNamestitle.add("Select Route No");
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+		routecd.setAdapter(dataAdapter_areaName);
+	}
+
 	private void defaultAreaNameSelect()
 	{
 		selected_areaNameId = "";
 		areaNamestitle.clear();
 		areaNamestitle.add("Select Area Name");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
-		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
 	}
 
@@ -584,17 +600,17 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 	public class CreateShopTask extends AsyncTask<String, String, String>
 	{
-		ProgressDialog pd = new ProgressDialog(UpdateCustomerNewActivity.this);
+		//ProgressDialog pd = new ProgressDialog(UpdateCustomerNewActivity.this);
 
 		@Override
 		protected void onPreExecute()
 		{
-			// TODO Auto-generated method stub
+			/*// TODO Auto-generated method stub
 			pd.setMessage("Please wait...");
 			pd.setIndeterminate(false);
 			pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			pd.setCancelable(false);
-			pd.show();
+			pd.show();*/
 		}
 
 		@Override
@@ -632,7 +648,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 					e.printStackTrace();
 				}
 			}
-			pd.dismiss();
+			progressdailog.dismiss();
 		}
 	}
 
@@ -939,9 +955,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 
 		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, zoneNamestitle);
-		dataAdapter_zoneName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//		dataAdapter_zoneName.setDropDownViewResource(R.layout.list_item);
+		dataAdapter_zoneName.setDropDownViewResource(R.layout.list_item);
 		zone_sp.setAdapter(dataAdapter_zoneName);
-
 
 		zone_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
@@ -1005,7 +1021,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 		//Routedetails adapter
 		ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
-		dataAdapter_routeName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_routeName.setDropDownViewResource(R.layout.list_item);
 		routecd.setAdapter(dataAdapter_routeName);
 
 		if (!zoneTouchClick)
@@ -1084,7 +1100,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
-		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
 
 		if (!zoneTouchClick && !routeTouchClick)
@@ -1158,7 +1174,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		{
 		}
 		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shooNamestitle);
-		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_shopType.setDropDownViewResource(R.layout.list_item);
 		shopName_spinner.setAdapter(dataAdapter_shopType);
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
@@ -1261,7 +1277,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this,
 		                                                                     android.R.layout.simple_spinner_item, shoptypesNamestitle);
-		dataAdapter_shopType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_shopType.setDropDownViewResource(R.layout.list_item);
 		shoptype_sp.setAdapter(dataAdapter_shopType);
 		shoptype_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
@@ -1310,7 +1326,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			e.printStackTrace();
 		}
 		ArrayAdapter<String> dataAdapter_religion = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, religionsNamestitle);
-		dataAdapter_religion.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_religion.setDropDownViewResource(R.layout.list_item);
 		religion.setAdapter(dataAdapter_religion);
 		religion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
@@ -1362,7 +1378,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 		ArrayAdapter<String> dataAdapter_payment = new ArrayAdapter<String>(this,
 		                                                                    android.R.layout.simple_spinner_item, paymentNamestitle);
-		dataAdapter_payment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_payment.setDropDownViewResource(R.layout.list_item);
 		payment_sp.setAdapter(dataAdapter_payment);
 		payment_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
@@ -1425,6 +1441,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			nameValuePairs.add(new BasicNameValuePair("ShopTypeId", selected_ShopTypeId));
 			nameValuePairs.add(new BasicNameValuePair("ReligionID", religionDropdown));
 			nameValuePairs.add(new BasicNameValuePair("PaymentTermId", paymentDropDown));
+
+
 			nameValuePairs.add(new BasicNameValuePair("AreaId", selected_areaNameId));
 			nameValuePairs.add(new BasicNameValuePair("Active", "Y"));
 			nameValuePairs.add(new BasicNameValuePair("DateTime", DateUtil.currentDate()));

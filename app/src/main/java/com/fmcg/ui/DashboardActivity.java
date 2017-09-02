@@ -18,6 +18,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -154,6 +155,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	String MonthName = "";
 
 	Activity mactivity;
+	boolean doubleBackToExitPressedOnce = false;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -181,6 +183,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //		pieChart2GraphAccess();
 		//barGraphDataGet();
 		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 				this, drawer, toolbar, R.string.app_name, R.string.app_name);
 		drawer.setDrawerListener(toggle);
@@ -674,7 +677,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	@Override
 	public void onBackPressed()
 	{
-		//drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		/*//drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		if (drawer.isDrawerOpen(GravityCompat.START))
 		{
 			drawer.closeDrawer(GravityCompat.START);
@@ -682,7 +685,32 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		else
 		{
 			super.onBackPressed();
+		}*/
+
+		assert drawer != null;
+
+		if (drawer.isDrawerOpen(GravityCompat.START))
+		{
+			drawer.closeDrawer(GravityCompat.START);
+			return;
 		}
+		else if (doubleBackToExitPressedOnce)
+		{
+			super.onBackPressed();
+			return;
+		}
+
+		this.doubleBackToExitPressedOnce = true;
+		Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+
+		new Handler().postDelayed(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				doubleBackToExitPressedOnce = false;
+			}
+		}, 2000);
 	}
 
 	@SuppressWarnings("StatementWithEmptyBody")

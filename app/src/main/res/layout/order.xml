@@ -47,13 +47,12 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-
-                android:background="@drawable/order_rectangle"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/zone_name_spinner"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -65,12 +64,12 @@
                 android:layout_height="45dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/order_rectangle"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/routeName_spinner"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -82,12 +81,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/order_rectangle"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/areaName_spinner"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -99,12 +98,12 @@
             <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/order_rectangle"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 &lt;!&ndash;<Spinner
                     android:id="@+id/shopname_spinner"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -157,7 +156,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/order_rectangle"
+                        android:background="@drawable/rect_bg_black"
                         android:gravity="center"
                         android:text="Order Date"
                         android:textColor="@color/black" />
@@ -174,13 +173,13 @@
                 android:layout_height="45dp"
                 android:layout_gravity="center_horizontal|center"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/order_rectangle"
+                android:background="@drawable/rect_bg_black"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/order_status_spinner"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:hint="Order Type"
@@ -215,12 +214,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/order_rectangle"
+                    android:background="@drawable/rect_bg_black"
                     android:orientation="horizontal">
 
                     <Spinner
                         android:id="@+id/product_category"
-                        style="@style/spinner_style"
+                        style="@style/spinner_bg_style"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
@@ -527,12 +526,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/order_rectangle"
+                    android:background="@drawable/rect_bg_black"
                     android:orientation="horizontal">
 
                     <Spinner
                         android:id="@+id/payment_terms_spinner"
-                        style="@style/spinner_style"
+                        style="@style/spinner_bg_style"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
@@ -560,7 +559,7 @@
                     android:layout_height="70dp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/order_rectangle"
+                    android:background="@drawable/rect_bg_black"
                     android:gravity="start"
                     android:hint="Remarks"
                     android:inputType="text"
@@ -597,8 +596,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
-
-        android:background="@color/empty">
+        android:background="@color/empty"
+        android:clickable="false"
+        android:descendantFocusability="afterDescendants"
+        android:focusableInTouchMode="false">
 
         <TextView
             android:id="@+id/submit"
@@ -606,6 +607,9 @@
             android:layout_height="40dp"
 
             android:background="@drawable/submit_rectangle"
+            android:clickable="true"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
             android:gravity="center"
 
 

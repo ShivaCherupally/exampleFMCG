@@ -737,7 +737,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		}
 		//Routedetails adapter
 		ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
-		dataAdapter_routeName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_routeName.setDropDownViewResource(R.layout.list_item);
 		routeNoSpnr.setAdapter(dataAdapter_routeName);
 
 		routeNoSpnr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -772,7 +772,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		routeNamestitle.clear();
 		routeNamestitle.add("Select Route Number");
 		ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
-		dataAdapter_routeName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_routeName.setDropDownViewResource(R.layout.list_item);
 		routeNoSpnr.setAdapter(dataAdapter_routeName);
 
 		sublayout.setVisibility(View.GONE);

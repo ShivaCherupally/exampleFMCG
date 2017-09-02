@@ -147,7 +147,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edittext_whites"
                 android:orientation="horizontal">
@@ -176,6 +176,8 @@
                     android:layout_gravity="center"
                     android:hint="@string/routecd"
                     android:singleLine="true"/>
+
+
             </LinearLayout>
 
 
@@ -433,17 +435,16 @@
         android:layout_margin="10dp"
         android:background="@color/empty">
 
-        <TextView
+        <Button
             android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/submit_rectangle"
             android:gravity="center"
-
-
             android:text="@string/submit"
+            android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="17sp"
             />
     </LinearLayout>
 </RelativeLayout>

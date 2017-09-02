@@ -577,7 +577,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 						//Product category adapter
 						ArrayAdapter<String> dataAdapter_productName = new ArrayAdapter<String>(this,
 						                                                                        android.R.layout.simple_spinner_item, productDP_str);
-						dataAdapter_productName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+						dataAdapter_productName.setDropDownViewResource(R.layout.list_item);
 						product_category_spinner.setAdapter(dataAdapter_productName);
 
 						product_category_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -767,6 +767,16 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			dataObj.putOpt("EmployeeId", EmployeeId);
 			dataObj.putOpt("OrderId", OrderId);
 
+
+			if (chequeDate != null && !chequeDate.isEmpty())
+			{
+				dataObj.putOpt("PaymentDateCheque", chequeDate);
+			}
+			else
+			{
+				dataObj.putOpt("ChequeDate", null);
+			}
+
 			if (creditDays != null && !creditDays.isEmpty())
 			{
 				dataObj.putOpt("CreditDays", creditDays);
@@ -774,6 +784,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			else
 			{
 				dataObj.putOpt("CreditDays", "0");
+
 			}
 
 			dataObj.putOpt("OrderNumber", orderNumInvoice.getText().toString());
@@ -1525,7 +1536,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			shoptypesNamestitle.clear();
 			shopName_autoComplete.setText("");
 			ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
-			dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 			areaName_spinner.setAdapter(dataAdapter_areaName);
 
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shoptypesNamestitle);
@@ -1767,7 +1778,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	{
 		zoneDetailsDP_str.add("Select Zone No");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, zoneDetailsDP_str);
-		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		routeName_spinner.setAdapter(dataAdapter_areaName);
 		selectRouteNameBind();
 	}
@@ -1776,7 +1787,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	{
 		routenostitle.add("Select Route No");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routenostitle);
-		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		routeName_spinner.setAdapter(dataAdapter_areaName);
 		selectAreaNameBind();
 	}
@@ -1788,7 +1799,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		_shoptypesData = new ArrayList<ShopNamesData>();
 		areaDetailsDP_str.add("Select Area Name");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaDetailsDP_str);
-		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		areaName_spinner.setAdapter(dataAdapter_areaName);
 		//selectShopNameBind();
 	}
@@ -1797,7 +1808,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	{
 		shopNameDP_str.add("Select Shop Name");
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shopNameDP_str);
-		dataAdapter_areaName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		shopname_spinner.setAdapter(dataAdapter_areaName);
 	}*/
 
@@ -1839,7 +1850,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	private void adapterDataAssigingToSpinner(ArrayList<String> spinnerTitles, String spinnerSelction)
 	{
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerTitles);
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter.setDropDownViewResource(R.layout.list_item);
 		if (spinnerSelction.equals("ZONE"))
 		{
 			zone_name_spinner.setAdapter(dataAdapter);
