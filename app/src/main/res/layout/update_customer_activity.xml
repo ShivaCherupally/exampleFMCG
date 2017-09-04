@@ -14,8 +14,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:orientation="vertical">
 
@@ -36,7 +36,7 @@
                     />
 
 
-                <AutoCompleteTextView
+                <!--<AutoCompleteTextView
                     android:id="@+id/shopName_autoComplete"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -48,17 +48,18 @@
                     android:textCursorDrawable="@drawable/color_cursor">
 
                     <requestFocus/>
-                </AutoCompleteTextView>
+                </AutoCompleteTextView>-->
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-
                 android:layout_marginTop="10dp"
+
                 android:background="@drawable/rect_bg_black"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <EditText
                     android:id="@+id/availZonenametxt"
@@ -84,7 +85,8 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:hint="Zone Name"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <!--  <LinearLayout
@@ -110,8 +112,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-
-                android:layout_marginTop="10dp"
                 android:background="@drawable/edittext_whites"
                 android:orientation="horizontal"
                 android:visibility="visible">
@@ -180,19 +180,34 @@
 
             </LinearLayout>
 
+            <AutoCompleteTextView
+                android:id="@+id/shopName_autoComplete"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/textView1"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_white"
+                android:hint="Enter Shop Name"
+                android:textColor="@color/HeaderColor"
+                android:textCursorDrawable="@drawable/color_cursor">
+
+                <requestFocus/>
+            </AutoCompleteTextView>
+
 
             <EditText
                 android:id="@+id/shopname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
-                android:hint="@string/shop_name"
+                android:hint="Shop Name"
                 android:imeOptions="actionNext"
                 android:maxLines="1"
                 android:padding="8dp"
+                android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="17sp"
                 />
@@ -222,47 +237,55 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
-                android:hint="@string/owner"
+                android:hint="Owner Name"
                 android:imeOptions="actionNext"
+                android:maxLines="1"
                 android:padding="8dp"
+                android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="17sp"/>
 
             <EditText
-                android:id="@+id/location_name"
+                android:id="@+id/landmark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:hint="Land mark"
                 android:imeOptions="actionNext"
+                android:maxLines="1"
                 android:padding="8dp"
+                android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"
-
                 android:textSize="17sp"/>
 
+            <!--
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/rect_white"
+                            android:gravity="top"
+                            >
 
-            <LinearLayout
+
+
+                        </LinearLayout>-->
+            <EditText
+                android:id="@+id/shop_address"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
-                android:padding="8dp">
-
-                <EditText
-                    android:id="@+id/shop_address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/empty"
-                    android:hint="@string/shop_address"
-
-                    android:imeOptions="actionNext"
-                    android:maxLines="5"
-                    android:textCursorDrawable="@drawable/color_cursor"
-                    android:textSize="17dp"/>
-            </LinearLayout>
+                android:gravity="top"
+                android:hint="Shop Address"
+                android:inputType="text"
+                android:textCursorDrawable="@drawable/color_cursor"
+                >
+                <requestFocus/>
+            </EditText>
 
             <EditText
                 android:id="@+id/pin"
@@ -278,7 +301,11 @@
                 android:maxLength="6"
                 android:padding="8dp"
                 android:singleLine="true"
-                android:textCursorDrawable="@drawable/color_cursor"/>
+                android:textCursorDrawable="@drawable/color_cursor"
+                >
+
+                <requestFocus/>
+            </EditText>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -342,29 +369,35 @@
 
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
+                android:enabled="true"
+                android:focusable="true"
                 android:hint="@string/emailid"
                 android:imeOptions="actionNext"
                 android:inputType="text"
-
+                android:longClickable="true"
                 android:padding="8dp"
                 android:singleLine="true"
-                android:textCursorDrawable="@drawable/color_cursor"/>
+                android:textCursorDrawable="@drawable/color_cursor"
+                />
 
             <EditText
                 android:id="@+id/mobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
+                android:enabled="true"
+                android:focusable="true"
                 android:hint="@string/mobile"
                 android:imeOptions="actionNext"
                 android:inputType="number"
+                android:longClickable="true"
                 android:maxLength="10"
                 android:padding="8dp"
                 android:singleLine="true"
-                android:textCursorDrawable="@drawable/color_cursor"/>
+                android:textCursorDrawable="@drawable/color_cursor"
+                />
 
             <EditText
                 android:id="@+id/phone"

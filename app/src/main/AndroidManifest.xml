@@ -140,6 +140,12 @@
 
         </activity>
         <activity
+            android:name="com.fmcg.ui.SampleGoogleDirectionMap"
+            android:label="My Day Program"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity
             android:name="com.fmcg.ui.UpdateShopDetailsActvity"
             android:label="Update Shop"
             android:screenOrientation="portrait"

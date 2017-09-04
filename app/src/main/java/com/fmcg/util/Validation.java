@@ -67,8 +67,8 @@ public class Validation
 		// text required and editText is blank, so return false
 		//if (required && !(hasText(editText)))
 		if (required && text.isEmpty()) {
-			editText.setError(msg);
-			return false;
+//			editText.setError(msg);
+			return true;
 		} else {
 			if (required && !Pattern.matches(regex, text.trim())) {
 				editText.setError(errMsg);
@@ -139,7 +139,7 @@ public class Validation
 		// length 0 means there is no text
 		if (text.length() == 0)
 		{
-			editText.setError("Please enter phone number");
+			editText.setError("Please enter mobile number");
 			return false;
 		}
 		else

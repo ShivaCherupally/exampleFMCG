@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -70,7 +71,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 
@@ -90,6 +98,7 @@ public class GetShopsByRoute extends AppCompatActivity
 	private LatLng origin = new LatLng(13.7371063, 100.5642539);
 	private LatLng destination = new LatLng(13.7604896, 100.5594266);
 	ArrayList<LatLng> points = null;
+	private LatLng latLngGlobal = new LatLng(13.7604896, 100.5594266);
 	SharedPreferences sharedPreferences;
 	private GoogleApiClient mGoogleApiClient;
 	private LocationRequest mLocationRequest;
@@ -117,6 +126,7 @@ public class GetShopsByRoute extends AppCompatActivity
 	String selected_areaNameId = "";
 
 	ArrayList<ShopNamesData> _setColorData = new ArrayList<ShopNamesData>(); //Color Data
+	ArrayList markerPoints = new ArrayList();
 
 
 	@Override
@@ -358,11 +368,82 @@ public class GetShopsByRoute extends AppCompatActivity
 
 	public void requestDirection()
 	{
-		GoogleDirection.withServerKey(serverKey)
-		               .from(origin)
-		               .to(destination)
-		               .transportMode(TransportMode.TRANSIT)
-		               .execute(this);
+		Log.e("origin_source", points.get(0) + "");
+
+		/*GoogleDirection.withServerKey(serverKey).from(origin)
+		               .to(destination).transportMode(TransportMode.TRANSIT).execute(this);*/
+		int destination = points.size() - 1;
+		GoogleDirection.withServerKey(serverKey).from(points.get(0))
+		               .to(points.get(destination)).transportMode(TransportMode.TRANSIT).execute(this);
+		Log.e("destination_focus", points.get(destination) + "");
+		//directionAccess();
+	}
+
+	private void directionAccess()
+	{
+		/*if (markerPoints.size() > 1)
+		{
+			markerPoints.clear();
+			googleMap.clear();
+		}*/
+
+		// Adding new item to the ArrayList
+//		markerPoints.add(latLng);
+		markerPoints.add(points.get(0));
+		markerPoints.add(points.size() - 1);
+
+		/*// Creating MarkerOptions
+		MarkerOptions options = new MarkerOptions();
+
+		// Setting the position of the marker
+//		options.position(latLng);
+		options.position(origin);
+		options.position(destination);
+
+		if (markerPoints.size() == 1)
+		{
+			options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+		}
+		else if (markerPoints.size() == 2)
+		{
+			options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+		}
+		else
+		{
+			options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+		}*/
+
+
+		LatLng origind = (LatLng) markerPoints.get(0);
+		LatLng dests = (LatLng) markerPoints.get(points.size() - 1);
+		Log.e("source_value", origind + "");
+		Log.e("dest_value", dests + "");
+
+		// Getting URL to the Google Directions API
+		String url = getDirectionsUrl(origind, dests);
+		DownloadTask downloadTask = new DownloadTask();
+
+		// Start downloading json data from Google Directions API
+		downloadTask.execute(url);
+
+		// Add new marker to the Google Map Android API V2
+		//googleMap.addMarker(options);
+
+		// Checks, whether start and end locations are captured
+		/*if (markerPoints.size() >= 2)
+		{
+			LatLng origind = (LatLng) markerPoints.get(0);
+			LatLng dests = (LatLng) markerPoints.get(1);
+			Log.e("source", markerPoints.get(0) + "");
+			Log.e("dest", markerPoints.get(1) + "");
+
+			// Getting URL to the Google Directions API
+			String url = getDirectionsUrl(origind, dests);
+			DownloadTask downloadTask = new DownloadTask();
+
+			// Start downloading json data from Google Directions API
+			downloadTask.execute(url);*/
+//		}
 	}
 
 	@Override
@@ -673,50 +754,27 @@ public class GetShopsByRoute extends AppCompatActivity
 				JSONObject statuss = shopsData.getJSONObject(i);
 				GetShopsArray getShopsArray = new Gson().fromJson(statuss.toString(), GetShopsArray.class);
 				points = new ArrayList<LatLng>();
-
 				Log.e("lat", getShopsArray.Latitude + "shiv");
 				Log.e("long", getShopsArray.Longitude + "Shivaa");
+				origin = new LatLng(17.4094542, 78.5036953);
+				//(17.4115383,78.495895)
 
+				Log.e("origin", origin + "");
 				if (getShopsArray.Longitude != null && !getShopsArray.Longitude.isEmpty())
 				{
 					if (getShopsArray.Longitude != null && !getShopsArray.Longitude.isEmpty())
 					{
 						LatLng latLng = new LatLng(Double.parseDouble(getShopsArray.Latitude), Double.parseDouble(getShopsArray.Longitude));
 						points.add(latLng);
+						//latLngGlobal = new LatLng(Double.parseDouble(getShopsArray.Latitude), Double.parseDouble(getShopsArray.Longitude));
+						//destination = new LatLng(17.4096783, 78.5030133);
+						Log.e("destination", destination + "");
+
 						Log.e("latlang", String.valueOf(latLng));
 						MarkerOptions markerOptions = new MarkerOptions();
-						// Setting latitude and longitude of the marker position
 						markerOptions.position(latLng);
-
-							/*Drawable circleDrawable = getResources().getDrawable(R.drawable.popup_close);
-							BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);*/
-
-						// Setting titile of the infowindow of the marker
 						markerOptions.title(getShopsArray.ShopName);
 						polyLineOptions.width(8);
-
-						/*if (getShopsArray.Active != null && !getShopsArray.Active.equalsIgnoreCase("null"))
-						{
-							if (getShopsArray.Active.equalsIgnoreCase("N"))
-							{
-								polyLineOptions.color(Color.RED);
-								Drawable circleDrawable = getResources().getDrawable(R.drawable.greenlocator);
-								BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
-								markerOptions.icon(markerIcon);
-							}
-							else
-							{
-								polyLineOptions.color(Color.RED);
-									markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
-							}
-						}*/
-
-
-						//getShopsColorArray
-//						Log.e("getShopsColorArray.BookedFlag", getShopsColorArray.BookedFlag + "");
-
-//						checkingEqualShopId(Integer.parseInt(getShopsArray.ShopId), _setColorData);
-
 						for (int k = 0; i < _setColorData.size(); k++)
 						{
 							String availShopId = _setColorData.get(k).getShopId();
@@ -727,36 +785,32 @@ public class GetShopsByRoute extends AppCompatActivity
 								if (_setColorData.get(k).getShopName().equalsIgnoreCase("N"))
 								{
 									polyLineOptions.color(Color.RED);
-									Drawable circleDrawable = getResources().getDrawable(R.drawable.map_iconred);
+									/*Drawable circleDrawable = getResources().getDrawable(R.drawable.map_iconred);
 									BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
-									markerOptions.icon(markerIcon);
+									markerOptions.icon(markerIcon);*/
+									markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 								}
 								else
 								{
 									polyLineOptions.color(Color.RED);
-									markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.greenlocator));
+//									markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.greenlocator));
+									markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 								}
 								break;
 							}
-							/*else
-							{
-								polyLineOptions.color(Color.RED);
-								markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_iconred));
-							}*/
 						}
 						if (points.size() != 0)
 						{
 							bounds.include(latLng);
 							polyLineOptions.addAll(points).color(Color.BLACK).width(5);
+							// Getting URL to the Google Directions API
 							googleMap.addMarker(markerOptions);
 						}
-
-						//drawPolyLineOnMap(points);
-//							googleMap.addPolyline(polyLineOptions);
 					}
 				}
 			}
 
+			//directionAccess(latLngGlobal);
 			googleMap.addPolyline(polyLineOptions);
 			googleMapszoom();
 			requestDirection();
@@ -900,6 +954,181 @@ public class GetShopsByRoute extends AppCompatActivity
 		{
 			e.printStackTrace();
 		}
+	}
+
+
+	/**
+	 * A class to parse the Google Places in JSON format
+	 */
+	private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>>
+	{
+
+		// Parsing the data in non-ui thread
+		@Override
+		protected List<List<HashMap<String, String>>> doInBackground(String... jsonData)
+		{
+
+			JSONObject jObject;
+			List<List<HashMap<String, String>>> routes = null;
+
+			try
+			{
+				jObject = new JSONObject(jsonData[0]);
+				DirectionsJSONParser parser = new DirectionsJSONParser();
+
+				routes = parser.parse(jObject);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			return routes;
+		}
+
+		@Override
+		protected void onPostExecute(List<List<HashMap<String, String>>> result)
+		{
+			ArrayList points = null;
+			PolylineOptions lineOptions = null;
+			MarkerOptions markerOptions = new MarkerOptions();
+
+			for (int i = 0; i < result.size(); i++)
+			{
+				points = new ArrayList();
+				lineOptions = new PolylineOptions();
+
+				List<HashMap<String, String>> path = result.get(i);
+
+				for (int j = 0; j < path.size(); j++)
+				{
+					HashMap<String, String> point = path.get(j);
+
+					double lat = Double.parseDouble(point.get("lat"));
+					double lng = Double.parseDouble(point.get("lng"));
+					LatLng position = new LatLng(lat, lng);
+
+					points.add(position);
+				}
+
+				lineOptions.addAll(points);
+				lineOptions.width(12);
+				lineOptions.color(Color.RED);
+				lineOptions.geodesic(true);
+
+			}
+
+// Drawing polyline in the Google Map for the i-th route
+			googleMap.addPolyline(lineOptions);
+		}
+	}
+
+	private String getDirectionsUrl(LatLng origin, LatLng dest)
+	{
+
+		// Origin of route
+		String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+
+		// Destination of route
+		String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+		// Sensor enabled
+		String sensor = "sensor=false";
+		String mode = "mode=driving";
+
+		// Building the parameters to the web service
+		String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
+
+		// Output format
+		String output = "json";
+
+		// Building the url to the web service
+		String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+
+
+		return url;
+	}
+
+	public class DownloadTask extends AsyncTask<String, String, String>
+	{
+
+		@Override
+		protected String doInBackground(String... url)
+		{
+
+			String data = "";
+			try
+			{
+				data = downloadUrl(url[0]);
+			}
+			catch (Exception e)
+			{
+				Log.d("Background Task", e.toString());
+			}
+			return data;
+		}
+
+		@Override
+		protected void onPostExecute(String result)
+		{
+			super.onPostExecute(result);
+
+			ParserTask parserTask = new ParserTask();
+
+
+			parserTask.execute(result);
+
+		}
+	}
+
+	private String downloadUrl(String strUrl) throws IOException
+	{
+		String data = "";
+		InputStream iStream = null;
+		HttpURLConnection urlConnection = null;
+		try
+		{
+			URL url = new URL(strUrl);
+
+			urlConnection = (HttpURLConnection) url.openConnection();
+
+			urlConnection.connect();
+
+			iStream = urlConnection.getInputStream();
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+			StringBuffer sb = new StringBuffer();
+
+			String line = "";
+			while ((line = br.readLine()) != null)
+			{
+				sb.append(line);
+			}
+
+			data = sb.toString();
+
+			br.close();
+
+		}
+		catch (Exception e)
+		{
+			Log.d("Exception", e.toString());
+		}
+		finally
+		{
+			try
+			{
+				iStream.close();
+				urlConnection.disconnect();
+			}
+			catch (Exception e)
+			{
+
+			}
+
+
+		}
+		return data;
 	}
 }
 

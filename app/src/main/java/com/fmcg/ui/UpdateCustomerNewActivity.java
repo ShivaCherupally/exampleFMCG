@@ -22,6 +22,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -97,7 +99,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	public List<GetRouteDetails> routeDetailsDP;
 	private String religionDropdown, paymentDropDown;
 	TextView shop, order, invoice;
-	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, createdby, locationName, payment, emailId;
+	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, createdby, landmark, payment, emailId;
 	private Button submit;
 	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp, shopName_spinner;
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -146,6 +148,10 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	boolean routeTouchClick = false;
 	boolean areaTouchClick = false;
 	ProgressDialog progressdailog;
+	ArrayAdapter<String> dataAdapter_religion;
+	ArrayAdapter<String> dataAdapter_payment;
+	ArrayAdapter<String> dataAdapter_shopNames;
+	ArrayAdapter<String> dataAdapter_areaName;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -165,7 +171,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		lat = (EditText) findViewById(R.id.lat);
 		lang = (EditText) findViewById(R.id.lang);
 		createdby = (EditText) findViewById(R.id.createdby);
-		locationName = (EditText) findViewById(R.id.location_name);
+		landmark = (EditText) findViewById(R.id.landmark);
 		payment = (EditText) findViewById(R.id.payment);
 		submit = (Button) findViewById(R.id.submit);
 
@@ -188,7 +194,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		selectRouteNameBind();
 		defaultAreaNameSelect();
 
-		HttpAdapter.getShopDetailsDP(UpdateCustomerNewActivity.this, "shopNames", "0");
+		//HttpAdapter.getShopDetailsDP(UpdateCustomerNewActivity.this, "shopNames", "0");
+		HttpAdapter.getRouteDetails(UpdateCustomerNewActivity.this, "routeName", "0");
 		HttpAdapter.getZoneDetailsDP(UpdateCustomerNewActivity.this, "zoneName");
 		HttpAdapter.getReligion(UpdateCustomerNewActivity.this, "getReligion");
 		HttpAdapter.getPayment(UpdateCustomerNewActivity.this, "payment");
@@ -251,6 +258,27 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				return false;
 			}
 		});
+
+//		pin.addTextChangedListener(new TextWatcher()
+//		{
+//			@Override
+//			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
+//			{
+//
+//			}
+//
+//			@Override
+//			public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
+//			{
+//
+//			}
+//
+//			@Override
+//			public void afterTextChanged(final Editable s)
+//			{
+//
+//			}
+//		});
 
 
 		submit.setOnClickListener(new View.OnClickListener()
@@ -461,9 +489,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			routeTouchClick = false;
 			areaTouchClick = false;
 
-			selected_zoneId = String.valueOf(zoneId);
+			/*selected_zoneId = String.valueOf(zoneId);
 			zone_sp.setSelection(getIndexWithId(zone_sp, zoneId, _zoneNamesData), false);
-			HttpAdapter.getRouteDetails(UpdateCustomerNewActivity.this, "routeName", selected_zoneId);
+			HttpAdapter.getRouteDetails(UpdateCustomerNewActivity.this, "routeName", selected_zoneId);*/
 
 			if (ShopTypeId != 0)
 			{
@@ -500,11 +528,11 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				//LandMark
 				if (LocationName != null && !LocationName.isEmpty() && !LocationName.equalsIgnoreCase("null"))
 				{
-					locationName.setText(LocationName + "");
+					landmark.setText(LocationName + "");
 				}
 				else
 				{
-					locationName.setText("");
+					landmark.setText("");
 				}
 
 				//Address
@@ -601,7 +629,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	public class CreateShopTask extends AsyncTask<String, String, String>
 	{
 		//ProgressDialog pd = new ProgressDialog(UpdateCustomerNewActivity.this);
-
 		@Override
 		protected void onPreExecute()
 		{
@@ -839,10 +866,17 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			return ret;
 		}
 
-		if (shopname.getText().toString().length() == 0)
+		/*if (shopname.getText().toString().length() == 0)
 		{
 			Toast.makeText(getApplicationContext(), "Please Enter Shopname", Toast.LENGTH_LONG).show();
 			//shopname.setError("Shopname  Can not be Blank");
+			ret = false;
+			return ret;
+		}*/
+
+		if (selected_ShopId == null || selected_ShopId.isEmpty() || selected_ShopId.equals("0"))
+		{
+			Toast.makeText(getApplicationContext(), "Please Enter Shop Name", Toast.LENGTH_SHORT).show();
 			ret = false;
 			return ret;
 		}
@@ -862,7 +896,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			ret = false;
 			return ret;
 		}
-		if (locationName.getText().toString().length() == 0)
+		if (landmark.getText().toString().length() == 0)
 		{
 			Toast.makeText(getApplicationContext(), "Please Enter Land mark", Toast.LENGTH_LONG).show();
 			//createdby.setError("Enter Your Location Name");
@@ -1024,7 +1058,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		dataAdapter_routeName.setDropDownViewResource(R.layout.list_item);
 		routecd.setAdapter(dataAdapter_routeName);
 
-		if (!zoneTouchClick)
+		/*if (!zoneTouchClick)
 		{
 			routecd.setSelection(getIndexWithId(routecd, Integer.parseInt(selected_roueId), _routeCodesData), false);
 			HttpAdapter.getAreaDetailsByRoute(UpdateCustomerNewActivity.this, "areaNameDP", selected_roueId);
@@ -1033,18 +1067,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		{
 			defaultAreaNameSelect();
 //			HttpAdapter.getAreaDetailsByRoute(UpdateCustomerNewActivity.this, "areaNameDP", selected_roueId);
-		}
-		/*if (!routeDropDownItemSeleted)
-		{
-			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
-			placingAvailRouteNo(Integer.parseInt(selected_roueId));
-		}
-		else
-		{
-			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
-			areaName_sp.setVisibility(View.VISIBLE);
 		}*/
-
 
 		routecd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
@@ -1058,6 +1081,19 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 						routeDropDownItemSeleted = true;
 						selected_roueId = _routeCodesData.get(position - 1).getShopId(); //3
 						HttpAdapter.getAreaDetailsByRoute(UpdateCustomerNewActivity.this, "areaNameDP", selected_roueId);
+						clearAllData();
+					}
+					else
+					{
+						clearAllData();
+						if (dataAdapter_areaName != null)
+						{
+							selected_areaNameId = "";
+							dataAdapter_areaName.clear();
+							dataAdapter_areaName.notifyDataSetChanged();
+							areaName_sp.setSelection(0);
+							defaultAreaNameSelect();
+						}
 					}
 				}
 
@@ -1069,6 +1105,36 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 			}
 		});
+	}
+
+	private void clearAllData()
+	{
+		_shopNamesData.clear();
+		shooNamestitle.clear();
+		selected_ShopId = "";
+		if (dataAdapter_shopNames != null)
+		{
+			dataAdapter_shopNames.clear();
+//			shopName_autoComplete.clearListSelection();
+//			shopName_autoComplete.notifyAll();
+		}
+
+		shopName_autoComplete.setText("");
+		shopname.setText("");
+		ownername.setText("");
+		landmark.setText("");
+		shop_address.setText("");
+		pin.setText("");
+		emailId.setText("");
+		mobile.setText("");
+		phone.setText("");
+		selected_ShopTypeId = "";
+		shoptype_sp.setSelection(0);
+		religion.setSelection(0);
+		selected_religionNameId = "";
+		payment_sp.setSelection(0);
+		selected_paymentNameId = "";
+
 	}
 
 	private void areaNameSpinnerAdapter(final JSONArray jsonArray)
@@ -1099,30 +1165,17 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			e.printStackTrace();
 		}
 
-		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+		dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
 		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
 
-		if (!zoneTouchClick && !routeTouchClick)
+		/*if (!zoneTouchClick && !routeTouchClick)
 		{
 			areaName_sp.setSelection(getIndexWithId(areaName_sp, Integer.valueOf(selected_areaNameId), _areaNamesData), false);
 		}
 		else
 		{
-//			areaName_sp.setSelection(getIndexWithId(areaName_sp, Integer.valueOf(selected_areaNameId), _areaNamesData), false);
-//			defaultAreaNameSelect();
-		}
-		/*if (!routeDropDownItemSeleted)
-		{
-			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
-			placingAvailAreaName(Integer.parseInt(selected_areaNameId));
-		}
-		else
-		{
-			Log.e("routeDropDownItem", routeDropDownItemSeleted + "");
-			areaName_sp.setVisibility(View.VISIBLE);
 		}*/
-
 
 		areaName_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
@@ -1134,6 +1187,11 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 					if (position != 0)
 					{
 						selected_areaNameId = _areaNamesData.get(position - 1).getShopId();
+						HttpAdapter.getShopDetailsDP(UpdateCustomerNewActivity.this, "shopNames", selected_areaNameId);
+					}
+					else
+					{
+						clearAllData();
 					}
 				}
 			}
@@ -1173,9 +1231,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		catch (Exception e)
 		{
 		}
-		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shooNamestitle);
-		dataAdapter_shopType.setDropDownViewResource(R.layout.list_item);
-		shopName_spinner.setAdapter(dataAdapter_shopType);
+		dataAdapter_shopNames = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shooNamestitle);
+		dataAdapter_shopNames.setDropDownViewResource(R.layout.list_item);
+//		shopName_spinner.setAdapter(dataAdapter_shopNames);
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
 		shopName_autoComplete.setThreshold(1);//will start working from first character
@@ -1325,7 +1383,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		{
 			e.printStackTrace();
 		}
-		ArrayAdapter<String> dataAdapter_religion = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, religionsNamestitle);
+		dataAdapter_religion = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, religionsNamestitle);
 		dataAdapter_religion.setDropDownViewResource(R.layout.list_item);
 		religion.setAdapter(dataAdapter_religion);
 		religion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -1376,8 +1434,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		{
 			e.printStackTrace();
 		}
-		ArrayAdapter<String> dataAdapter_payment = new ArrayAdapter<String>(this,
-		                                                                    android.R.layout.simple_spinner_item, paymentNamestitle);
+		dataAdapter_payment = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, paymentNamestitle);
 		dataAdapter_payment.setDropDownViewResource(R.layout.list_item);
 		payment_sp.setAdapter(dataAdapter_payment);
 		payment_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -1435,7 +1492,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			nameValuePairs.add(new BasicNameValuePair("PhoneNumber", phone.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("MobileNumber", mobile.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("GPSL", GPSL));
-			nameValuePairs.add(new BasicNameValuePair("LocationName", locationName.getText().toString()));
+			nameValuePairs.add(new BasicNameValuePair("LocationName", landmark.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("ZoneId", selected_zoneId));
 			nameValuePairs.add(new BasicNameValuePair("RouteId", selected_roueId));
 			nameValuePairs.add(new BasicNameValuePair("ShopTypeId", selected_ShopTypeId));

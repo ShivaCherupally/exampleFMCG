@@ -773,7 +773,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 		else if (v.getId() == R.id.pendingBills)
 		{
-			Intent remarks = new Intent(DashboardActivity.this, PendingListActivity.class);
+			Intent remarks = new Intent(DashboardActivity.this, SampleGoogleDirectionMap.class);
 			Util.killAddRemainder();
 			startActivity(remarks);
 		}
