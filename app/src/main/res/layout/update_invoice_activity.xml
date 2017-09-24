@@ -34,15 +34,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/order_rectangle"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/zone_name_spinner"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:background="@color/empty"
                     android:hint="Zone Name"
                     android:singleLine="true"/>
             </LinearLayout>
@@ -51,15 +52,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/order_rectangle"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/routeName_spinner"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:background="@color/empty"
                     android:hint="Route Name"
                     android:singleLine="true"/>
             </LinearLayout>
@@ -68,15 +70,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/order_rectangle"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/areaName_spinner"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:background="@color/empty"
                     android:hint="Area Name"
                     android:singleLine="true"/>
             </LinearLayout>
@@ -85,37 +88,39 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:background="@drawable/order_rectangle"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/shopname_spinner"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:background="@color/empty"
                     android:hint="Shop Name"
                     android:singleLine="true"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/order_rectangle"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                >
 
                 <TextView
                     android:id="@+id/order_No_Txt"
-                    android:layout_width="match_parent"
+                    android:layout_width="fill_parent"
                     android:layout_height="45dp"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/eigth"
-
                     android:text="orderNumber"
                     android:textColor="#000000"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    />
 
                 <Spinner
                     android:id="@+id/order_number"
@@ -138,12 +143,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/order_rectangle"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/order_type_dp"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -157,12 +162,13 @@
                          android:layout_height="match_parent"
                          android:layout_gravity="center_horizontal|center"
                          android:layout_marginTop="10dp"
-                         android:background="#ffffff"
+                         android:background="@drawable/edittext_whites"
                          android:gravity="center_horizontal"
+                         android:padding="8dp"
                          android:shrinkColumns="*"
                          android:stretchColumns="*">
 
-                <TableRow
+                <!--<TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     >
@@ -228,7 +234,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center">
-                </TableRow>
+                </TableRow>-->
             </TableLayout>
 
             <TextView
@@ -274,12 +280,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/order_rectangle"
+                android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/payment_terms_name"
-                    style="@style/spinner_style"
+                    style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -388,7 +394,9 @@
 
             android:background="@drawable/submit_rectangle"
             android:gravity="center"
+            android:textStyle="bold"
 
+            android:textAllCaps="true"
 
             android:text="@string/submit"
             android:textColor="@color/white"

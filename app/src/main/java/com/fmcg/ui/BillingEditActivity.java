@@ -19,30 +19,14 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
-import com.fmcg.asynctaskutil.AsyncResponse;
-import com.fmcg.asynctaskutil.PostResponseAsyncTask;
 import com.fmcg.models.GetAreaDetails;
 import com.fmcg.models.GetOrderNumberDP;
 import com.fmcg.models.GetOrderSummary;
@@ -54,6 +38,7 @@ import com.fmcg.models.GetZoneDetails;
 import com.fmcg.models.OrderStatusDropdown;
 import com.fmcg.models.PaymentDropDown;
 import com.fmcg.models.ShopNamesData;
+import com.fmcg.models.UpdateInvoiceCategeoryData;
 import com.fmcg.network.HttpAdapter;
 import com.fmcg.network.NetworkOperationListener;
 import com.fmcg.network.NetworkResponse;
@@ -80,14 +65,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.fmcg.util.Common.orderNUm;
 
+/**
+ * Created by Shiva on 9/24/2017.
+ */
 
-public class Invoice extends AppCompatActivity implements View.OnClickListener, NetworkOperationListener, AdapterView.OnItemSelectedListener
+public class BillingEditActivity extends AppCompatActivity implements View.OnClickListener, NetworkOperationListener, AdapterView.OnItemSelectedListener
 {
 	public static Activity invoiceActivity;
 	public List<PaymentDropDown> paymentDP;
@@ -102,15 +89,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	public List<GetOrderSummary> orderSummary;
 	private List<GetRouteDropDown> routeDp;
 
-	private List<String> paymentDP_str;
-	private List<String> shopNameDP_str;
 	private List<String> orderNumberDP_str;
-	private List<String> orderstatusDP_str;
-	private List<String> zoneDetailsDP_str;
-	private List<String> areaDetailsDP_str;
-	private List<String> routeDetailsDP_str;
-	private List<String> productDP_str;
-	private List<String> routeDp_str;
 
 	public String orderNumberDropDown;
 
@@ -125,25 +104,14 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	private int month;
 	private int day;
 	private TableLayout tableLayout;
-
-	//	String ZoneId = "";
-//	String RouteId = "";
-//	String AreaId = "";
-//	String ShopId = "";
-//	String OrderStatusId = "";
-	String productCategoryId = "";
-	//	String paymentTermsId = "";
-	String OrderDeliveryDate = "";
 	Context mContext;
-
 	String TotalAmount = "";
 	boolean orderCancel = false;
 	String invoiceOrderno = "";
 	String paidAmount = "";
 
-	private Map<String, String> mParams;
-	public ProgressDialog mPDialog;
 	List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+
 	///Dailog
 	private Dialog promoDialog;
 	private ImageView close_popup;
@@ -192,19 +160,17 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 	AutoCompleteTextView shopName_autoComplete;
 
-
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.order_invoice);
-		mContext = Invoice.this;
-		invoiceActivity = Invoice.this;
+		mContext = BillingEditActivity.this;
+		invoiceActivity = BillingEditActivity.this;
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 		tableLayout = (TableLayout) findViewById(R.id.tableRow1);
-		tableLayout.setVisibility(View.GONE);
 
 		category_sp = (Spinner) findViewById(R.id.product_category);
 		orderNumber_sp = (Spinner) findViewById(R.id.order_number);
@@ -236,12 +202,12 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		cancel = (TextView) findViewById(R.id.cancel);
 		list_li = (LinearLayout) findViewById(R.id.items_li);
 
-		HttpAdapter.getPayment(Invoice.this, "payment");
-		HttpAdapter.getOrderStatus(Invoice.this, "orderStatus");
-		HttpAdapter.getProductCategoryDP(Invoice.this, "productCategoryName");
-		HttpAdapter.getZoneDetailsDP(Invoice.this, "zoneName");
-		HttpAdapter.getRoute(Invoice.this, "routeCode");
-		HttpAdapter.GetInvoiceNumber(Invoice.this, "GetInvoiceNumber");
+		HttpAdapter.getPayment(BillingEditActivity.this, "payment");
+		HttpAdapter.getOrderStatus(BillingEditActivity.this, "orderStatus");
+		HttpAdapter.getProductCategoryDP(BillingEditActivity.this, "productCategoryName");
+		HttpAdapter.getZoneDetailsDP(BillingEditActivity.this, "zoneName");
+		HttpAdapter.getRoute(BillingEditActivity.this, "routeCode");
+		HttpAdapter.GetInvoiceNumber(BillingEditActivity.this, "GetInvoiceNumber");
 
 
 		paymentDP = new ArrayList<>();
@@ -256,21 +222,12 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		orderSummary = new ArrayList<>();
 		routeDp = new ArrayList<>();
 
-		paymentDP_str = new ArrayList<>();
-		shopNameDP_str = new ArrayList<>();
-		orderstatusDP_str = new ArrayList<>();
 		orderNumberDP_str = new ArrayList<>();
-		productDP_str = new ArrayList<>();
-		zoneDetailsDP_str = new ArrayList<>();
-		areaDetailsDP_str = new ArrayList<>();
-		routeDetailsDP_str = new ArrayList<>();
-		routeDp_str = new ArrayList<>();
 
 		invoiceNum.setOnClickListener(this);
 		submit.setOnClickListener(this);
 		cancel.setOnClickListener(this);
 
-		selecZoneNameBind();
 		selectRouteNameBind();
 		selectAreaNameBind();
 		selectOrderNumber();
@@ -380,22 +337,22 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					if (selectedSpinner.equals("ZONE"))
 					{
 						selected_zoneId = _dropDownData.get(position - 1).getShopId();
-						HttpAdapter.getRouteDetails(Invoice.this, "routeName", selected_zoneId);
+						HttpAdapter.getRouteDetails(BillingEditActivity.this, "routeName", selected_zoneId);
 					}
 					else if (selectedSpinner.equals("ROUTE"))
 					{
 						selected_roueId = _dropDownData.get(position - 1).getShopId(); //3
-						HttpAdapter.getAreaDetailsByRoute(Invoice.this, "areaNameDP", selected_roueId);
+						HttpAdapter.getAreaDetailsByRoute(BillingEditActivity.this, "areaNameDP", selected_roueId);
 					}
 					else if (selectedSpinner.equals("AREA"))
 					{
 						selected_areaNameId = _dropDownData.get(position - 1).getShopId();
-						HttpAdapter.getShopDetailsDP(Invoice.this, "shopName", selected_areaNameId);
+						HttpAdapter.getShopDetailsDP(BillingEditActivity.this, "shopName", selected_areaNameId);
 					}
 					/*else if (selectedSpinner.equals("SHOP"))
 					{
 						selected_ShopId = _dropDownData.get(position - 1).getShopId();
-						HttpAdapter.getOrderNumberDp(Invoice.this, "orderNumber", selected_ShopId);
+						HttpAdapter.getOrderNumberDp(BillingEditActivity.this, "orderNumber", selected_ShopId);
 					}*/
 					else if (selectedSpinner.equals("ORDER_STATUS"))
 					{
@@ -403,8 +360,8 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					}
 					else if (selectedSpinner.equals("PAYMENT_TYPE"))
 					{
-						selected_paymentTermsId = _dropDownData.get(position).getShopId();
-						String paymentSelected = _dropDownData.get(position).getShopName();
+						selected_paymentTermsId = _dropDownData.get(position - 1).getShopId();
+						String paymentSelected = _dropDownData.get(position - 1).getShopName();
 						Log.e("paymentSelected", paymentSelected);
 						if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
 						{
@@ -424,27 +381,12 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					}
 				}
 			}
-			else
-			{
-				selected_paymentTermsId = "2";
-			}
 		}
 		catch (Exception e)
 		{
-
 		}
-
-
 	}
 
-	private void selecZoneNameBind()
-	{
-		zoneNamestitle.clear();
-		zoneNamestitle.add("Select Zone Name");
-		ArrayAdapter<String> dataAdapter_ZoneName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, zoneNamestitle);
-		dataAdapter_ZoneName.setDropDownViewResource(R.layout.list_item);
-		zone_sp.setAdapter(dataAdapter_ZoneName);
-	}
 
 	private void selectRouteNameBind()
 	{
@@ -463,23 +405,22 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
 		//selectShopNameBind();
-//		selectOrderNumber();
 	}
 
 	private void selectOrderNumber()
 	{
 		orderNumberDP_str.clear();
 		orderNumberDP_str.add("Select Order Number");
-		ArrayAdapter<String> dataAdapter_orderNo = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, orderNumberDP_str);
-		dataAdapter_orderNo.setDropDownViewResource(R.layout.list_item);
-		orderNumber_sp.setAdapter(dataAdapter_orderNo);
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, orderNumberDP_str);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+		orderNumber_sp.setAdapter(dataAdapter_areaName);
 		//selectShopNameBind();
 	}
 
 
 	public class InvoiceCancel extends AsyncTask<String, String, String>
 	{
-		ProgressDialog pd = new ProgressDialog(Invoice.this);
+		ProgressDialog pd = new ProgressDialog(BillingEditActivity.this);
 
 		@Override
 		protected void onPreExecute()
@@ -527,14 +468,14 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
 						Toast.makeText(mContext, "Successfully Order Cancelled.", Toast.LENGTH_SHORT).show();
 						//com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Successfully Uploaded..", "OK");
-						Intent i = new Intent(Invoice.this, Invoice.class);
+						Intent i = new Intent(BillingEditActivity.this, Invoice.class);
 						startActivity(i);
 					}
 					else
 					{
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
 						Toast.makeText(mContext, "UnSuccessfully Order Cancelled.", Toast.LENGTH_SHORT).show();
-						Intent i = new Intent(Invoice.this, Invoice.class);
+						Intent i = new Intent(BillingEditActivity.this, Invoice.class);
 						startActivity(i);
 						//	com.fmcg.util.AlertDialogManager.showAlertOnly(this, "BrightUdyog", "Failed Uploaded", "OK");
 						/*Intent i = new Intent(Order.this, Order.class);
@@ -635,7 +576,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 						/*String jsonString = createJsonInvoiceCancel(orderNUm, selected_shopId);
 						Log.e("parameters", jsonString + "");*/
 						//HttpAdapter.invoiceCancel(this, "invoiceCancel", jsonString);
-						new InvoiceCancel().execute();
+						new BillingEditActivity.InvoiceCancel().execute();
 					}
 				}
 				else
@@ -648,7 +589,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 	private void displayTableView(final List<GetOrderSummary> productDP)
 	{
-		tableLayout.setVisibility(View.VISIBLE);
 		tableLayout.removeAllViews();
 		headers();
 
@@ -658,7 +598,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		for (int i = 0; i < productDP.size(); i++)
 		{
 			j = i;
-			Invoice.OrderSummary row = new Invoice.OrderSummary(this, productDP.get(i), i);
+			BillingEditActivity.OrderSummary row = new BillingEditActivity.OrderSummary(this, productDP.get(i), i);
 			tableLayout.addView(row, new TableLayout.LayoutParams(
 					TableLayout.LayoutParams.MATCH_PARENT,
 					TableLayout.LayoutParams.WRAP_CONTENT));
@@ -730,8 +670,8 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 								{
 									orderNumberDropDown = orderNumberDP.get(position - 1).OrderNumber;
 									orderNUm = orderNumberDropDown;
-									HttpAdapter.getOrderSummary(Invoice.this, "orderSummary", orderNumberDropDown);
-									HttpAdapter.getOrderTotal(Invoice.this, "totalAmount", orderNUm);
+									HttpAdapter.getOrderSummary(BillingEditActivity.this, "orderSummary", orderNumberDropDown);
+									HttpAdapter.getOrderTotal(BillingEditActivity.this, "totalAmount", orderNUm);
 								}
 							}
 
@@ -893,62 +833,62 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 	private void headers()
 	{
-		android.widget.TableRow row = new TableRow(this);
+		android.widget.TableRow row = new android.widget.TableRow(this);
 
-		TextView taskdate = new TextView(Invoice.this);
+		TextView taskdate = new TextView(BillingEditActivity.this);
 		taskdate.setTextSize(15);
 		taskdate.setPadding(10, 10, 10, 10);
 		taskdate.setText("Product");
 		taskdate.setBackgroundColor(getResources().getColor(R.color.light_green));
-		taskdate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                   TableRow.LayoutParams.WRAP_CONTENT));
+		taskdate.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 		row.addView(taskdate);
 
-		TextView title = new TextView(Invoice.this);
+		TextView title = new TextView(BillingEditActivity.this);
 		title.setText("Price");
 		title.setBackgroundColor(getResources().getColor(R.color.light_green));
 		title.setTextSize(15);
 		title.setPadding(10, 10, 10, 10);
-		title.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                TableRow.LayoutParams.WRAP_CONTENT));
+		title.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                               android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 		row.addView(title);
 
 
-		TextView taskhour = new TextView(Invoice.this);
+		TextView taskhour = new TextView(BillingEditActivity.this);
 		taskhour.setText("Qty");
 		taskhour.setBackgroundColor(getResources().getColor(R.color.light_green));
 		taskhour.setTextSize(15);
 		taskhour.setPadding(10, 10, 10, 10);
-		taskhour.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                   TableRow.LayoutParams.WRAP_CONTENT));
+		taskhour.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 		row.addView(taskhour);
 
-		TextView description3 = new TextView(Invoice.this);
+		TextView description3 = new TextView(BillingEditActivity.this);
 		description3.setText("Fres");
 		description3.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description3.setTextSize(15);
 		description3.setPadding(10, 10, 10, 10);
 		row.addView(description3);
-		description3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                       TableRow.LayoutParams.WRAP_CONTENT));
+		description3.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 
-		TextView description = new TextView(Invoice.this);
+		TextView description = new TextView(BillingEditActivity.this);
 		description.setText("VAT");
 		description.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description.setTextSize(15);
 		description.setPadding(10, 10, 10, 10);
 		row.addView(description);
-		description.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                      TableRow.LayoutParams.WRAP_CONTENT));
+		description.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                     android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 
-		TextView description2 = new TextView(Invoice.this);
+		TextView description2 = new TextView(BillingEditActivity.this);
 		description2.setText("SubTotal");
 		description2.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description2.setTextSize(15);
 		description2.setPadding(10, 10, 10, 10);
 		row.addView(description2);
-		description2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                       TableRow.LayoutParams.WRAP_CONTENT));
+		description2.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 
 
 		tableLayout.addView(row, new TableLayout.LayoutParams(
@@ -1065,21 +1005,19 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 			{
 				double totalValue = Double.parseDouble(TotalAmount);
 				double paidValue = Double.parseDouble(paidAmount);
-				if (totalValue != paidValue)
+				if (totalValue >= paidValue)
 				{
-					Toast.makeText(getApplicationContext(), "Please Check Total Amount", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(getApplicationContext(), "Paid Amount " + paidValue, Toast.LENGTH_SHORT).show();
+					/*Toast.makeText(getApplicationContext(), "Please Check Paid Amount", Toast.LENGTH_SHORT).show();
 					ret = false;
-					return ret;
-				}
-				/*if (totalValue >= paidValue)
-				{
+					return ret;*/
 				}
 				else
 				{
 					Toast.makeText(getApplicationContext(), "Please Check Paid Amount", Toast.LENGTH_SHORT).show();
 					ret = false;
 					return ret;
-				}*/
+				}
 			}
 			else
 			{
@@ -1122,6 +1060,8 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					case R.id.inovice:
 						check2 = true;
 						break;
+
+
 				}
 			}
 
@@ -1150,13 +1090,13 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				if (check1)
 				{
 
-					Intent in = new Intent(Invoice.this, Order.class);
+					Intent in = new Intent(BillingEditActivity.this, Order.class);
 					Util.killInvoice();
 					startActivity(in);
 				}
 				else if (check2)
 				{
-					Intent inten = new Intent(Invoice.this, Invoice.class);
+					Intent inten = new Intent(BillingEditActivity.this, Invoice.class);
 					Util.killInvoice();
 					startActivity(inten);
 				}
@@ -1177,7 +1117,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		startActivity(i);
 	}
 
-	private class OrderSummary extends TableRow
+	private class OrderSummary extends android.widget.TableRow
 	{
 
 		private Context mContext;
@@ -1255,7 +1195,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				quantityETID.setTextSize(15);
 				quantityETID.setTextColor(Color.BLACK);
 				quantityETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				quantityETID.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 				quantityETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                              LayoutParams.WRAP_CONTENT));
 				quantityETID.addTextChangedListener(mTextWatcher);
@@ -1284,7 +1223,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				fresETID.setEnabled(false);
 				fresETID.setTextColor(Color.BLACK);
 				fresETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				fresETID.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 				fresETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                          LayoutParams.WRAP_CONTENT));
 				fresETID.addTextChangedListener(mTextWatcherFres);
@@ -1295,7 +1233,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				description.setText(String.valueOf(mProductCategory.VAT));
 				description.setTextSize(15);
 				//description.setPadding(15,0,0,0);
-				description.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 				description.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                             LayoutParams.WRAP_CONTENT));
 				addView(description);
@@ -1303,7 +1240,6 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				TextView description2 = new TextView(mContext);
 				description2.setText(String.valueOf(mProductCategory.SubTotalAmount));
 				description2.setTextSize(15);
-				description2.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 //				description2.setVisibility(GONE);
 				description2.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                              LayoutParams.WRAP_CONTENT));
@@ -1521,7 +1457,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				String shopNamee = jsnobj.getString("ZoneName");
 				_zoneNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			zoneNamestitle.add("Select Zone Name");
+			zoneNamestitle.add("Zone Name");
 			if (_zoneNamesData.size() > 0)
 			{
 				for (int i = 0; i < _zoneNamesData.size(); i++)
@@ -1655,7 +1591,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 						{
 							selected_ShopId = _shopNamesData.get(i).getShopId();
 							Log.e("selected_ShopId", selected_ShopId + "");
-							HttpAdapter.getOrderNumberDp(Invoice.this, "orderNumber", selected_ShopId);
+							HttpAdapter.getOrderNumberDp(BillingEditActivity.this, "orderNumber", selected_ShopId);
 							break;
 						}
 					}
@@ -1713,7 +1649,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				String shopNamee = jsnobj.getString("PaymentName");
 				_paymentsSelectData.add(new ShopNamesData(shopId, shopNamee));
 			}
-//			paymentNamestitle.add("Select Payment");
+			paymentNamestitle.add("Select Payment");
 			if (_paymentsSelectData.size() > 0)
 			{
 				for (int i = 0; i < _paymentsSelectData.size(); i++)

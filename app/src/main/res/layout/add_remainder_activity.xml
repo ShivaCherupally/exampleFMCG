@@ -79,7 +79,6 @@
             android:padding="10dp"
 
             android:text="@string/add"
-            android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="17sp"/>
     </LinearLayout>

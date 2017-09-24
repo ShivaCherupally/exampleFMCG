@@ -19,6 +19,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -90,15 +91,6 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 	public List<UpdateInvoiceCategeoryData> orderSummary;
 	private List<GetRouteDropDown> routeDp;
 
-	private List<String> paymentDP_str;
-	private List<String> shopNameDP_str;
-	private List<String> orderNumberDP_str;
-	private List<String> orderstatusDP_str;
-	private List<String> zoneDetailsDP_str;
-	private List<String> areaDetailsDP_str;
-	private List<String> routeDetailsDP_str;
-	private List<String> productDP_str;
-	private List<String> routeDp_str;
 
 	public String paymentDropDown, orderStatusDropDown;
 	public Spinner shopName_sp, orderStatus_sp, category_sp, payment_sp, orderNumber_sp, zone_sp, areaName_sp, routecd;
@@ -253,15 +245,6 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		orderSummary = new ArrayList<>();
 		routeDp = new ArrayList<>();
 
-		paymentDP_str = new ArrayList<>();
-		shopNameDP_str = new ArrayList<>();
-		orderstatusDP_str = new ArrayList<>();
-		orderNumberDP_str = new ArrayList<>();
-		productDP_str = new ArrayList<>();
-		zoneDetailsDP_str = new ArrayList<>();
-		areaDetailsDP_str = new ArrayList<>();
-		routeDetailsDP_str = new ArrayList<>();
-		routeDp_str = new ArrayList<>();
 
 		invoiceNum.setOnClickListener(this);
 		submit.setOnClickListener(this);
@@ -757,7 +740,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 	public void onBackPressed()
 	{
 		super.onBackPressed();
-		Intent intent = new Intent(this, DashboardActivity.class);
+		Intent intent = new Intent(this, OrderBookList.class);
 		startActivity(intent);
 		finish();
 	}
@@ -1143,6 +1126,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				TextView title = new TextView(mContext);
 				title.setText(String.valueOf(mProductCategory.ProductPrice));
 				title.setTextSize(15);
+				title.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 				title.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                       LayoutParams.WRAP_CONTENT));
 				addView(title);
@@ -1157,6 +1141,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				quantityETID.setTextSize(15);
 				quantityETID.setTextColor(Color.BLACK);
 				quantityETID.setInputType(InputType.TYPE_CLASS_NUMBER);
+				quantityETID.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 				quantityETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                              LayoutParams.WRAP_CONTENT));
 				quantityETID.addTextChangedListener(mTextWatcher);
@@ -1185,6 +1170,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				fresETID.setEnabled(false);
 				fresETID.setTextColor(Color.BLACK);
 				fresETID.setInputType(InputType.TYPE_CLASS_NUMBER);
+				fresETID.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 				fresETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                          LayoutParams.WRAP_CONTENT));
 				fresETID.addTextChangedListener(mTextWatcherFres);
@@ -1202,6 +1188,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				TextView description2 = new TextView(mContext);
 				description2.setText(String.valueOf(mProductCategory.SubTotalAmount));
 				description2.setTextSize(15);
+				description2.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 //				description2.setVisibility(GONE);
 				description2.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                              LayoutParams.WRAP_CONTENT));
@@ -1515,12 +1502,24 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 			selected_roueId = String.valueOf(RouteId);
 			selected_areaNameId = String.valueOf(AreaId);
 			selected_ShopId = String.valueOf(ShopId);
-
-
 			try
 			{
 				selected_paymentNameId = String.valueOf(PaymentTermsId);
-				payment_sp.setSelection(getIndexWithId(payment_sp, PaymentTermsId, _paymentsSelectData), false);
+				if (selected_paymentNameId != null && !selected_paymentNameId.isEmpty() && !selected_paymentNameId.equalsIgnoreCase("null"))
+				{
+					payment_sp.setSelection(getIndexPositionPayment(payment_sp, PaymentTermsId, _paymentsSelectData), false);
+				}
+				else
+				{
+					paymentTermsTouchClick = true;
+					selected_paymentNameId = "2";
+					if (_paymentsSelectData.size() > 0)
+					{
+						payment_sp.setSelection(getIndexPositionPayment(payment_sp, Integer.parseInt(selected_paymentNameId), _paymentsSelectData), true);
+					}
+				}
+
+
 			}
 			catch (Exception e)
 			{
@@ -1914,7 +1913,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				String shopNamee = jsnobj.getString("PaymentName");
 				_paymentsSelectData.add(new ShopNamesData(String.valueOf(shopId), shopNamee));
 			}
-			paymentNamestitle.add("Select Payment Terms Name");
+//			paymentNamestitle.add("Select Payment Terms Name");
 			if (_paymentsSelectData.size() > 0)
 			{
 				for (int i = 0; i < _paymentsSelectData.size(); i++)
@@ -2045,6 +2044,40 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 					{
 						searchIdIndex = i + 1;
 						Log.e("availbleStringName", _availbleDropDownData.get(i).getShopName() + "");
+						return searchIdIndex;
+					}
+				}
+
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+
+		}
+		return searchIdIndex; // Not found
+	}
+
+
+	private int getIndexPositionPayment(Spinner spinner, int searchId, ArrayList<ShopNamesData> _availbleDropDownData)
+	{
+		int searchIdIndex = 0;
+		try
+		{
+			if (searchId == 0)
+			{
+				searchIdIndex = -1;
+				return -1; // Not found
+			}
+			else
+			{
+				for (int i = 1; i < spinner.getCount(); i++)
+				{
+					String avaliableListDataid = _availbleDropDownData.get(i).getShopId();
+					if (avaliableListDataid.equals(String.valueOf(searchId)))
+					{
+						searchIdIndex = i;
+						Log.e("availbleId", _availbleDropDownData.get(i).getShopId() + "");
 						return searchIdIndex;
 					}
 				}

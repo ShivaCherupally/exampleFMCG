@@ -424,7 +424,9 @@
 
             android:background="@drawable/submit_rectangle"
             android:gravity="center"
+            android:textStyle="bold"
 
+            android:textAllCaps="true"
 
             android:text="@string/submit"
             android:textColor="@color/white"

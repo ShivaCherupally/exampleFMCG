@@ -27,14 +27,16 @@ import android.widget.TextView;
 
 import com.fmcg.ui.AddNewCustomer;
 import com.fmcg.ui.AddRemainderActivity;
+import com.fmcg.ui.BillingEditActivity;
 import com.fmcg.ui.GetShopsByRoute;
 import com.fmcg.ui.Invoice;
 import com.fmcg.ui.Order;
+import com.fmcg.ui.OrderEditActivity;
 import com.fmcg.ui.PendingListActivity;
 import com.fmcg.ui.RemainderListActivity;
 import com.fmcg.ui.Remarks;
 import com.fmcg.ui.RouteDetails;
-import com.fmcg.ui.UpdateOrderActvity;
+import com.fmcg.ui.UpdateOrderDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -290,9 +292,9 @@ public class Util
 
 	public static void killupdateorderBook()
 	{
-		if (UpdateOrderActvity.orderBookActivity != null)
+		if (UpdateOrderDetailsActivity.orderBookActivity != null)
 		{
-			UpdateOrderActvity.orderBookActivity.finish();
+			UpdateOrderDetailsActivity.orderBookActivity.finish();
 		}
 	}
 
@@ -301,6 +303,22 @@ public class Util
 		if (Order.orderBookActivity != null)
 		{
 			Order.orderBookActivity.finish();
+		}
+	}
+
+	public static void killorderBookEdit()
+	{
+		if (OrderEditActivity.orderBookeditActivity != null)
+		{
+			OrderEditActivity.orderBookeditActivity.finish();
+		}
+	}
+
+	public static void killBillingEdit()
+	{
+		if (BillingEditActivity.invoiceActivity != null)
+		{
+			BillingEditActivity.invoiceActivity.finish();
 		}
 	}
 

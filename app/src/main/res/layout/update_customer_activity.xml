@@ -230,7 +230,7 @@
                     android:singleLine="true"/>
             </LinearLayout>
 
-            <EditText
+            <!--<EditText
                 android:id="@+id/ownername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -243,7 +243,7 @@
                 android:padding="8dp"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="17sp"/>
+                android:textSize="17sp"/>-->
 
             <EditText
                 android:id="@+id/landmark"
@@ -284,6 +284,7 @@
                 android:inputType="text"
                 android:textCursorDrawable="@drawable/color_cursor"
                 >
+
                 <requestFocus/>
             </EditText>
 
@@ -404,7 +405,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
+
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:hint="@string/ph"
@@ -413,6 +414,35 @@
                 android:padding="8dp"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"/>
+
+            <EditText
+                android:id="@+id/ownername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_white"
+                android:hint="Owner Name"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+
+                android:padding="8dp"
+                android:singleLine="true"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="17sp"/>
+            <EditText
+                android:id="@+id/descriptionShop"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_white"
+                android:gravity="top"
+                android:hint="Description"
+                android:layout_marginBottom="10dp"
+                android:inputType="text"
+                android:textCursorDrawable="@drawable/color_cursor"
+                />
+
 
             <EditText
                 android:id="@+id/lat"
@@ -475,8 +505,11 @@
             android:background="@drawable/submit_rectangle"
             android:gravity="center"
             android:text="@string/submit"
-            android:textAllCaps="false"
+            android:textStyle="bold"
+
+            android:textAllCaps="true"
             android:textColor="@color/white"
+
             android:textSize="17sp"
             />
     </LinearLayout>

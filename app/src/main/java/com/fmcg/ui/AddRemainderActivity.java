@@ -86,9 +86,6 @@ public class AddRemainderActivity extends AppCompatActivity implements View.OnCl
 			case R.id.selectDate:
 				DialogFragment newFragment = new DatePickerFragment();
 				newFragment.show(getSupportFragmentManager(), "datePicker");
-				/*DialogFragment newFragment = new DatePickerFragment();
-				newFragment.show(getSupportFragmentManager(), "datePicker");*/
-
 				break;
 			case R.id.selectTime:
 				if (dateSelection)

@@ -96,6 +96,7 @@
     <string name="order_list">Order Book List</string>
     <string name="invoice_list">Invoice List</string>
 
+    <string name="come_soon">Come Soon</string>
     <string name="orderno">Order No</string>
     <string name="orderdate">Order Date</string>
     <string name="shopname">Shop Name</string>

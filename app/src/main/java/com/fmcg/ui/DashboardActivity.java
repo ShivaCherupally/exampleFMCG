@@ -98,7 +98,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by RuchiTiwari on 5/28/2017.
+ * Created by SHiva on 5/28/2017.
  */
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
@@ -106,7 +106,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                                                     LocationListener, GoogleApiClient.OnConnectionFailedListener, NetworkOperationListener, AdapterView.OnItemSelectedListener,
                                                                     SeekBar.OnSeekBarChangeListener,
                                                                     OnChartValueSelectedListener
-
 {
 	SharedPreferences sharedPreferences;
 	TextView mydayPlan, shop, maps, getshops, mylocation, new_customer, endTrip, remarks, logout, order, invoice, userName, shop_update, remainder,
@@ -773,9 +772,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 		else if (v.getId() == R.id.pendingBills)
 		{
-			Intent remarks = new Intent(DashboardActivity.this, SampleGoogleDirectionMap.class);
+			Toast.makeText(DashboardActivity.this, "Coming Soon..", Toast.LENGTH_SHORT).show();
+			/*Intent remarks = new Intent(DashboardActivity.this, SampleGoogleDirectionMap.class);
 			Util.killAddRemainder();
-			startActivity(remarks);
+			startActivity(remarks);*/
 		}
 
 

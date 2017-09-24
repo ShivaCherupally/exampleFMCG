@@ -23,6 +23,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Selection;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
@@ -35,19 +36,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fmcg.Dotsoft.R;
-import com.fmcg.models.GetAreaDetailsByRouteId;
 import com.fmcg.models.GetRouteDetails;
-import com.fmcg.models.GetRouteDropDown;
-import com.fmcg.models.GetShopTypeDropDown;
 import com.fmcg.models.GetZoneDetails;
-import com.fmcg.models.PaymentDropDown;
-import com.fmcg.models.ReligionsDropDown;
 import com.fmcg.models.ShopNamesData;
 import com.fmcg.network.HttpAdapter;
 import com.fmcg.network.NetworkOperationListener;
@@ -97,9 +94,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	SharedPreferences sharedPreferences;
 	public List<GetZoneDetails> zoneDetailsDP;
 	public List<GetRouteDetails> routeDetailsDP;
-	private String religionDropdown, paymentDropDown;
 	TextView shop, order, invoice;
-	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, createdby, landmark, payment, emailId;
+	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, createdby, landmark, payment, emailId, descriptionShop;
 	private Button submit;
 	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp, shopName_spinner;
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -140,6 +136,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	private Dialog promoDialog;
 	private ImageView close_popup;
 	RadioGroup select_option_radio_grp;
+	RadioButton invoiceRadioButton;
 	Button alert_submit;
 	boolean check1 = false;
 	boolean check2 = false;
@@ -152,6 +149,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	ArrayAdapter<String> dataAdapter_payment;
 	ArrayAdapter<String> dataAdapter_shopNames;
 	ArrayAdapter<String> dataAdapter_areaName;
+
+	String availableData = "";
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -171,6 +170,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		lat = (EditText) findViewById(R.id.lat);
 		lang = (EditText) findViewById(R.id.lang);
 		createdby = (EditText) findViewById(R.id.createdby);
+		descriptionShop = (EditText) findViewById(R.id.descriptionShop);
 		landmark = (EditText) findViewById(R.id.landmark);
 		payment = (EditText) findViewById(R.id.payment);
 		submit = (Button) findViewById(R.id.submit);
@@ -222,6 +222,39 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		                                  .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 		                                  .setInterval(10 * 1000)        // 10 seconds, in milliseconds
 		                                  .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+
+		/*String code = "5000";
+		pin.setCompoundDrawablesWithIntrinsicBounds(new TextDrawable(code), null, null, null);
+		pin.setCompoundDrawablePadding(code.length() * 10);*/
+
+		pin.setText("5000");
+		Selection.setSelection(pin.getText(), pin.getText().length());
+		pin.addTextChangedListener(new TextWatcher()
+		{
+			@Override
+			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
+			{
+
+			}
+
+			@Override
+			public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
+			{
+
+			}
+
+			@Override
+			public void afterTextChanged(final Editable s)
+			{
+				if (!s.toString().startsWith("5000"))
+				{
+					pin.setText("5000");
+					Selection.setSelection(pin.getText(), pin
+							.getText().length());
+
+				}
+			}
+		});
 
 		zone_sp.setOnTouchListener(new View.OnTouchListener()
 		{
@@ -457,6 +490,10 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 //			int ShopCategoryId = jsnobj.getString("ShopCategoryId");
 			String ShopName = jsnobj.getString("ShopName");
 			String ShopDescription = jsnobj.getString("ShopDescription");
+			if (ShopDescription != null && !ShopDescription.isEmpty())
+			{
+				descriptionShop.setText(ShopDescription + "");
+			}
 			String OwnerName = jsnobj.getString("OwnerName");
 			String Address = jsnobj.getString("Address");
 			String MobileNumber = jsnobj.getString("MobileNumber");
@@ -554,7 +591,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 					}
 					else
 					{
-						pin.setText("");
+//						pin.setText("");
+						pin.setText("5000");
+						Selection.setSelection(pin.getText(), pin.getText().length());
 					}
 				}
 				catch (Exception e)
@@ -565,14 +604,14 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				{
 //					religion.setSelection(ReligionId);
 					religion.setSelection(getIndex(religion, ReligionName, _religionsData));
-					religionDropdown = String.valueOf(ReligionId);
+					selected_religionNameId = String.valueOf(ReligionId);
 				}
 
 				//Payment Drop Down selection
 				if (PaymentTermsId != 0)
 				{
 					payment_sp.setSelection(getIndex(payment_sp, PaymentName, _paymentsSelectData));
-					paymentDropDown = String.valueOf(PaymentTermsId);
+					selected_paymentNameId = String.valueOf(PaymentTermsId);
 				}
 
 				//Email Id
@@ -660,6 +699,13 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 					Log.e("response", result.toString() + "");
 					if (result.getString("Status").equals("OK"))
 					{
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_ZONE_ID", selected_zoneId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_ROUTE_ID", selected_roueId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_AREANAME_ID", selected_areaNameId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_NAME", shopname.getText().toString());
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_PAYMENT_ID", selected_paymentNameId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopTypeId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_DESCRIPTION", descriptionShop.getText().toString());
 						Toast.makeText(UpdateCustomerNewActivity.this, "Successfully Shop Details Updated..", Toast.LENGTH_SHORT).show();
 						dailogBoxAfterSubmit();
 					}
@@ -898,8 +944,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 		if (landmark.getText().toString().length() == 0)
 		{
-			Toast.makeText(getApplicationContext(), "Please Enter Land mark", Toast.LENGTH_LONG).show();
-			//createdby.setError("Enter Your Location Name");
+//			Toast.makeText(getApplicationContext(), "Please Enter Land mark", Toast.LENGTH_LONG).show();
+			landmark.setError("Please Enter Land mark");
 			ret = false;
 			return ret;
 		}
@@ -907,16 +953,23 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		if (shop_address.getText().toString().length() == 0)
 		{
 			Toast.makeText(getApplicationContext(), "ShopAddress Can not be Blank", Toast.LENGTH_LONG).show();
-			//shop_address.setError("ShopAddress Can not be Blank");
+			shop_address.setError("ShopAddress Can not be Blank");
 			ret = false;
 			return ret;
 		}
 
 
-		if (pin.getText().toString().length() == 0)
+		/*if (pin.getText().toString().length() == 0)
 		{
-			Toast.makeText(getApplicationContext(), "Please Enter Your Pincode ", Toast.LENGTH_LONG).show();
-			//pin.setError("Enter Your Pincode");
+//			Toast.makeText(getApplicationContext(), "Please Enter Your Pincode ", Toast.LENGTH_LONG).show();
+			pin.setError("Enter Your Pincode");
+			ret = false;
+			return ret;
+		}*/
+		if (pin.getText().toString().length() != 6)
+		{
+//			Toast.makeText(getApplicationContext(), "Please Enter Valid Pin Code", Toast.LENGTH_LONG).show();
+			pin.setError("Enter Valid Pincode");
 			ret = false;
 			return ret;
 		}
@@ -1133,7 +1186,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		religion.setSelection(0);
 		selected_religionNameId = "";
 		payment_sp.setSelection(0);
-		selected_paymentNameId = "";
+		selected_paymentNameId = "2";
+		descriptionShop.setText("");
 
 	}
 
@@ -1320,7 +1374,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				String shopNamee = jsnobj.getString("ShopTypeName");
 				_shoptypesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			shoptypesNamestitle.add("Select Shop Type");
+//			shoptypesNamestitle.add("Select Shop Type");
 			if (_shoptypesData.size() > 0)
 			{
 				for (int i = 0; i < _shoptypesData.size(); i++)
@@ -1337,6 +1391,13 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		                                                                     android.R.layout.simple_spinner_item, shoptypesNamestitle);
 		dataAdapter_shopType.setDropDownViewResource(R.layout.list_item);
 		shoptype_sp.setAdapter(dataAdapter_shopType);
+
+		if (_shoptypesData.size() > 1)
+		{
+			selected_ShopTypeId = "2";
+			shoptype_sp.setSelection(getIndexWithId(shoptype_sp, 1, _shoptypesData), false);
+
+		}
 		shoptype_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
@@ -1358,6 +1419,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 	private void religionNamesSpinnerAdapter(final JSONArray jsonArray)
 	{
+		Log.e("religionDropdown", jsonArray.toString() + "");
 		try
 		{
 			_religionsData.clear();
@@ -1370,7 +1432,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				String shopNamee = jsnobj.getString("ReligionName");
 				_religionsData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			religionsNamestitle.add("Select Religion");
+//			religionsNamestitle.add("Select Religion");
 			if (_religionsData.size() > 0)
 			{
 				for (int i = 0; i < _religionsData.size(); i++)
@@ -1386,6 +1448,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		dataAdapter_religion = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, religionsNamestitle);
 		dataAdapter_religion.setDropDownViewResource(R.layout.list_item);
 		religion.setAdapter(dataAdapter_religion);
+		selected_religionNameId = "1";
 		religion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
@@ -1393,7 +1456,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			{
 				if (position != 0)
 				{
-					religionDropdown = _religionsData.get(position - 1).getShopId();
 					selected_religionNameId = _religionsData.get(position - 1).getShopId();
 				}
 			}
@@ -1408,6 +1470,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 	private void paymentSpinnerAdapter(final JSONArray jsonArray)
 	{
+		Log.e("paymentDropdown", jsonArray.toString() + "");
 		try
 		{
 			_paymentsSelectData.clear();
@@ -1420,7 +1483,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				String shopNamee = jsnobj.getString("PaymentName");
 				_paymentsSelectData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			paymentNamestitle.add("Select Payment");
+//			paymentNamestitle.add("Select Payment");
 			if (_paymentsSelectData.size() > 0)
 			{
 				for (int i = 0; i < _paymentsSelectData.size(); i++)
@@ -1437,6 +1500,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		dataAdapter_payment = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, paymentNamestitle);
 		dataAdapter_payment.setDropDownViewResource(R.layout.list_item);
 		payment_sp.setAdapter(dataAdapter_payment);
+
+		selected_paymentNameId = "2";
+
 		payment_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
@@ -1444,7 +1510,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			{
 				if (position != 0)
 				{
-					paymentDropDown = _paymentsSelectData.get(position - 1).getShopId();
 					selected_paymentNameId = _paymentsSelectData.get(position - 1).getShopId();
 				}
 			}
@@ -1459,10 +1524,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 	public String serviceCall()
 	{
-		// Create a new HttpClient and Post Header
 		String responseBody = null;
 		HttpClient httpclient = new DefaultHttpClient();
-		//HttpPost httppost = new HttpPost("http://202.143.96.20/Orderstest/api/Services/updateShopDetails");
 		HttpPost httppost = new HttpPost(HttpAdapter.UPDATESHOP_DETAILS);
 		try
 		{
@@ -1484,7 +1547,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 			nameValuePairs.add(new BasicNameValuePair("shopId", selected_ShopId));
 			nameValuePairs.add(new BasicNameValuePair("ShopName", shopname.getText().toString()));
-			nameValuePairs.add(new BasicNameValuePair("ShopDescription", "Good"));
+			nameValuePairs.add(new BasicNameValuePair("ShopDescription", descriptionShop.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("OwnerName", ownername.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("Address", shop_address.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("Latitude", lat.getText().toString()));
@@ -1496,44 +1559,19 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			nameValuePairs.add(new BasicNameValuePair("ZoneId", selected_zoneId));
 			nameValuePairs.add(new BasicNameValuePair("RouteId", selected_roueId));
 			nameValuePairs.add(new BasicNameValuePair("ShopTypeId", selected_ShopTypeId));
-			nameValuePairs.add(new BasicNameValuePair("ReligionID", religionDropdown));
-			nameValuePairs.add(new BasicNameValuePair("PaymentTermId", paymentDropDown));
-
-
+			nameValuePairs.add(new BasicNameValuePair("ReligionID", selected_religionNameId));
+			nameValuePairs.add(new BasicNameValuePair("PaymentTermId", selected_paymentNameId));
 			nameValuePairs.add(new BasicNameValuePair("AreaId", selected_areaNameId));
 			nameValuePairs.add(new BasicNameValuePair("Active", "Y"));
 			nameValuePairs.add(new BasicNameValuePair("DateTime", DateUtil.currentDate()));
 			nameValuePairs.add(new BasicNameValuePair("Createdby", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId")));
 			nameValuePairs.add(new BasicNameValuePair("EmailID", emailId.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("Pincode", pin.getText().toString()));
+
+			availableData = nameValuePairs.toString();
 			Log.e("params", nameValuePairs.toString());
 			//[shopId=346, ShopName=Micro Soft, ShopDescription=Good, OwnerName=Micro , Address=Dilsukhnagar , Latitude=17.4951797, Longitude=78.4125424, PhoneNumber=040223344, MobileNumber=1234567890, GPSL=0, LocationName=Dilsukhnagar , ZoneId=2, RouteId=2, ShopTypeId=346, ReligionID=1, PaymentTermId=2, AreaId, Active=Y, DateTime=03-07-2017, Createdby=4, EmailID=sai@s.com, Pincode=508880]
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-			/*List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-					nameValuePairs.add(new BasicNameValuePair("ShopName", shopname.getText().toString()));
-					nameValuePairs.add(new BasicNameValuePair("ShopDescription", "shopDescription"));
-					nameValuePairs.add(new BasicNameValuePair("OwnerName", ownername.getText().toString()));
-					nameValuePairs.add(new BasicNameValuePair("Address", shop_address.getText().toString()));
-					nameValuePairs.add(new BasicNameValuePair("Latitude", lat.getText().toString()));
-					nameValuePairs.add(new BasicNameValuePair("Longitude", lang.getText().toString()));
-					nameValuePairs.add(new BasicNameValuePair("PhoneNumber", phone.getText().toString()));
-					nameValuePairs.add(new BasicNameValuePair("MobileNumber", mobile.getText().toString()));
-					nameValuePairs.add(new BasicNameValuePair("GPSL", "0"));
-					nameValuePairs.add(new BasicNameValuePair("LocationName", locationName.getText().toString()));
-					nameValuePairs.add(new BasicNameValuePair("ZoneId", selected_zoneId));
-					nameValuePairs.add(new BasicNameValuePair("RouteId", selected_roueId));
-					nameValuePairs.add(new BasicNameValuePair("ShopTypeId", shopTypeDropdown));
-					nameValuePairs.add(new BasicNameValuePair("ReligionID", religionDropdown));
-					nameValuePairs.add(new BasicNameValuePair("PaymentTermId", paymentDropDown));
-					nameValuePairs.add(new BasicNameValuePair("AreaId", areaDropDwn));
-					nameValuePairs.add(new BasicNameValuePair("Active", "Y"));
-					nameValuePairs.add(new BasicNameValuePair("DateTime", DateUtil.currentDate()));
-					nameValuePairs.add(new BasicNameValuePair("Createdby", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId")));
-					nameValuePairs.add(new BasicNameValuePair("EmailID", emailId.getText().toString()));
-					nameValuePairs.add(new BasicNameValuePair("Pincode", pin.getText().toString()));*/
-
-			// Execute HTTP Post Request
 			HttpResponse response = httpclient.execute(httppost);
 			int responseCode = response.getStatusLine().getStatusCode();
 			if (responseCode == 200)
@@ -1542,7 +1580,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				if (entity != null)
 				{
 					responseBody = EntityUtils.toString(entity);
-
 				}
 
 			}
@@ -1658,6 +1695,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
 		select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
 
+		invoiceRadioButton = (RadioButton) promoDialog.findViewById(R.id.inovice);
+		invoiceRadioButton.setVisibility(View.GONE);
+
 		promoDialog.show();
 
 		select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
@@ -1670,11 +1710,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 					case R.id.orderBook:
 						check1 = true;
 						break;
-					case R.id.inovice:
+					/*case R.id.inovice:
 						check2 = true;
-						break;
-
-
+						break;*/
 				}
 			}
 
@@ -1690,9 +1728,10 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
-					Intent in = new Intent(UpdateCustomerNewActivity.this, DashboardActivity.class);
+					/*Intent in = new Intent(UpdateCustomerNewActivity.this, DashboardActivity.class);
 					Util.killorderBook();
-					startActivity(in);
+					startActivity(in);*/
+					clearAllData();
 //					refreshActivity();
 				}
 			}
@@ -1705,14 +1744,18 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			{
 				if (check1)
 				{
-					Intent in = new Intent(UpdateCustomerNewActivity.this, Order.class);
-					Util.killorderBook();
+//					Intent in = new Intent(UpdateCustomerNewActivity.this, Order.class);
+					SharedPrefsUtil.setStringPreference(mContext, "EDIT_ORDER_DATA_STRING", availableData);
+					Intent in = new Intent(UpdateCustomerNewActivity.this, OrderEditActivity.class);
+					Util.killorderBookEdit();
 					startActivity(in);
 				}
 				else if (check2)
 				{
-					Intent inten = new Intent(UpdateCustomerNewActivity.this, Invoice.class);
-					Util.killorderBook();
+					SharedPrefsUtil.setStringPreference(mContext, "EDIT_INVOICE_DATA_STRING", availableData);
+//					Intent inten = new Intent(UpdateCustomerNewActivity.this, UpdateInvoiceActivity.class);
+					Intent inten = new Intent(UpdateCustomerNewActivity.this, BillingEditActivity.class);
+					Util.killBillingEdit();
 					startActivity(inten);
 				}
 				else

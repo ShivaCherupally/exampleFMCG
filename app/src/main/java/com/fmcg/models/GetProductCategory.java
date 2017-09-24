@@ -14,6 +14,7 @@ public class GetProductCategory
 	public String Quantity;
 	public String Frees;
 
+
 	public String getFres()
 	{
 		return Frees;

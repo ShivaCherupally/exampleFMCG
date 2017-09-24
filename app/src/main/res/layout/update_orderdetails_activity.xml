@@ -41,7 +41,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
@@ -51,7 +50,6 @@
                     style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:spinnerMode="dialog"
                     />
             </LinearLayout>
 
@@ -59,7 +57,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
@@ -76,7 +74,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
 
@@ -109,6 +107,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rect_bg_black"
                 android:orientation="vertical">
 
@@ -149,7 +148,7 @@
                     android:singleLine="true"/>
             </LinearLayout>
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
@@ -164,6 +163,33 @@
                     android:layout_gravity="center"
                     android:hint="Product Category Name"
                     />
+            </LinearLayout>-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_bg_black"
+
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/product_category_spinner"
+                    style="@style/spinner_bg_style"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@color/empty"
+                    android:hint="Product Category Name"
+                    android:padding="@dimen/eigth"
+                    />
+
+                <ImageView
+                    android:id="@+id/product_addiv"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/plusimg"
+                    android:padding="@dimen/eigth"/>
             </LinearLayout>
 
 
@@ -173,10 +199,12 @@
                          android:layout_height="match_parent"
                          android:layout_marginBottom="10dp"
                          android:layout_marginTop="10dp"
-                         android:background="#ffffff"
+                         android:background="@drawable/edittext_whites"
+                         android:padding="8dp"
                          android:shrinkColumns="*"
                          android:stretchColumns="*"
-                         android:visibility="gone"/>
+                         android:visibility="gone"
+                />
 
 
             <LinearLayout
@@ -232,6 +260,9 @@
             android:gravity="center"
             android:text="@string/submit"
             android:textColor="@color/white"
+            android:textStyle="bold"
+
+            android:textAllCaps="true"
             android:textSize="16sp"
             />
     </LinearLayout>

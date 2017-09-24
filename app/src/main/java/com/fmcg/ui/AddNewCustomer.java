@@ -26,6 +26,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -98,27 +101,14 @@ public class AddNewCustomer extends AppCompatActivity implements
 	SharedPreferences sharedPreferences;
 
 	public List<GetZoneDetails> zoneDetailsDP;
-	private List<GetRouteDropDown> routeDp;
-	private List<PaymentDropDown> paymentDP;
-	private List<ReligionsDropDown> religionsDP;
-	private List<GetShopTypeDropDown> shopTypeDP;
-	private List<GetAreaDetailsByRouteId> areaDp;
 	public List<GetRouteDetails> routeDetailsDP;
 
-	private List<String> zoneDetailsDP_str;
-	private List<String> routeDetailsDP_str;
-	private List<String> routeDp_str;
-	private List<String> religionsDP_str;
-	private List<String> paymentDP_str;
-	private List<String> shopTypeDP_str;
-	private List<String> areaDp_str;
 
-
-	private String routeCode, religionDropdown, paymentDropDown, shopTypeDropdown, areaDropDwn, routeNameDropDown;
+	private String routeCode, areaDropDwn, routeNameDropDown;
 	TextView mydayPlan, shop, maps, getshops, mylocation, new_customer, endTrip, remarks, logout, order, invoice, userName, shop_update, remainder;
 	DrawerLayout drawer;
 	Toolbar toolbar;
-	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, location, createdby, locationName, payment, emailId;
+	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, location, createdby, locationName, payment, emailId, descriptionShop;
 	private TextView submit;
 	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp;
 	//Define a request code to send to Google Play services
@@ -187,6 +177,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 		locationName = (EditText) findViewById(R.id.location_name);
 		payment = (EditText) findViewById(R.id.payment);
 		emailId = (EditText) findViewById(R.id.emailId);
+		descriptionShop = (EditText) findViewById(R.id.descriptionShop);
 		submit = (TextView) findViewById(R.id.submit);
 
 
@@ -231,6 +222,35 @@ public class AddNewCustomer extends AppCompatActivity implements
 		                                  .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 		                                  .setInterval(10 * 1000)        // 10 seconds, in milliseconds
 		                                  .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+
+
+		pin.setText("5000");
+		Selection.setSelection(pin.getText(), pin.getText().length());
+		pin.addTextChangedListener(new TextWatcher()
+		{
+			@Override
+			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
+			{
+
+			}
+
+			@Override
+			public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
+			{
+
+			}
+
+			@Override
+			public void afterTextChanged(final Editable s)
+			{
+				if (!s.toString().startsWith("5000"))
+				{
+					pin.setText("5000");
+					Selection.setSelection(pin.getText(), pin.getText().length());
+
+				}
+			}
+		});
 		submit.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
@@ -246,7 +266,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 								                      shop_address.getText().toString(),
 								                      mobile.getText().toString(),
 								                      phone.getText().toString(), lat.getText().toString(), lang.getText().toString(), "0", locationName.getText().toString(),
-								                      shopTypeDropdown, "1", "2016-01-01", createdby.getText().toString(), religionDropdown, paymentDropDown, "1"));
+								                      selected_ShopId, "1", "2016-01-01", createdby.getText().toString(), selected_religionNameId, selected_paymentNameId, "1"));
 						Log.d("jsonString", jsonString);
 						new AddNewCustomer.CreateShopTask().execute();
 					}
@@ -261,20 +281,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 			}
 		});
 		zoneDetailsDP = new ArrayList<>();
-		religionsDP = new ArrayList<>();
-		routeDp = new ArrayList<>();
-		paymentDP = new ArrayList<>();
-		shopTypeDP = new ArrayList<>();
-		areaDp = new ArrayList<>();
 		routeDetailsDP = new ArrayList<>();
-
-		routeDetailsDP_str = new ArrayList<>();
-		zoneDetailsDP_str = new ArrayList<>();
-		routeDp_str = new ArrayList<>();
-		religionsDP_str = new ArrayList<>();
-		paymentDP_str = new ArrayList<>();
-		shopTypeDP_str = new ArrayList<>();
-		areaDp_str = new ArrayList<>();
 
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 		View view = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.side_menu, navigationView);
@@ -522,7 +529,6 @@ public class AddNewCustomer extends AppCompatActivity implements
 		// Create a new HttpClient and Post Header
 		String responseBody = null;
 		HttpClient httpclient = new DefaultHttpClient();
-//		HttpPost httppost = new HttpPost("http://202.143.96.20/Orderstest/api/Services/RegisterShop");
 		HttpPost httppost = new HttpPost(HttpAdapter.SHOP_CREATION_URL);
 		try
 		{
@@ -530,7 +536,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 			// Add your data
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 			nameValuePairs.add(new BasicNameValuePair("ShopName", shopname.getText().toString()));
-			nameValuePairs.add(new BasicNameValuePair("ShopDescription", "shopDescription"));
+			nameValuePairs.add(new BasicNameValuePair("ShopDescription", descriptionShop.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("OwnerName", ownername.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("Address", shop_address.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("Latitude", lat.getText().toString()));
@@ -541,9 +547,9 @@ public class AddNewCustomer extends AppCompatActivity implements
 			nameValuePairs.add(new BasicNameValuePair("LocationName", locationName.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("ZoneId", selected_zoneId));
 			nameValuePairs.add(new BasicNameValuePair("RouteId", selected_roueId));
-			nameValuePairs.add(new BasicNameValuePair("ShopTypeId", shopTypeDropdown));
-			nameValuePairs.add(new BasicNameValuePair("ReligionID", religionDropdown));
-			nameValuePairs.add(new BasicNameValuePair("PaymentTermId", paymentDropDown));
+			nameValuePairs.add(new BasicNameValuePair("ShopTypeId", selected_ShopId));
+			nameValuePairs.add(new BasicNameValuePair("ReligionID", selected_religionNameId));
+			nameValuePairs.add(new BasicNameValuePair("PaymentTermId", selected_paymentNameId));
 			nameValuePairs.add(new BasicNameValuePair("AreaId", areaDropDwn));
 			nameValuePairs.add(new BasicNameValuePair("Active", "Y"));
 			nameValuePairs.add(new BasicNameValuePair("DateTime", DateUtil.currentDate()));
@@ -865,7 +871,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 				String shopNamee = jsnobj.getString("ShopTypeName");
 				_shoptypesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			shoptypesNamestitle.add("Select Shop Type");
+//			shoptypesNamestitle.add("Select Shop Type");
 			if (_shoptypesData.size() > 0)
 			{
 				for (int i = 0; i < _shoptypesData.size(); i++)
@@ -882,6 +888,13 @@ public class AddNewCustomer extends AppCompatActivity implements
 		                                                                     android.R.layout.simple_spinner_item, shoptypesNamestitle);
 		dataAdapter_shopType.setDropDownViewResource(R.layout.list_item);
 		shoptype_sp.setAdapter(dataAdapter_shopType);
+
+		if (_shoptypesData.size() > 1)
+		{
+			selected_ShopId = "2";
+			shoptype_sp.setSelection(1);
+		}
+
 		shoptype_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
@@ -889,7 +902,6 @@ public class AddNewCustomer extends AppCompatActivity implements
 			{
 				if (position != 0)
 				{
-					shopTypeDropdown = _shoptypesData.get(position - 1).getShopId();
 					selected_ShopId = _shoptypesData.get(position - 1).getShopId();
 				}
 			}
@@ -916,7 +928,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 				String shopNamee = jsnobj.getString("ReligionName");
 				_religionsData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			religionsNamestitle.add("Select Religion");
+//			religionsNamestitle.add("Select Religion");
 			if (_religionsData.size() > 0)
 			{
 				for (int i = 0; i < _religionsData.size(); i++)
@@ -932,6 +944,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 		ArrayAdapter<String> dataAdapter_religion = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, religionsNamestitle);
 		dataAdapter_religion.setDropDownViewResource(R.layout.list_item);
 		religion.setAdapter(dataAdapter_religion);
+		selected_religionNameId = "1";
 		religion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
@@ -939,7 +952,6 @@ public class AddNewCustomer extends AppCompatActivity implements
 			{
 				if (position != 0)
 				{
-					religionDropdown = _religionsData.get(position - 1).getShopId();
 					selected_religionNameId = _religionsData.get(position - 1).getShopId();
 				}
 			}
@@ -966,7 +978,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 				String shopNamee = jsnobj.getString("PaymentName");
 				_paymentsSelectData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			paymentNamestitle.add("Select Payment");
+//			paymentNamestitle.add("Select Payment");
 			if (_paymentsSelectData.size() > 0)
 			{
 				for (int i = 0; i < _paymentsSelectData.size(); i++)
@@ -984,6 +996,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 		                                                                    android.R.layout.simple_spinner_item, paymentNamestitle);
 		dataAdapter_payment.setDropDownViewResource(R.layout.list_item);
 		payment_sp.setAdapter(dataAdapter_payment);
+		selected_paymentNameId = "2";
 		payment_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
@@ -991,7 +1004,6 @@ public class AddNewCustomer extends AppCompatActivity implements
 			{
 				if (position != 0)
 				{
-					paymentDropDown = _paymentsSelectData.get(position - 1).getShopId();
 					selected_paymentNameId = _paymentsSelectData.get(position - 1).getShopId();
 				}
 			}

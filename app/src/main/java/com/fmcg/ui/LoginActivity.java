@@ -4,11 +4,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -42,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 {
 	public SharedPreferences sharedPreferences;
 	EditText username, password;
-	TextView login;
+	AppCompatButton loginBtn;
 	String user, pass;
 	public Context context;
 
@@ -54,13 +59,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 		username = (EditText) findViewById(R.id.username_et);
 		password = (EditText) findViewById(R.id.pass_et);
-		login = (TextView) findViewById(R.id.login_tv);
+		loginBtn = (AppCompatButton) findViewById(R.id.loginBtn);
 
 		context = LoginActivity.this;
 		sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
+		try
+		{
+			ActionBar bar = getSupportActionBar();
+			if (bar != null)
+			{
+				TextView tv = new TextView(getApplicationContext());
+				ActionBar.LayoutParams lp = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
+				                                                       ActionBar.LayoutParams.WRAP_CONTENT);
+				tv.setLayoutParams(lp);
+				tv.setText(bar.getTitle());
+				tv.setGravity(Gravity.CENTER);
+				tv.setTextColor(Color.WHITE);
+				tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+				bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+				bar.setCustomView(tv);
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 
-		login.setOnClickListener(this);
+		loginBtn.setOnClickListener(this);
 	}
 
 	public void registerUser()
@@ -129,7 +155,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 	@Override
 	public void onClick(View view)
 	{
-		if (view.getId() == R.id.login_tv)
+		if (view.getId() == R.id.loginBtn)
 		{
 			registerUser();
 		}
@@ -208,7 +234,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 							/*Intent login = new Intent(LoginActivity.this, NavigationActivity.class);
 							startActivity(login);*/
 						}
-					}else {
+					}
+					else
+					{
 						Toast.makeText(LoginActivity.this, "Login Failed..", Toast.LENGTH_SHORT).show();
 					}
 				}

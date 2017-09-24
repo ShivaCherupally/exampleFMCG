@@ -38,6 +38,9 @@
             android:background="@drawable/submit_rectangle"
             android:gravity="center"
             android:text="Submit"
+            android:textStyle="bold"
+
+            android:textAllCaps="true"
             android:textColor="#ffffff"
             android:textSize="17sp"/>
 

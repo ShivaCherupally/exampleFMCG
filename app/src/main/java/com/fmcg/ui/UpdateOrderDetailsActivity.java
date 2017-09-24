@@ -24,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.*;
+import android.widget.TableRow;
 
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
@@ -151,6 +152,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 
 	String SPINNER_SELECTION = "";
 	AutoCompleteTextView shopName_autoComplete;
+	ImageView product_addiv;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -180,6 +182,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		order_status_spinner = (Spinner) findViewById(R.id.order_status_spinner);
 		product_category_spinner = (Spinner) findViewById(R.id.product_category_spinner);
 		payment_terms_spinner = (Spinner) findViewById(R.id.payment_terms_spinner);
+		product_addiv = (ImageView) findViewById(R.id.product_addiv);
 
 		tableLayout = (TableLayout) findViewById(R.id.tableLayout);
 		submit = (TextView) findViewById(R.id.submit);
@@ -243,6 +246,15 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				{
 					dataSubmittingInServer();
 				}
+			}
+		});
+
+		product_addiv.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				product_category_spinner.performClick();
 			}
 		});
 /*
@@ -313,9 +325,19 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 
 			if (selected_paymentTermsId != null && !selected_paymentTermsId.equals("0") && !selected_paymentTermsId.equalsIgnoreCase("null"))
 			{
+//				selected_paymentTermsId = "2";
 				if (_paymentsSelectData.size() > 0)
 				{
-					payment_terms_spinner.setSelection(getIndex(payment_terms_spinner, Integer.parseInt(selected_paymentTermsId), _paymentsSelectData), false);
+					payment_terms_spinner.setSelection(getIndexPositionPayment(payment_terms_spinner, Integer.parseInt(selected_paymentTermsId), _paymentsSelectData), false);
+				}
+			}
+			else
+			{
+				paymentTermsTouchClick = true;
+				selected_paymentTermsId = "2";
+				if (_paymentsSelectData.size() > 0)
+				{
+					payment_terms_spinner.setSelection(getIndexPositionPayment(payment_terms_spinner, Integer.parseInt(selected_paymentTermsId), _paymentsSelectData), true);
 				}
 			}
 		}
@@ -325,7 +347,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		}
 	}
 
-	private void headers()
+	/*private void headers()
 	{
 		android.widget.TableRow row = new android.widget.TableRow(this);
 
@@ -388,6 +410,80 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 
 		tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
 		                                                      TableLayout.LayoutParams.WRAP_CONTENT));
+
+	}*/
+
+	private void headers()
+	{
+		android.widget.TableRow row = new android.widget.TableRow(this);
+
+		TextView taskdate = new TextView(UpdateOrderDetailsActivity.this);
+		taskdate.setTextSize(15);
+		taskdate.setPadding(10, 10, 10, 10);
+		taskdate.setText("Product");
+		taskdate.setBackgroundColor(getResources().getColor(R.color.light_green));
+		taskdate.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
+		row.addView(taskdate);
+
+		TextView title = new TextView(UpdateOrderDetailsActivity.this);
+		title.setText("Price");
+		title.setBackgroundColor(getResources().getColor(R.color.light_green));
+		title.setTextSize(15);
+		title.setPadding(10, 10, 10, 10);
+		title.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                               android.widget.TableRow.LayoutParams.WRAP_CONTENT));
+		row.addView(title);
+
+
+		TextView taskhour = new TextView(UpdateOrderDetailsActivity.this);
+		taskhour.setText("Quantity");
+		taskhour.setBackgroundColor(getResources().getColor(R.color.light_green));
+		taskhour.setTextSize(15);
+		taskhour.setPadding(10, 10, 10, 10);
+		taskhour.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
+		row.addView(taskhour);
+
+		TextView description3 = new TextView(UpdateOrderDetailsActivity.this);
+		description3.setText("Frees");
+		description3.setBackgroundColor(getResources().getColor(R.color.light_green));
+		description3.setTextSize(15);
+		description3.setPadding(10, 10, 10, 10);
+		row.addView(description3);
+		description3.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
+
+		TextView remove = new TextView(UpdateOrderDetailsActivity.this);
+		remove.setText("VAT");
+		remove.setBackgroundColor(getResources().getColor(R.color.light_green));
+		remove.setTextSize(15);
+		remove.setPadding(10, 10, 10, 10);
+		row.addView(remove);
+		remove.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                TableRow.LayoutParams.WRAP_CONTENT));
+/*		TextView description = new TextView(Order.this);
+		description.setText("VAT");
+		description.setBackgroundColor(getResources().getColor(R.color.light_green));
+		description.setTextSize(15);
+		description.setPadding(10, 10, 10, 10);
+		row.addView(description);
+		description.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+		                                                      TableRow.LayoutParams.WRAP_CONTENT));
+
+		TextView description2 = new TextView(Order.this);
+		description2.setText("GST");
+		description2.setBackgroundColor(getResources().getColor(R.color.light_green));
+		description2.setTextSize(15);
+		description2.setPadding(10, 10, 10, 10);
+		description2.setVisibility(View.GONE);
+		row.addView(description2);
+		description2.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+		                                                       TableRow.LayoutParams.WRAP_CONTENT));*/
+
+		tableLayout.addView(row, new TableLayout.LayoutParams(
+				TableLayout.LayoutParams.MATCH_PARENT,
+				TableLayout.LayoutParams.WRAP_CONTENT));
 
 	}
 
@@ -607,6 +703,13 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 							}
 						});
 					}
+					else
+					{
+						productDP_str.add("Add Product");
+						ArrayAdapter<String> dataAdapter_productName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, productDP_str);
+						dataAdapter_productName.setDropDownViewResource(R.layout.list_item);
+						product_category_spinner.setAdapter(dataAdapter_productName);
+					}
 				}
 				//Payment Terms Name Dropdown
 				else if (response.getTag().equals("payment"))
@@ -716,7 +819,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	public void onBackPressed()
 	{
 		super.onBackPressed();
-		Intent intent = new Intent(this, DashboardActivity.class);
+		Intent intent = new Intent(this, OrderBookList.class);
 		startActivity(intent);
 		finish();
 	}
@@ -1029,6 +1132,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				TextView title = new TextView(mContext);
 				title.setText(String.valueOf(mProductCategory.ProductPrice));
 				title.setTextSize(15);
+				title.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 				title.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                       LayoutParams.WRAP_CONTENT));
 				addView(title);
@@ -1042,6 +1146,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				quantityETID.setTextSize(15);
 //				quantityETID.setEnabled(false);
 				quantityETID.setInputType(InputType.TYPE_CLASS_NUMBER);
+				quantityETID.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 				quantityETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                              LayoutParams.WRAP_CONTENT));
 				quantityETID.addTextChangedListener(mTextWatcher);
@@ -1069,6 +1174,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				fresETID.setTextSize(15);
 //				fresETID.setEnabled(false);
 				fresETID.setInputType(InputType.TYPE_CLASS_NUMBER);
+				fresETID.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 				fresETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                          LayoutParams.WRAP_CONTENT));
 				fresETID.addTextChangedListener(mTextWatcherFres);
@@ -1086,27 +1192,28 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				TextView description2 = new TextView(mContext);
 				description2.setText(String.valueOf(mProductCategory.GST));
 				description2.setTextSize(15);
+				description2.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 				description2.setVisibility(GONE);
 				description2.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                              LayoutParams.WRAP_CONTENT));
 				addView(description2);
 
 				ImageView deleteimg = new ImageView(mContext);
-//				deleteimg.setImageResource(getResources().getDrawable(R.drawable.delete));
-//				deleteimg.setPadding(0, 10, 0, 0);
-				deleteimg.setImageResource(R.drawable.delete);
-
+				/*deleteimg.setImageResource(R.drawable.delete);
 				deleteimg.setMaxWidth(28);
-				deleteimg.setMaxHeight(28);
+				deleteimg.setMaxHeight(28);*/
+				deleteimg.setPadding(0, 10, 0, 0);
+				deleteimg.setImageResource(R.drawable.deleteiconimg);
+				deleteimg.setMaxWidth(25);
+				deleteimg.setMaxHeight(25);
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 				{
-					deleteimg.setForegroundGravity(Gravity.CENTER_VERTICAL);
+					deleteimg.setForegroundGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
 				}
-//				deleteimg.setLayoutParams(new TableRow.LayoutParams(24,
-//				                                                    TableRow.LayoutParams.WRAP_CONTENT));
 				deleteimg.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//				deleteimg.gr
 				addView(deleteimg);
+
+
 				deleteimg.setOnClickListener(new OnClickListener()
 				{
 					@Override
@@ -1544,8 +1651,6 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			shopName_autoComplete.setAdapter(adapter);
 			shopName_autoComplete.setTextColor(Color.BLACK);
 			shopName_autoComplete.setTextSize(16);
-
-
 		}
 		else if (zoneTouchClick)
 		{
@@ -1605,7 +1710,6 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 
 	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
 	{
-
 		/*SPINNER_SELECTION = "SHOP";
 		adapterDataAssigingToSpinner(shoptypesNamestitle, SPINNER_SELECTION);*/
 		if (zoneTouchClick)
@@ -1757,7 +1861,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				String shopNamee = jsnobj.getString("PaymentName");
 				_paymentsSelectData.add(new ShopNamesData(String.valueOf(shopId), shopNamee));
 			}
-			paymentNamestitle.add("Select Payment Terms Name");
+//			paymentNamestitle.add("Select Payment Terms Name");
 			if (_paymentsSelectData.size() > 0)
 			{
 				for (int i = 0; i < _paymentsSelectData.size(); i++)
@@ -1831,6 +1935,39 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 					if (avaliableListDataid.equals(String.valueOf(searchId)))
 					{
 						searchIdIndex = i + 1;
+						Log.e("availbleId", _availbleDropDownData.get(i).getShopId() + "");
+						return searchIdIndex;
+					}
+				}
+
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+
+		}
+		return searchIdIndex; // Not found
+	}
+
+	private int getIndexPositionPayment(Spinner spinner, int searchId, ArrayList<ShopNamesData> _availbleDropDownData)
+	{
+		int searchIdIndex = 0;
+		try
+		{
+			if (searchId == 0)
+			{
+				searchIdIndex = -1;
+				return -1; // Not found
+			}
+			else
+			{
+				for (int i = 1; i < spinner.getCount(); i++)
+				{
+					String avaliableListDataid = _availbleDropDownData.get(i).getShopId();
+					if (avaliableListDataid.equals(String.valueOf(searchId)))
+					{
+						searchIdIndex = i;
 						Log.e("availbleId", _availbleDropDownData.get(i).getShopId() + "");
 						return searchIdIndex;
 					}

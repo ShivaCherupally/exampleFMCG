@@ -78,6 +78,13 @@
 
     </style>
 
+    <style name="TextLabel" parent="TextAppearance.AppCompat">
+        <item name="android:textColorHint">#fff</item>
+        <item name="android:textSize">20sp</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="colorControlNormal">#e34b1c</item>
+        <item name="colorControlActivated">#e34b1c</item>
+    </style>
 
 
 </resources>

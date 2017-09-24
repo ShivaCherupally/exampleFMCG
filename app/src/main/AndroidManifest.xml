@@ -42,7 +42,7 @@
 
         <activity
             android:name="com.fmcg.ui.LoginActivity"
-            android:label="@string/login_activity"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme">
 
@@ -70,7 +70,15 @@
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden">
 
+
         </activity>
+
+        <activity
+            android:name="com.fmcg.ui.OrderEditActivity"
+            android:label="Order Booking"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden"/>
 
 
         <activity
@@ -167,6 +175,14 @@
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity
+            android:name="com.fmcg.ui.BillingEditActivity"
+            android:label="Invoice"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+
+        <activity
             android:name="com.fmcg.ui.OrderBookList"
             android:label="List"
             android:screenOrientation="portrait"
@@ -186,18 +202,18 @@
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity
+        <!--<activity
             android:name="com.fmcg.ui.UpdateOrderActvity"
             android:label="@string/update_order"
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme"
-            android:windowSoftInputMode="stateHidden"/>
-        <activity
+            android:windowSoftInputMode="stateHidden"/>-->
+        <!--<activity
             android:name="com.fmcg.ui.UpdateCustomerActivity"
             android:label="@string/update_customer"
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden"/>-->
         <activity
             android:name="com.fmcg.ui.UpdateCustomerNewActivity"
             android:label="@string/update_customer"

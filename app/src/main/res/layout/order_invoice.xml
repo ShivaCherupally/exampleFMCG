@@ -164,12 +164,13 @@
                      android:layout_height="match_parent"
                      android:layout_gravity="center_horizontal|center"
                      android:layout_marginTop="10dp"
-                     android:background="#ffffff"
+                     android:background="@drawable/edittext_whites"
                      android:gravity="center_horizontal"
+                     android:padding="8dp"
                      android:shrinkColumns="*"
                      android:stretchColumns="*">
 
-            <TableRow
+            <!--<TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 >
@@ -235,7 +236,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center">
-            </TableRow>
+            </TableRow>-->
         </TableLayout>
 
         <TextView
@@ -245,7 +246,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/rect_bg_black"
             android:gravity="center"
-            android:text="Total Amaount"
+            android:text="Total Amount"
             android:textColor="@color/black"/>
 
         <EditText
@@ -328,6 +329,8 @@
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="5dp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/submit_rectangle"
@@ -352,6 +355,9 @@
                 android:focusableInTouchMode="true"
                 android:gravity="center"
                 android:text="@string/submit"
+                android:textStyle="bold"
+
+                android:textAllCaps="true"
                 android:textColor="@color/white"/>
         </LinearLayout>
 

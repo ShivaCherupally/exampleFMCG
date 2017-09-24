@@ -378,7 +378,6 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 					int EmployeeId = jObj.getInt("EmployeeId");
 					int RouteId = jObj.getInt("RouteId");
 
-
 					int OrdersId = jObj.getInt("OrdersId");
 
 					if (jObj.getString("OrderNumber") != null && !jObj.getString("OrderNumber").equalsIgnoreCase("null"))

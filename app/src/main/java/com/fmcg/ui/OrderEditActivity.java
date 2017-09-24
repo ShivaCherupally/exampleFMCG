@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,17 +19,13 @@ import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +37,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.*;
@@ -52,7 +48,7 @@ import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
 import com.fmcg.models.GetAreaDetails;
 import com.fmcg.models.GetProductCategory;
-import com.fmcg.models.GetProducts;
+import com.fmcg.models.GetProductCategoryInOrderUpdate;
 import com.fmcg.models.GetRouteDetails;
 import com.fmcg.models.GetRouteDropDown;
 import com.fmcg.models.GetShopDetailsDP;
@@ -69,45 +65,32 @@ import com.fmcg.permission.DangerousPermissionUtils;
 import com.fmcg.util.SharedPrefsUtil;
 import com.fmcg.util.Util;
 import com.fmcg.util.Utility;
-import com.google.android.gms.vision.text.Text;
 import com.google.gson.Gson;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.message.LineFormatter;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
 
 import static com.fmcg.util.Common.orderNUmberString;
+import static com.fmcg.util.SharedPrefsUtil.getStringPreference;
 
+/**
+ * Created by Shiva on 9/22/2017.
+ */
 
-public class Order extends AppCompatActivity implements NetworkOperationListener, AdapterView.OnItemSelectedListener
+public class OrderEditActivity extends AppCompatActivity implements NetworkOperationListener, AdapterView.OnItemSelectedListener, View.OnTouchListener
 {
-	public static Activity orderBookActivity;
+	public static Activity orderBookeditActivity;
 	public List<GetProductCategory> productDP;
 	public List<GetProductCategory> storedProductCategories = new ArrayList<GetProductCategory>();
 	public List<GetZoneDetails> zoneDetailsDP;
@@ -116,10 +99,10 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 	public final List<GetProductCategory> list = new ArrayList<GetProductCategory>();
 	private List<String> productDP_str;
 
-	public Spinner orderStatus_sp, category_sp, payment_sp, routeName_sp, areaName_sp, routecd, zone_sp;
+	public Spinner shopName_sp, orderStatus_sp, category_sp, payment_sp, routeName_sp, areaName_sp, routecd, zone_sp;
 
 	public CheckBox isShopClosed, ordered, invoice;
-	public TextView uploadImage, shopClosed, submit, orderNumInvoice;
+	public TextView uploadImage, shopClosed, orderDate, submit, tvDisplayDate, orderNumInvoice;
 	private static TextView paymentSelected;
 	private EditText remarksET;
 	private LinearLayout list_li;
@@ -190,10 +173,18 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 	String selected_orderStatusId = "";
 	String selected_paymentTermsId = "";
 	String SPINNER_SELECTION = "";
+	String AvailShopName = "";
 
 	AutoCompleteTextView shopName_autoComplete;
 
 	ImageView product_addiv;
+
+	boolean zoneTouchClick = false;
+	boolean routeTouchClick = false;
+	boolean areaTouchClick = false;
+	boolean shopNamesTouchClick = false;
+	boolean orderStatusTouchClick = false;
+	boolean paymentTermsTouchClick = false;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -202,9 +193,9 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		setContentView(R.layout.order);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
-		mContext = Order.this;
+		mContext = OrderEditActivity.this;
 
-		orderBookActivity = Order.this;
+		orderBookeditActivity = OrderEditActivity.this;
 		tableLayout = (TableLayout) findViewById(R.id.tableRow1);
 		tableLayout.setVisibility(View.GONE);
 
@@ -235,18 +226,16 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		product_addiv = (ImageView) findViewById(R.id.product_addiv);
 		list_li = (LinearLayout) findViewById(R.id.items_li);
 
-		selecZoneNameBind();
 		selectRouteNameBind();
 		selectAreaNameBind();
-		selectOrderStatus();
 
 		if (Utility.isOnline(mContext))
 		{
-			HttpAdapter.getPayment(Order.this, "payment");
-			HttpAdapter.getOrderStatus(Order.this, "orderStatus");
-			HttpAdapter.getProductCategoryDP(Order.this, "productCategoryName");
-			HttpAdapter.getZoneDetailsDP(Order.this, "zoneName");
-			HttpAdapter.GetOrderNumber(Order.this, "GetOrderNumber");
+			HttpAdapter.getPayment(OrderEditActivity.this, "payment");
+			HttpAdapter.getOrderStatus(OrderEditActivity.this, "orderStatus");
+			HttpAdapter.getProductCategoryDP(OrderEditActivity.this, "productCategoryName");
+			HttpAdapter.getZoneDetailsDP(OrderEditActivity.this, "zoneName");
+			HttpAdapter.GetOrderNumber(OrderEditActivity.this, "GetOrderNumber");
 		}
 		else
 		{
@@ -304,6 +293,13 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 //		shopName_sp.setOnItemSelectedListener(this);
 		orderStatus_sp.setOnItemSelectedListener(this);
 		payment_sp.setOnItemSelectedListener(this);
+
+		zone_sp.setOnTouchListener(this);
+		routeName_sp.setOnTouchListener(this);
+		areaName_sp.setOnTouchListener(this);
+//		shopName_sp.setOnItemSelectedListener(this);
+		orderStatus_sp.setOnTouchListener(this);
+		payment_sp.setOnTouchListener(this);
 
 
 		submit.setOnClickListener(new View.OnClickListener()
@@ -415,7 +411,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		for (int i = 0; i < productDP.size(); i++)
 		{
 			j = i;
-			ProductCategoryTableRow row = new ProductCategoryTableRow(this, productDP.get(i), i);
+			OrderEditActivity.ProductCategoryTableRow row = new OrderEditActivity.ProductCategoryTableRow(this, productDP.get(i), i);
 			tableLayout.addView(row, new TableLayout.LayoutParams(
 					TableLayout.LayoutParams.MATCH_PARENT,
 					TableLayout.LayoutParams.WRAP_CONTENT));
@@ -538,54 +534,54 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 	private void headers()
 	{
-		android.widget.TableRow row = new TableRow(this);
+		android.widget.TableRow row = new android.widget.TableRow(this);
 
-		TextView taskdate = new TextView(Order.this);
+		TextView taskdate = new TextView(OrderEditActivity.this);
 		taskdate.setTextSize(15);
 		taskdate.setPadding(10, 10, 10, 10);
 		taskdate.setText("Product");
 		taskdate.setBackgroundColor(getResources().getColor(R.color.light_green));
-		taskdate.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                   TableRow.LayoutParams.WRAP_CONTENT));
+		taskdate.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 		row.addView(taskdate);
 
-		TextView title = new TextView(Order.this);
+		TextView title = new TextView(OrderEditActivity.this);
 		title.setText("Price");
 		title.setBackgroundColor(getResources().getColor(R.color.light_green));
 		title.setTextSize(15);
 		title.setPadding(10, 10, 10, 10);
-		title.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                TableRow.LayoutParams.WRAP_CONTENT));
+		title.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                               android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 		row.addView(title);
 
 
-		TextView taskhour = new TextView(Order.this);
+		TextView taskhour = new TextView(OrderEditActivity.this);
 		taskhour.setText("Quantity");
 		taskhour.setBackgroundColor(getResources().getColor(R.color.light_green));
 		taskhour.setTextSize(15);
 		taskhour.setPadding(10, 10, 10, 10);
-		taskhour.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                   TableRow.LayoutParams.WRAP_CONTENT));
+		taskhour.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 		row.addView(taskhour);
 
-		TextView description3 = new TextView(Order.this);
+		TextView description3 = new TextView(OrderEditActivity.this);
 		description3.setText("Frees");
 		description3.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description3.setTextSize(15);
 		description3.setPadding(10, 10, 10, 10);
 		row.addView(description3);
-		description3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                       TableRow.LayoutParams.WRAP_CONTENT));
+		description3.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 
-		TextView remove = new TextView(Order.this);
+		TextView remove = new TextView(OrderEditActivity.this);
 		remove.setText("Delete");
 		remove.setBackgroundColor(getResources().getColor(R.color.light_green));
 		remove.setTextSize(15);
 		remove.setPadding(10, 10, 10, 10);
 		row.addView(remove);
-		remove.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-		                                                 TableRow.LayoutParams.WRAP_CONTENT));
-/*		TextView description = new TextView(Order.this);
+		remove.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
+		                                                                android.widget.TableRow.LayoutParams.WRAP_CONTENT));
+/*		TextView description = new TextView(OrderEditActivity.this);
 		description.setText("VAT");
 		description.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description.setTextSize(15);
@@ -594,7 +590,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		description.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
 		                                                      TableRow.LayoutParams.WRAP_CONTENT));
 
-		TextView description2 = new TextView(Order.this);
+		TextView description2 = new TextView(OrderEditActivity.this);
 		description2.setText("GST");
 		description2.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description2.setTextSize(15);
@@ -608,15 +604,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				TableLayout.LayoutParams.MATCH_PARENT,
 				TableLayout.LayoutParams.WRAP_CONTENT));
 
-	}
-
-	private void selecZoneNameBind()
-	{
-		zoneNamestitle.clear();
-		zoneNamestitle.add("Select Zone Name");
-		ArrayAdapter<String> dataAdapter_ZoneName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, zoneNamestitle);
-		dataAdapter_ZoneName.setDropDownViewResource(R.layout.list_item);
-		zone_sp.setAdapter(dataAdapter_ZoneName);
 	}
 
 	private void selectRouteNameBind()
@@ -635,16 +622,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		areaName_sp.setAdapter(dataAdapter_areaName);
 		//selectShopNameBind();
 	}
-
-	private void selectOrderStatus()
-	{
-		orderStatusTitle.add("Select Order Status");
-		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, orderStatusTitle);
-		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
-		orderStatus_sp.setAdapter(dataAdapter_areaName);
-		//selectShopNameBind();
-	}
-
 
 	@Override
 	public void operationCompleted(NetworkResponse response)
@@ -679,7 +656,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				//productCategory DropDown
 				else if (response.getTag().equals("productCategoryName"))
 				{
-					Log.e("Productdata", mJson.toString());
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
@@ -732,8 +708,8 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 						dataAdapter_productName.setDropDownViewResource(R.layout.list_item);
 						category_sp.setAdapter(dataAdapter_productName);
 					}
-				}
 
+				}
 				//ZoneDetails DropDown
 				else if (response.getTag().equals("zoneName"))
 				{
@@ -883,6 +859,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 			dataObj.putOpt("IsInvoice", IsInvoice);
 			dataObj.putOpt("Remarks", Remarks);
 			dataObj.putOpt("EmployeeId", EmployeeId);
+
 			studentsObj.put("ProductList", cartItemsArray);
 			studentsObj.put("OrderBookingDate", dataObj);
 		}
@@ -897,7 +874,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 	private void showAlert()
 	{
-		AlertDialog alertDialog = new AlertDialog.Builder(Order.this).create();
+		AlertDialog alertDialog = new AlertDialog.Builder(OrderEditActivity.this).create();
 		alertDialog.setTitle("Alert");
 		alertDialog.setMessage("App needs to access the Camera.");
 
@@ -918,7 +895,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 			                      public void onClick(DialogInterface dialog, int which)
 			                      {
 				                      dialog.dismiss();
-				                      ActivityCompat.requestPermissions(Order.this,
+				                      ActivityCompat.requestPermissions(OrderEditActivity.this,
 				                                                        new String[]{Manifest.permission.CAMERA},
 				                                                        MY_PERMISSIONS_REQUEST_CAMERA);
 			                      }
@@ -956,7 +933,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 							// or open another dialog explaining
 							// again the permission and directing to
 							// the app setting
-							saveToPreferences(Order.this, ALLOW_KEY, true);
+							saveToPreferences(OrderEditActivity.this, ALLOW_KEY, true);
 						}
 					}
 				}
@@ -1047,17 +1024,29 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		{
 
 			case R.id.zone_name_spinner:
-				selectedSpinner = "ZONE";
-				dropDownValueSelection(position, _zoneNamesData, selectedSpinner);
+				if (zoneTouchClick)
+				{
+					AvailShopName = "";
+					selectedSpinner = "ZONE";
+					dropDownValueSelection(position, _zoneNamesData, selectedSpinner);
+				}
 				break;
 			case R.id.routeName_spinner:
-				selectedSpinner = "ROUTE";
-				dropDownValueSelection(position, _routeCodesData, selectedSpinner);
+				if (routeTouchClick)
+				{
+					AvailShopName = "";
+					selectedSpinner = "ROUTE";
+					dropDownValueSelection(position, _routeCodesData, selectedSpinner);
+				}
 				break;
 			case R.id.areaName_spinner:
-				selectedSpinner = "AREA";
-				dropDownValueSelection(position, _areaNamesData, selectedSpinner);
-				break;
+				if (areaTouchClick)
+				{
+					AvailShopName = "";
+					selectedSpinner = "AREA";
+					dropDownValueSelection(position, _areaNamesData, selectedSpinner);
+					break;
+				}
 			/*case R.id.shopName_autoComplete:
 				selectedSpinner = "SHOP";
 				dropDownValueSelection(position, _shopNamesData, selectedSpinner);
@@ -1067,9 +1056,12 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				dropDownValueSelection(position, _orderStatusData, selectedSpinner);
 				break;
 			case R.id.payment_terms_spinner:
-				selected_paymentTermsId = "2";
-				selectedSpinner = "PAYMENT_TYPE";
-				dropDownValueSelection(position, _paymentsSelectData, selectedSpinner);
+				if (paymentTermsTouchClick)
+				{
+//					selected_paymentTermsId = 2;
+					selectedSpinner = "PAYMENT_TYPE";
+					dropDownValueSelection(position, _paymentsSelectData, selectedSpinner);
+				}
 				break;
 
 		}
@@ -1087,17 +1079,17 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 					if (selectedSpinner.equals("ZONE"))
 					{
 						selected_zoneId = _dropDownData.get(position - 1).getShopId();
-						HttpAdapter.getRouteDetails(Order.this, "routeName", selected_zoneId);
+						HttpAdapter.getRouteDetails(OrderEditActivity.this, "routeName", selected_zoneId);
 					}
 					else if (selectedSpinner.equals("ROUTE"))
 					{
 						selected_roueId = _dropDownData.get(position - 1).getShopId(); //3
-						HttpAdapter.getAreaDetailsByRoute(Order.this, "areaNameDP", selected_roueId);
+						HttpAdapter.getAreaDetailsByRoute(OrderEditActivity.this, "areaNameDP", selected_roueId);
 					}
 					else if (selectedSpinner.equals("AREA"))
 					{
 						selected_areaNameId = _dropDownData.get(position - 1).getShopId();
-						HttpAdapter.getShopDetailsDP(Order.this, "shopName", selected_areaNameId);
+						HttpAdapter.getShopDetailsDP(OrderEditActivity.this, "shopName", selected_areaNameId);
 					}
 					/*else if (selectedSpinner.equals("SHOP"))
 					{
@@ -1110,8 +1102,8 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 					else if (selectedSpinner.equals("PAYMENT_TYPE"))
 					{
 
-						selected_paymentTermsId = _dropDownData.get(position).getShopId();
-						String paymentSelected = _dropDownData.get(position).getShopName();
+						selected_paymentTermsId = _dropDownData.get(position - 1).getShopId();
+						String paymentSelected = _dropDownData.get(position - 1).getShopName();
 						Log.e("paymentSelected", paymentSelected);
 						if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
 						{
@@ -1146,7 +1138,46 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 	}
 
-	private class ProductCategoryTableRow extends TableRow
+	@Override
+	public boolean onTouch(final View v, final MotionEvent event)
+	{
+		switch (v.getId())
+		{
+			case R.id.zone_name_spinner:
+				zoneTouchClick = true;
+				routeTouchClick = false;
+				areaTouchClick = false;
+				shopNamesTouchClick = false;
+				break;
+			case R.id.routeName_spinner:
+				zoneTouchClick = false;
+				routeTouchClick = true;
+				areaTouchClick = false;
+				shopNamesTouchClick = false;
+				break;
+			case R.id.areaName_spinner:
+				zoneTouchClick = false;
+				routeTouchClick = false;
+				areaTouchClick = true;
+				shopNamesTouchClick = false;
+				break;
+			case R.id.shopname_spinner:
+				zoneTouchClick = false;
+				routeTouchClick = false;
+				areaTouchClick = false;
+				shopNamesTouchClick = true;
+				break;
+			case R.id.order_status_spinner:
+				orderStatusTouchClick = true;
+				break;
+			case R.id.payment_terms_spinner:
+				paymentTermsTouchClick = true;
+				break;
+		}
+		return false;
+	}
+
+	private class ProductCategoryTableRow extends android.widget.TableRow
 	{
 
 		private Context mContext;
@@ -1235,7 +1266,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 			description3.setTextSize(15);
 			addView(description3);
 			description3.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-			                                                       TableRow.LayoutParas.WRAP_CONTENT));*/
+			                                                       TableRow.LayoutParams.WRAP_CONTENT));*/
 				fresETID = new EditText(mContext);
 				if (mProductCategory.Frees != null && !mProductCategory.Frees.isEmpty())
 				{
@@ -1296,7 +1327,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 						try
 						{
 							int temposition = position + 1;
-							TableRow row = (TableRow) tableLayout.getChildAt(temposition);
+							android.widget.TableRow row = (TableRow) tableLayout.getChildAt(temposition);
 							tableLayout.removeView(row);
 							productDP.remove(position - 1);
 							storedProductCategories.remove(position - 1);
@@ -1672,13 +1703,13 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				if (check1)
 				{
 
-					Intent in = new Intent(Order.this, Order.class);
+					Intent in = new Intent(OrderEditActivity.this, Order.class);
 					Util.killorderBook();
 					startActivity(in);
 				}
 				else if (check2)
 				{
-					Intent inten = new Intent(Order.this, Invoice.class);
+					Intent inten = new Intent(OrderEditActivity.this, Invoice.class);
 					Util.killorderBook();
 					startActivity(inten);
 				}
@@ -1713,7 +1744,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		}
 		else if (type.equals("Cheque"))
 		{
-			DialogFragment newFragment = new DatePickerFragmentDailog();
+			DialogFragment newFragment = new Order.DatePickerFragmentDailog();
 			newFragment.show(getSupportFragmentManager(), "datePicker");
 		}
 		else if (type.equals("Credit-days"))
@@ -1731,7 +1762,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
-					selected_paymentTermsId = "2";
+					selected_paymentTermsId = "";
 					payment_sp.setSelection(0);
 //					refreshActivity();
 				}
@@ -1827,6 +1858,38 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		}
 		SPINNER_SELECTION = "ROUTE";
 		adapterDataAssigingToSpinner(routeNamestitle, SPINNER_SELECTION);
+
+		if (!zoneTouchClick)
+		{
+			routeName_sp.setSelection(getIndex(routeName_sp, Integer.parseInt(selected_roueId), _routeCodesData), false);
+			HttpAdapter.getAreaDetailsByRoute(OrderEditActivity.this, "areaNameDP", selected_roueId);
+		}
+		else if (!routeTouchClick)
+		{
+			//selectAreaNameBind();
+			selected_areaNameId = "";
+			areaNamestitle.clear();
+			areaNamestitle.add("Select Area Name");
+			shoptypesNamestitle.clear();
+			shopName_autoComplete.setText("");
+			ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+			dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+			areaName_sp.setAdapter(dataAdapter_areaName);
+
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shoptypesNamestitle);
+			shopName_autoComplete.setThreshold(1);
+			shopName_autoComplete.setAdapter(adapter);
+			shopName_autoComplete.setTextColor(Color.BLACK);
+			shopName_autoComplete.setTextSize(16);
+		}
+		else if (zoneTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (routeTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
 	}
 
 	private void areaNameSpinnerAdapter(final JSONArray jsonArray)
@@ -1858,9 +1921,22 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		}
 		SPINNER_SELECTION = "AREA";
 		adapterDataAssigingToSpinner(areaNamestitle, SPINNER_SELECTION);
+		if (zoneTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (routeTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (!zoneTouchClick && !routeTouchClick && !areaTouchClick)
+		{
+			areaName_sp.setSelection(getIndex(areaName_sp, Integer.valueOf(selected_areaNameId), _areaNamesData), false);
+			HttpAdapter.getShopDetailsDP(OrderEditActivity.this, "shopName", selected_areaNameId);
+		}
 	}
 
-	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
+	/*private void shopNameSpinnerAdapter(final JSONArray jsonArray)
 	{
 		Log.e("shopNamesDropdown", jsonArray.toString() + "");
 		try
@@ -1887,8 +1963,8 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		catch (Exception e)
 		{
 		}
-		/*SPINNER_SELECTION = "SHOP";
-		adapterDataAssigingToSpinner(shooNamestitle, SPINNER_SELECTION);*/
+		*//*SPINNER_SELECTION = "SHOP";
+		adapterDataAssigingToSpinner(shooNamestitle, SPINNER_SELECTION);*//*
 
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
@@ -1924,7 +2000,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 			}
 		});
 
-	}
+	}*/
 
 	private void orderStatusSpinnerAdapter(final JSONArray jsonArray)
 	{
@@ -1997,6 +2073,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		if (spinnerSelction.equals("ZONE"))
 		{
 			zone_sp.setAdapter(dataAdapter);
+			autoFillDetails();
 		}
 		else if (spinnerSelction.equals("ROUTE"))
 		{
@@ -2022,6 +2099,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		}
 		else if (spinnerSelction.equals("PAYMENT_SELECT"))
 		{
+//			selected_paymentTermsId = "2";
 			payment_sp.setAdapter(dataAdapter);
 		}
 
@@ -2095,6 +2173,195 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 		}
 		return searchIdIndex; // Not found
+	}
+
+	private void autoFillDetails()
+	{
+		try
+		{
+			if (SharedPrefsUtil.getStringPreference(mContext, "KEY_DESCRIPTION") != null && !SharedPrefsUtil.getStringPreference(mContext, "KEY_DESCRIPTION").isEmpty())
+			{
+				remarksET.setText(SharedPrefsUtil.getStringPreference(mContext, "KEY_DESCRIPTION") + "");
+			}
+
+			if (SharedPrefsUtil.getStringPreference(mContext, "KEY_PAYMENT_ID") != null && !SharedPrefsUtil.getStringPreference(mContext, "KEY_PAYMENT_ID").isEmpty())
+			{
+				selected_paymentTermsId = SharedPrefsUtil.getStringPreference(mContext, "KEY_PAYMENT_ID");
+			}
+			else
+			{
+				selected_paymentTermsId = "2";
+			}
+
+			Log.e("selected_paymentTermsId", selected_paymentTermsId);
+			selected_zoneId = SharedPrefsUtil.getStringPreference(mContext, "KEY_ZONE_ID");// String.valueOf(zoneId);
+			selected_roueId = SharedPrefsUtil.getStringPreference(mContext, "KEY_ROUTE_ID");
+			selected_areaNameId = SharedPrefsUtil.getStringPreference(mContext, "KEY_AREANAME_ID");
+			selected_ShopId = SharedPrefsUtil.getStringPreference(mContext, "KEY_SHOP_ID");
+			AvailShopName = SharedPrefsUtil.getStringPreference(mContext, "KEY_SHOP_NAME");
+
+
+			if (selected_zoneId != null && !selected_zoneId.isEmpty())
+			{
+				zone_sp.setSelection(getIndex(zone_sp, Integer.parseInt(selected_zoneId), _zoneNamesData), false);
+				HttpAdapter.getRouteDetails(OrderEditActivity.this, "routeName", selected_zoneId);
+			}
+
+			if (selected_paymentTermsId != null && !selected_paymentTermsId.equals("0") && !selected_paymentTermsId.equalsIgnoreCase("null"))
+			{
+				if (_paymentsSelectData.size() > 0)
+				{
+					payment_sp.setSelection(getIndex(payment_sp, Integer.parseInt(selected_paymentTermsId), _paymentsSelectData), false);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+
+		}
+
+
+	}
+
+
+	private int getIndex(Spinner spinner, int searchId, ArrayList<ShopNamesData> _availbleDropDownData)
+	{
+		int searchIdIndex = 0;
+		try
+		{
+			if (searchId == 0)
+			{
+				searchIdIndex = -1;
+				return -1; // Not found
+			}
+			else
+			{
+				for (int i = 0; i < spinner.getCount(); i++)
+				{
+					String avaliableListDataid = _availbleDropDownData.get(i).getShopId();
+					if (avaliableListDataid.equals(String.valueOf(searchId)))
+					{
+						searchIdIndex = i + 1;
+						Log.e("availbleId", _availbleDropDownData.get(i).getShopId() + "");
+						return searchIdIndex;
+					}
+				}
+
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+
+		}
+		return searchIdIndex; // Not found
+	}
+
+	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
+	{
+		/*SPINNER_SELECTION = "SHOP";
+		adapterDataAssigingToSpinner(shoptypesNamestitle, SPINNER_SELECTION);*/
+		if (zoneTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (routeTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else
+		{
+			Log.e("shopDropdown", jsonArray.toString() + "");
+			try
+			{
+				_shoptypesData.clear();
+				shoptypesNamestitle.clear();
+				_shoptypesData = new ArrayList<ShopNamesData>();
+				for (int i = 0; i < jsonArray.length(); i++)
+				{
+					JSONObject jsnobj = jsonArray.getJSONObject(i);
+					int shopId = jsnobj.getInt("ShopId");
+					Log.e("ShopIdList", String.valueOf(shopId));
+					String shopNamee = jsnobj.getString("ShopName");
+					_shoptypesData.add(new ShopNamesData(String.valueOf(shopId), shopNamee));
+				}
+//			shoptypesNamestitle.add("Select Shop Name");
+				if (_shoptypesData.size() > 0)
+				{
+					for (int i = 0; i < _shoptypesData.size(); i++)
+					{
+						shoptypesNamestitle.add(_shoptypesData.get(i).getShopName());
+					}
+				}
+			}
+			catch (Exception e)
+			{
+			}
+			shopDataBinding(shoptypesNamestitle);
+		}
+		shopName_autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
+			{
+				try
+				{
+					if (shoptypesNamestitle.size() != 0)
+					{
+						String selectedName = shopName_autoComplete.getText().toString();
+						Log.e("entryShopName", selectedName);
+						for (int i = 0; i < _shoptypesData.size(); i++)
+						{
+							String availName = _shoptypesData.get(i).getShopName();
+							if (availName.equals(selectedName))
+							{
+								selected_ShopId = _shoptypesData.get(i).getShopId();
+								Log.e("selected_ShopId", selected_ShopId + "");
+								break;
+							}
+						}
+					}
+
+
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	private void clearShopNamesData(final ArrayList<String> shoptypesNamestitles)
+	{
+		shoptypesNamestitles.clear();
+		selected_ShopId = "";
+		_shoptypesData.clear();
+		shopName_autoComplete.setText("");
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shoptypesNamestitle);
+		shopName_autoComplete.setThreshold(1);
+		shopName_autoComplete.setAdapter(adapter);
+		shopName_autoComplete.setTextColor(Color.BLACK);
+		shopName_autoComplete.setTextSize(16);
+	}
+
+	private void shopDataBinding(final ArrayList<String> shoptypesNamestitle)
+	{
+		if (!AvailShopName.isEmpty())
+		{
+			shopName_autoComplete.setText(AvailShopName);
+		}
+		else
+		{
+			selected_ShopId = "";
+			shopName_autoComplete.setText("");
+		}
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shoptypesNamestitle);
+		shopName_autoComplete.setThreshold(1);
+		shopName_autoComplete.setAdapter(adapter);
+		shopName_autoComplete.setTextColor(Color.BLACK);
+		shopName_autoComplete.setTextSize(16);
 	}
 
 
