@@ -195,6 +195,8 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 	ImageView product_addiv;
 
+	EditText availzonenametxt, availroutenoetxt;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -232,6 +234,9 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		paymentSelected.setVisibility(View.GONE);
 		remarksET = (EditText) findViewById(R.id.Remarks_et);
 
+		availzonenametxt = (EditText) findViewById(R.id.availzonenametxt);
+		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
+
 		product_addiv = (ImageView) findViewById(R.id.product_addiv);
 		list_li = (LinearLayout) findViewById(R.id.items_li);
 
@@ -240,12 +245,16 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		selectAreaNameBind();
 		selectOrderStatus();
 
+		availableDetails();
+
 		if (Utility.isOnline(mContext))
 		{
+			HttpAdapter.getAreaDetailsByRoute(Order.this, "areaNameDP", selected_roueId);
 			HttpAdapter.getPayment(Order.this, "payment");
 			HttpAdapter.getOrderStatus(Order.this, "orderStatus");
 			HttpAdapter.getProductCategoryDP(Order.this, "productCategoryName");
-			HttpAdapter.getZoneDetailsDP(Order.this, "zoneName");
+//			HttpAdapter.getZoneDetailsDP(Order.this, "zoneName");
+//			HttpAdapter.getRoutedetails(GetShopsByRoute.this, "routeNoDropDown", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
 			HttpAdapter.GetOrderNumber(Order.this, "GetOrderNumber");
 		}
 		else
@@ -318,6 +327,24 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				}
 			}
 		});
+	}
+
+	private void availableDetails()
+	{
+		selected_zoneId = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ZONEID");
+		selected_roueId = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ROUTEID");
+
+		String availablezonename = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ZONENAME");
+		if (availablezonename != null && !availablezonename.isEmpty())
+		{
+			availzonenametxt.setText(availablezonename);
+		}
+
+		String availableroutename = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ROUTENAME");
+		if (availableroutename != null && !availableroutename.isEmpty())
+		{
+			availroutenoetxt.setText(availableroutename);
+		}
 	}
 
 
@@ -1045,7 +1072,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		String selectedSpinner = "";
 		switch (parent.getId())
 		{
-
 			case R.id.zone_name_spinner:
 				selectedSpinner = "ZONE";
 				dropDownValueSelection(position, _zoneNamesData, selectedSpinner);
@@ -1071,7 +1097,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				selectedSpinner = "PAYMENT_TYPE";
 				dropDownValueSelection(position, _paymentsSelectData, selectedSpinner);
 				break;
-
 		}
 
 	}
@@ -1087,7 +1112,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 					if (selectedSpinner.equals("ZONE"))
 					{
 						selected_zoneId = _dropDownData.get(position - 1).getShopId();
-						HttpAdapter.getRouteDetails(Order.this, "routeName", selected_zoneId);
+						//HttpAdapter.getRouteDetails(Order.this, "routeName", selected_zoneId);
 					}
 					else if (selectedSpinner.equals("ROUTE"))
 					{
@@ -1301,7 +1326,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 							productDP.remove(position - 1);
 							storedProductCategories.remove(position - 1);
 							list.remove(position - 1);
-
 
 						}
 						catch (Exception e)

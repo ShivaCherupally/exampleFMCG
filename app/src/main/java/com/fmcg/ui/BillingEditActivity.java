@@ -67,6 +67,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import static com.fmcg.util.Common.orderNUm;
 
@@ -74,7 +75,7 @@ import static com.fmcg.util.Common.orderNUm;
  * Created by Shiva on 9/24/2017.
  */
 
-public class BillingEditActivity extends AppCompatActivity implements View.OnClickListener, NetworkOperationListener, AdapterView.OnItemSelectedListener
+public class BillingEditActivity extends AppCompatActivity implements View.OnClickListener, NetworkOperationListener, AdapterView.OnItemSelectedListener, View.OnTouchListener
 {
 	public static Activity invoiceActivity;
 	public List<PaymentDropDown> paymentDP;
@@ -159,6 +160,16 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 	String SPINNER_SELECTION = "";
 
 	AutoCompleteTextView shopName_autoComplete;
+	String AvailShopName = "";
+
+	boolean zoneTouchClick = false;
+	boolean routeTouchClick = false;
+	boolean areaTouchClick = false;
+	boolean shopNamesTouchClick = false;
+	boolean orderStatusTouchClick = false;
+	boolean paymentTermsTouchClick = false;
+
+	EditText availzonenametxt, availroutenoetxt;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -171,13 +182,34 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 		tableLayout = (TableLayout) findViewById(R.id.tableRow1);
+		tableLayout.setVisibility(View.GONE);
 
 		category_sp = (Spinner) findViewById(R.id.product_category);
 		orderNumber_sp = (Spinner) findViewById(R.id.order_number);
 
 
+		/*zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
+		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);*/
+
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
+		zone_sp.setVisibility(View.VISIBLE);
+		zone_sp.setEnabled(false);
+		zone_sp.setClickable(false);
+		zone_sp.setBackgroundColor(Color.TRANSPARENT);
 		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
+		routeName_sp.setVisibility(View.VISIBLE);
+		routeName_sp.setBackgroundColor(Color.TRANSPARENT);
+		routeName_sp.setEnabled(false);
+		routeName_sp.setClickable(false);
+
+		availzonenametxt = (EditText) findViewById(R.id.availzonenametxt);
+		availzonenametxt.setVisibility(View.GONE);
+		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
+		availroutenoetxt.setVisibility(View.GONE);
+
+
+
+
 		areaName_sp = (Spinner) findViewById(R.id.areaName_spinner);
 		//shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
 		shopName_autoComplete = (AutoCompleteTextView) findViewById(R.id.shopName_autoComplete);
@@ -294,28 +326,46 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		switch (parent.getId())
 		{
 			case R.id.zone_name_spinner:
-				selectedSpinner = "ZONE";
-				dropDownValueSelection(position, _zoneNamesData, selectedSpinner);
+				if (zoneTouchClick)
+				{
+					AvailShopName = "";
+					selectedSpinner = "ZONE";
+					dropDownValueSelection(position, _zoneNamesData, selectedSpinner);
+				}
 				break;
 			case R.id.routeName_spinner:
-				selectedSpinner = "ROUTE";
-				dropDownValueSelection(position, _routeCodesData, selectedSpinner);
+				if (routeTouchClick)
+				{
+					AvailShopName = "";
+					selectedSpinner = "ROUTE";
+					dropDownValueSelection(position, _routeCodesData, selectedSpinner);
+				}
 				break;
 			case R.id.areaName_spinner:
-				selectedSpinner = "AREA";
-				dropDownValueSelection(position, _areaNamesData, selectedSpinner);
+				if (areaTouchClick)
+				{
+					AvailShopName = "";
+					selectedSpinner = "AREA";
+					dropDownValueSelection(position, _areaNamesData, selectedSpinner);
+				}
 				break;
 			/*case R.id.shopname_spinner:
 				selectedSpinner = "SHOP";
 				dropDownValueSelection(position, _shopNamesData, selectedSpinner);
 				break;*/
 			case R.id.order_status_spinner:
-				selectedSpinner = "ORDER_STATUS";
-				dropDownValueSelection(position, _orderStatusData, selectedSpinner);
+				if (orderStatusTouchClick)
+				{
+					selectedSpinner = "ORDER_STATUS";
+					dropDownValueSelection(position, _orderStatusData, selectedSpinner);
+				}
 				break;
 			case R.id.payment_terms_spinner:
-				selectedSpinner = "PAYMENT_TYPE";
-				dropDownValueSelection(position, _paymentsSelectData, selectedSpinner);
+				if (paymentTermsTouchClick)
+				{
+					selectedSpinner = "PAYMENT_TYPE";
+					dropDownValueSelection(position, _paymentsSelectData, selectedSpinner);
+				}
 				break;
 
 		}
@@ -415,6 +465,46 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		orderNumber_sp.setAdapter(dataAdapter_areaName);
 		//selectShopNameBind();
+	}
+
+	@Override
+	public boolean onTouch(final View v, final MotionEvent event)
+	{
+		switch (v.getId())
+		{
+
+			case R.id.zone_name_spinner:
+				zoneTouchClick = false;
+				routeTouchClick = false;
+				areaTouchClick = false;
+				shopNamesTouchClick = false;
+				break;
+			case R.id.routeName_spinner:
+				zoneTouchClick = false;
+				routeTouchClick = false;
+				areaTouchClick = false;
+				shopNamesTouchClick = false;
+				break;
+			case R.id.areaName_spinner:
+				zoneTouchClick = false;
+				routeTouchClick = false;
+				areaTouchClick = true;
+				shopNamesTouchClick = false;
+				break;
+			case R.id.shopname_spinner:
+				zoneTouchClick = false;
+				routeTouchClick = false;
+				areaTouchClick = false;
+				shopNamesTouchClick = true;
+				break;
+			case R.id.order_status_spinner:
+				orderStatusTouchClick = true;
+				break;
+			case R.id.payment_terms_spinner:
+				paymentTermsTouchClick = true;
+				break;
+		}
+		return false;
 	}
 
 
@@ -589,6 +679,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 
 	private void displayTableView(final List<GetOrderSummary> productDP)
 	{
+		tableLayout.setVisibility(View.VISIBLE);
 		tableLayout.removeAllViews();
 		headers();
 
@@ -1036,77 +1127,107 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 
 	private void dailogBoxAfterSubmit()
 	{
-		promoDialog = new Dialog(this);
-		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		promoDialog.setCancelable(false);
-		promoDialog.setContentView(R.layout.dailog_for_acceptance);
-		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
-		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
-		select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
-
-		promoDialog.show();
-
-		select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+		try
 		{
-			@Override
-			public void onCheckedChanged(final RadioGroup radioGroup, final int i)
-			{
-				switch (i)
-				{
-					case R.id.orderBook:
-						check1 = true;
-						break;
-					case R.id.inovice:
-						check2 = true;
-						break;
+			promoDialog = new Dialog(this);
+			promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+			promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			promoDialog.setCancelable(false);
+			promoDialog.setContentView(R.layout.dailog_for_acceptance);
+			close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
+			alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
+			select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
 
+			promoDialog.show();
+
+			select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+			{
+				@Override
+				public void onCheckedChanged(final RadioGroup radioGroup, final int i)
+				{
+					try
+					{
+						switch (i)
+						{
+							case R.id.orderBook:
+								check1 = true;
+								break;
+							case R.id.inovice:
+								check2 = true;
+								break;
+
+
+						}
+					}
+					catch (Exception e)
+					{
+
+					}
 
 				}
-			}
 
 
-		});
+			});
 
-		close_popup.setOnClickListener(new View.OnClickListener()
+			close_popup.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(final View v)
+				{
+					try
+					{
+						if (promoDialog != null)
+						{
+							promoDialog.dismiss();
+							Util.hideSoftKeyboard(mContext, v);
+							refreshActivity();
+						}
+					}
+					catch (Exception e)
+					{
+
+					}
+
+				}
+			});
+
+			alert_submit.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(final View v)
+				{
+					try
+					{
+						if (check1)
+						{
+							Intent in = new Intent(BillingEditActivity.this, Order.class);
+							Util.killInvoice();
+							startActivity(in);
+						}
+						else if (check2)
+						{
+							Intent inten = new Intent(BillingEditActivity.this, Invoice.class);
+							Util.killInvoice();
+							startActivity(inten);
+						}
+						else
+						{
+							Toast.makeText(mContext, "Please Select Order Book or Invoice", Toast.LENGTH_SHORT).show();
+						}
+					}
+					catch (Exception e)
+					{
+
+					}
+
+				}
+			});
+		}
+		catch (Exception e)
 		{
-			@Override
-			public void onClick(final View v)
-			{
-				if (promoDialog != null)
-				{
-					promoDialog.dismiss();
-					Util.hideSoftKeyboard(mContext, v);
-					refreshActivity();
-				}
-			}
-		});
 
-		alert_submit.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(final View v)
-			{
-				if (check1)
-				{
+		}
 
-					Intent in = new Intent(BillingEditActivity.this, Order.class);
-					Util.killInvoice();
-					startActivity(in);
-				}
-				else if (check2)
-				{
-					Intent inten = new Intent(BillingEditActivity.this, Invoice.class);
-					Util.killInvoice();
-					startActivity(inten);
-				}
-				else
-				{
-					Toast.makeText(mContext, "Please Select Order Book or Invoice", Toast.LENGTH_SHORT).show();
-				}
-
-			}
-		});
 
 	}
 
@@ -1472,6 +1593,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		}
 		SPINNER_SELECTION = "ZONE";
 		adapterDataAssigingToSpinner(zoneNamestitle, SPINNER_SELECTION);
+		autoFillDetails();
 	}
 
 	private void routeNoSpinnerAdapter(JSONArray jsonArray)
@@ -1506,6 +1628,37 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		}
 		SPINNER_SELECTION = "ROUTE";
 		adapterDataAssigingToSpinner(routeNamestitle, SPINNER_SELECTION);
+		if (!zoneTouchClick)
+		{
+			routeName_sp.setSelection(getIndexWithId(routeName_sp, Integer.parseInt(selected_roueId), _routeCodesData), false);
+			HttpAdapter.getAreaDetailsByRoute(BillingEditActivity.this, "areaNameDP", selected_roueId);
+		}
+		else if (!routeTouchClick)
+		{
+			//selectAreaNameBind();
+			selected_areaNameId = "";
+			areaNamestitle.clear();
+			areaNamestitle.add("Select Area Name");
+			shoptypesNamestitle.clear();
+			shopName_autoComplete.setText("");
+			ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+			dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+			areaName_sp.setAdapter(dataAdapter_areaName);
+
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shoptypesNamestitle);
+			shopName_autoComplete.setThreshold(1);
+			shopName_autoComplete.setAdapter(adapter);
+			shopName_autoComplete.setTextColor(Color.BLACK);
+			shopName_autoComplete.setTextSize(16);
+		}
+		else if (zoneTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (routeTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
 	}
 
 	private void areaNameSpinnerAdapter(final JSONArray jsonArray)
@@ -1537,43 +1690,68 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		}
 		SPINNER_SELECTION = "AREA";
 		adapterDataAssigingToSpinner(areaNamestitle, SPINNER_SELECTION);
+		if (zoneTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (routeTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (!zoneTouchClick && !routeTouchClick && !areaTouchClick)
+		{
+			areaName_sp.setSelection(getIndexWithId(areaName_sp, Integer.valueOf(selected_areaNameId), _areaNamesData), false);
+			HttpAdapter.getShopDetailsDP(BillingEditActivity.this, "shopName", selected_areaNameId);
+		}
 	}
 
 	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
 	{
 		Log.e("shopNamesDropdown", jsonArray.toString() + "");
-		try
+		if (zoneTouchClick)
 		{
-			_shopNamesData.clear();
-			shooNamestitle.clear();
-			_shopNamesData = new ArrayList<ShopNamesData>();
-			for (int i = 0; i < jsonArray.length(); i++)
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else if (routeTouchClick)
+		{
+			clearShopNamesData(shoptypesNamestitle);
+		}
+		else
+		{
+			try
 			{
-				JSONObject jsnobj = jsonArray.getJSONObject(i);
-				String shopId = jsnobj.getString("ShopId");
-				String shopNamee = jsnobj.getString("ShopName");
-				_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
-			}
-			//shooNamestitle.add("Select Shop Name");
-			if (_shopNamesData.size() > 0)
-			{
-				for (int i = 0; i < _shopNamesData.size(); i++)
+				_shopNamesData.clear();
+				shooNamestitle.clear();
+				_shopNamesData = new ArrayList<ShopNamesData>();
+				for (int i = 0; i < jsonArray.length(); i++)
 				{
-					shooNamestitle.add(_shopNamesData.get(i).getShopName());
+					JSONObject jsnobj = jsonArray.getJSONObject(i);
+					String shopId = jsnobj.getString("ShopId");
+					String shopNamee = jsnobj.getString("ShopName");
+					_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
+				}
+				//shooNamestitle.add("Select Shop Name");
+				if (_shopNamesData.size() > 0)
+				{
+					for (int i = 0; i < _shopNamesData.size(); i++)
+					{
+						shooNamestitle.add(_shopNamesData.get(i).getShopName());
+					}
 				}
 			}
-		}
-		catch (Exception e)
-		{
+			catch (Exception e)
+			{
+			}
+			shopDataBinding(shoptypesNamestitle);
 		}
 		/*SPINNER_SELECTION = "SHOP";
 		adapterDataAssigingToSpinner(shooNamestitle, SPINNER_SELECTION);*/
 
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
+		/*ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
 		shopName_autoComplete.setThreshold(1);
 		shopName_autoComplete.setAdapter(adapter);
 		shopName_autoComplete.setTextColor(Color.BLACK);
-		shopName_autoComplete.setTextSize(16);
+		shopName_autoComplete.setTextSize(16);*/
 
 		shopName_autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener()
 		{
@@ -1732,5 +1910,136 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		}
 
 
+	}
+
+	private void autoFillDetails()
+	{
+		try
+		{
+			if (SharedPrefsUtil.getStringPreference(mContext, "KEY_DESCRIPTION") != null && !SharedPrefsUtil.getStringPreference(mContext, "KEY_DESCRIPTION").isEmpty())
+			{
+				remarksET.setText(SharedPrefsUtil.getStringPreference(mContext, "KEY_DESCRIPTION") + "");
+			}
+
+			if (SharedPrefsUtil.getStringPreference(mContext, "KEY_PAYMENT_ID") != null && !SharedPrefsUtil.getStringPreference(mContext, "KEY_PAYMENT_ID").isEmpty())
+			{
+				selected_paymentTermsId = SharedPrefsUtil.getStringPreference(mContext, "KEY_PAYMENT_ID");
+			}
+			else
+			{
+				selected_paymentTermsId = "2";
+			}
+			Log.e("selected_paymentTermsId", selected_paymentTermsId);
+			selected_zoneId = SharedPrefsUtil.getStringPreference(mContext, "KEY_ZONE_ID");// String.valueOf(zoneId);
+			Log.e("selected_zoneId", selected_zoneId);
+			selected_roueId = SharedPrefsUtil.getStringPreference(mContext, "KEY_ROUTE_ID");
+			selected_areaNameId = SharedPrefsUtil.getStringPreference(mContext, "KEY_AREANAME_ID");
+			selected_ShopId = SharedPrefsUtil.getStringPreference(mContext, "KEY_SHOP_ID");
+
+			if (selected_ShopId != null && !selected_ShopId.isEmpty())
+			{
+				HttpAdapter.getOrderNumberDp(BillingEditActivity.this, "orderNumber", selected_ShopId);
+			}
+
+
+			AvailShopName = SharedPrefsUtil.getStringPreference(mContext, "KEY_SHOP_NAME");
+			selected_orderStatusId = SharedPrefsUtil.getStringPreference(mContext, "KEY_ORDER_STATUS_ID");
+			Log.e("AvailShopName", AvailShopName);
+			Log.e("selected_orderStatusId", selected_orderStatusId);
+
+
+			if (selected_zoneId != null && !selected_zoneId.isEmpty())
+			{
+				zone_sp.setSelection(getIndexWithId(zone_sp, Integer.parseInt(selected_zoneId), _zoneNamesData), false);
+				HttpAdapter.getRouteDetails(BillingEditActivity.this, "routeName", selected_zoneId);
+			}
+			if (selected_paymentTermsId != null && !selected_paymentTermsId.equals("0") && !selected_paymentTermsId.equalsIgnoreCase("null"))
+			{
+				if (_paymentsSelectData.size() > 0)
+				{
+					payment_sp.setSelection(getIndexWithId(payment_sp, Integer.parseInt(selected_paymentTermsId), _paymentsSelectData), false);
+				}
+			}
+
+			if (selected_orderStatusId != null && !selected_orderStatusId.equals("0") && !selected_orderStatusId.equalsIgnoreCase("null"))
+			{
+				if (_orderStatusData.size() > 0)
+				{
+					orderStatus_sp.setSelection(getIndexWithId(orderStatus_sp, Integer.parseInt(selected_orderStatusId), _orderStatusData), false);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+
+	}
+
+	private int getIndexWithId(Spinner spinner, int searchId, ArrayList<ShopNamesData> _availbleDropDownData)
+	{
+		int searchIdIndex = 0;
+		try
+		{
+			if (searchId == 0)
+			{
+				searchIdIndex = -1;
+				return -1; // Not found
+			}
+			else
+			{
+				for (int i = 0; i < spinner.getCount(); i++)
+				{
+					String avaliableListDataid = _availbleDropDownData.get(i).getShopId();
+					if (avaliableListDataid.equals(String.valueOf(searchId)))
+					{
+						searchIdIndex = i + 1;
+						Log.e("availbleId", _availbleDropDownData.get(i).getShopId() + "");
+						return searchIdIndex;
+					}
+				}
+
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+
+		}
+		return searchIdIndex; // Not found
+	}
+
+	private void clearShopNamesData(final ArrayList<String> shoptypesNamestitles)
+	{
+		shoptypesNamestitles.clear();
+		selected_ShopId = "";
+		_shoptypesData.clear();
+		shopName_autoComplete.setText("");
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shoptypesNamestitle);
+		shopName_autoComplete.setThreshold(1);
+		shopName_autoComplete.setAdapter(adapter);
+		shopName_autoComplete.setTextColor(Color.BLACK);
+		shopName_autoComplete.setTextSize(16);
+	}
+
+	private void shopDataBinding(final ArrayList<String> shoptypesNamestitle)
+	{
+		if (!AvailShopName.isEmpty())
+		{
+			shopName_autoComplete.setText(AvailShopName);
+		}
+		else
+		{
+			selected_ShopId = "";
+			shopName_autoComplete.setText("");
+		}
+
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shoptypesNamestitle);
+		shopName_autoComplete.setThreshold(1);
+		shopName_autoComplete.setAdapter(adapter);
+		shopName_autoComplete.setTextColor(Color.BLACK);
+		shopName_autoComplete.setTextSize(16);
 	}
 }

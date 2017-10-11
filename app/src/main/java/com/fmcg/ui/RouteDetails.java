@@ -351,6 +351,18 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 						employeeRoutId = String.valueOf(singleStudent.getRouteId());
 						selectedrouteNos.put(String.valueOf(singleStudent.getRouteId()).toString());
 
+						String selectedzoneName = singleStudent.getZoneName();
+						Log.e("selectedzoneName", selectedzoneName);
+						if (selectedzoneName != null && !selectedzoneName.isEmpty())
+						{
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONEID", String.valueOf(singleStudent.getZoneId()));
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONENAME", selectedzoneName);
+							Log.e("selectedrouteName", singleStudent.getRouteName());
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTENAME", singleStudent.getRouteName());
+							Log.e("selectedrouteId", String.valueOf(singleStudent.getRouteId()));
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTEID", String.valueOf(singleStudent.getRouteId()));
+						}
+
 					}
 					else
 					{
@@ -613,16 +625,27 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 			{
 				for (int i = 0; i < jsonArray.length(); i++)
 				{
+					int ZoneId = 0;
 					String ZoneName = "";
 					String RouteNumber = "";
 					String TargetAmount = "";
 					String RouteAcceptFlag = "";
 					boolean isChecked = false;
 					JSONObject jObj = jsonArray.getJSONObject(i);
+					Log.e("AssignData", jObj.toString());
 					int RouteId = jObj.getInt("EmployeeRouteId"); //EmployeeRouteId
 					if (jObj.getString("ZoneName") != null && !jObj.getString("ZoneName").equalsIgnoreCase("null"))
 					{
 						ZoneName = jObj.getString("ZoneName");
+						try
+						{
+							ZoneId = jObj.getInt("ZoneId");
+						}
+						catch (Exception e)
+						{
+
+						}
+
 					}
 
 					if (jObj.getString("RouteNumber") != null && !jObj.getString("RouteNumber").equalsIgnoreCase("null"))
@@ -657,7 +680,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 						}
 
 					}
-					_routeDetailsData.add(new RouteDetailsData(RouteId, ZoneName, RouteNumber, TargetAmount, isChecked));
+					_routeDetailsData.add(new RouteDetailsData(ZoneId, RouteId, ZoneName, RouteNumber, TargetAmount, isChecked));
 
 				}
 
@@ -849,6 +872,18 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					RouteDetailsData singleStudent = stList.get(i);
 					if (singleStudent.isSelected() == true)
 					{
+						String selectedzoneName = singleStudent.getZoneName();
+						Log.e("selectedzoneName", selectedzoneName);
+						if (selectedzoneName != null && !selectedzoneName.isEmpty())
+						{
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONEID", String.valueOf(singleStudent.getZoneId()));
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONENAME", selectedzoneName);
+							Log.e("selectedrouteName", singleStudent.getRouteName());
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTENAME", singleStudent.getRouteName());
+							Log.e("selectedrouteId", String.valueOf(singleStudent.getRouteId()));
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTEID", String.valueOf(singleStudent.getRouteId()));
+						}
+
 						data = data + "\n" + String.valueOf(singleStudent.getRouteId()).toString();
 						employeeRoutId = String.valueOf(singleStudent.getRouteId());
 						selectedrouteNos.put(String.valueOf(singleStudent.getRouteId()).toString());

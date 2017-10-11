@@ -56,7 +56,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:visibility="gone"
                     />
+
+                <EditText
+                    android:id="@+id/availzonenametxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/empty"
+                    android:clickable="false"
+                    android:hint="Zone Name"
+                    android:padding="@dimen/eigth"
+                    android:textColor="@color/HeaderColor"
+                    />
+
             </LinearLayout>
 
             <LinearLayout
@@ -74,7 +88,20 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:hint="Route Name"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:visibility="gone"/>
+
+                <EditText
+                    android:id="@+id/availroutenoetxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/empty"
+                    android:clickable="false"
+                    android:hint="Route No"
+                    android:padding="@dimen/eigth"
+                    android:textColor="@color/HeaderColor"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -338,15 +365,15 @@
             android:clickable="true"
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true"
-            android:textStyle="bold"
-
-            android:textAllCaps="true"
-            android:text="@string/submit"
             android:gravity="center"
 
-
+            android:text="@string/submit"
+            android:textAllCaps="true"
             android:textColor="@color/white"
+
+
             android:textSize="16sp"
+            android:textStyle="bold"
             />
     </LinearLayout>
 </RelativeLayout>

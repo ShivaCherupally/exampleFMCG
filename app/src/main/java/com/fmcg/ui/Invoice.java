@@ -191,6 +191,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	String SPINNER_SELECTION = "";
 
 	AutoCompleteTextView shopName_autoComplete;
+	EditText availzonenametxt, availroutenoetxt;
 
 
 	@Override
@@ -236,11 +237,17 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		cancel = (TextView) findViewById(R.id.cancel);
 		list_li = (LinearLayout) findViewById(R.id.items_li);
 
+		availzonenametxt = (EditText) findViewById(R.id.availzonenametxt);
+		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
+
+		availableDetails();
+
 		HttpAdapter.getPayment(Invoice.this, "payment");
 		HttpAdapter.getOrderStatus(Invoice.this, "orderStatus");
 		HttpAdapter.getProductCategoryDP(Invoice.this, "productCategoryName");
-		HttpAdapter.getZoneDetailsDP(Invoice.this, "zoneName");
-		HttpAdapter.getRoute(Invoice.this, "routeCode");
+//		HttpAdapter.getZoneDetailsDP(Invoice.this, "zoneName");
+		HttpAdapter.getAreaDetailsByRoute(Invoice.this, "areaNameDP", selected_roueId);
+//		HttpAdapter.getRoute(Invoice.this, "routeCode");
 		HttpAdapter.GetInvoiceNumber(Invoice.this, "GetInvoiceNumber");
 
 
@@ -380,7 +387,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					if (selectedSpinner.equals("ZONE"))
 					{
 						selected_zoneId = _dropDownData.get(position - 1).getShopId();
-						HttpAdapter.getRouteDetails(Invoice.this, "routeName", selected_zoneId);
+//						HttpAdapter.getRouteDetails(Invoice.this, "routeName", selected_zoneId);
 					}
 					else if (selectedSpinner.equals("ROUTE"))
 					{
@@ -1761,6 +1768,24 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		}
 
 
+	}
+
+	private void availableDetails()
+	{
+		selected_zoneId = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ZONEID");
+		selected_roueId = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ROUTEID");
+
+		String availablezonename = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ZONENAME");
+		if (availablezonename != null && !availablezonename.isEmpty())
+		{
+			availzonenametxt.setText(availablezonename);
+		}
+
+		String availableroutename = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ROUTENAME");
+		if (availableroutename != null && !availableroutename.isEmpty())
+		{
+			availroutenoetxt.setText(availableroutename);
+		}
 	}
 
 	public static class DatePickerFragmentDailog extends DialogFragment

@@ -6,6 +6,7 @@ package com.fmcg.models;
 
 public class ShopNamesData
 {
+
 	public String shopId;
 	public String ShopName;
 

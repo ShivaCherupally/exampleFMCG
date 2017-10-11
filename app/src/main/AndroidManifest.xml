@@ -27,7 +27,6 @@
         <activity
             android:name="com.fmcg.ui.Splashscreen"
             android:theme="@style/AppBaseTheme"
-
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

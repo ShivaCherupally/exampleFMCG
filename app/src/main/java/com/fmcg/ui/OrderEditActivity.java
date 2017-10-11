@@ -40,21 +40,30 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fmcg.Dotsoft.BuildConfig;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
 import com.fmcg.models.GetAreaDetails;
 import com.fmcg.models.GetProductCategory;
-import com.fmcg.models.GetProductCategoryInOrderUpdate;
 import com.fmcg.models.GetRouteDetails;
-import com.fmcg.models.GetRouteDropDown;
-import com.fmcg.models.GetShopDetailsDP;
 import com.fmcg.models.GetZoneDetails;
-import com.fmcg.models.OrderStatusDropdown;
-import com.fmcg.models.PaymentDropDown;
 import com.fmcg.models.ShopNamesData;
 import com.fmcg.network.HttpAdapter;
 import com.fmcg.network.NetworkOperationListener;
@@ -75,14 +84,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import static com.fmcg.util.Common.orderNUmberString;
-import static com.fmcg.util.SharedPrefsUtil.getStringPreference;
 
 /**
  * Created by Shiva on 9/22/2017.
@@ -136,6 +143,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 	private Dialog promoDialog;
 	private ImageView close_popup;
 	RadioGroup select_option_radio_grp;
+	RadioButton orderBook;
 	Button alert_submit;
 	boolean check1 = false;
 	boolean check2 = false;
@@ -176,6 +184,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 	String AvailShopName = "";
 
 	AutoCompleteTextView shopName_autoComplete;
+	String selectedName = "";
 
 	ImageView product_addiv;
 
@@ -185,6 +194,8 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 	boolean shopNamesTouchClick = false;
 	boolean orderStatusTouchClick = false;
 	boolean paymentTermsTouchClick = false;
+
+	EditText availzonenametxt, availroutenoetxt;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -200,9 +211,24 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		tableLayout.setVisibility(View.GONE);
 
 		category_sp = (Spinner) findViewById(R.id.product_category);
-
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
+		((TextView) zone_sp.getChildAt(0)).setTextColor(getResources().getColor(R.color.HeaderColor));
+		zone_sp.setVisibility(View.VISIBLE);
+		zone_sp.setEnabled(false);
+		zone_sp.setClickable(false);
+		zone_sp.setBackgroundColor(Color.TRANSPARENT);
 		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
+		((TextView) routeName_sp.getChildAt(0)).setTextColor(getResources().getColor(R.color.HeaderColor));
+		routeName_sp.setVisibility(View.VISIBLE);
+		routeName_sp.setBackgroundColor(Color.TRANSPARENT);
+		routeName_sp.setEnabled(false);
+		routeName_sp.setClickable(false);
+
+		availzonenametxt = (EditText) findViewById(R.id.availzonenametxt);
+		availzonenametxt.setVisibility(View.GONE);
+		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
+		availroutenoetxt.setVisibility(View.GONE);
+
 		areaName_sp = (Spinner) findViewById(R.id.areaName_spinner);
 //		shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
 		orderStatus_sp = (Spinner) findViewById(R.id.order_status_spinner);
@@ -755,6 +781,15 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
 					{
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_ZONE_ID", selected_zoneId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_ROUTE_ID", selected_roueId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_AREANAME_ID", selected_areaNameId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_NAME", shopName_autoComplete.getText().toString());
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_PAYMENT_ID", selected_paymentTermsId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_ORDER_STATUS_ID", selected_orderStatusId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_DESCRIPTION", remarksET.getText().toString());
+
 						Toast.makeText(mContext, "Successfully Your Order Booked.", Toast.LENGTH_SHORT).show();
 						Toast.makeText(mContext, "Your Order Number is " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
 						dailogBoxAfterSubmit();
@@ -1022,7 +1057,6 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		String selectedSpinner = "";
 		switch (parent.getId())
 		{
-
 			case R.id.zone_name_spinner:
 				if (zoneTouchClick)
 				{
@@ -1144,14 +1178,14 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		switch (v.getId())
 		{
 			case R.id.zone_name_spinner:
-				zoneTouchClick = true;
+				zoneTouchClick = false;
 				routeTouchClick = false;
 				areaTouchClick = false;
 				shopNamesTouchClick = false;
 				break;
 			case R.id.routeName_spinner:
 				zoneTouchClick = false;
-				routeTouchClick = true;
+				routeTouchClick = false;
 				areaTouchClick = false;
 				shopNamesTouchClick = false;
 				break;
@@ -1657,8 +1691,10 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
 		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
 		select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
-
+		orderBook = (RadioButton) promoDialog.findViewById(R.id.orderBook);
+		orderBook.setVisibility(View.GONE);
 		promoDialog.show();
+
 
 		select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
 		{
@@ -1702,14 +1738,13 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 			{
 				if (check1)
 				{
-
-					Intent in = new Intent(OrderEditActivity.this, Order.class);
+					Intent in = new Intent(OrderEditActivity.this, BillingEditActivity.class);
 					Util.killorderBook();
 					startActivity(in);
 				}
 				else if (check2)
 				{
-					Intent inten = new Intent(OrderEditActivity.this, Invoice.class);
+					Intent inten = new Intent(OrderEditActivity.this, BillingEditActivity.class);
 					Util.killorderBook();
 					startActivity(inten);
 				}
@@ -2309,7 +2344,8 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 				{
 					if (shoptypesNamestitle.size() != 0)
 					{
-						String selectedName = shopName_autoComplete.getText().toString();
+						selectedName = shopName_autoComplete.getText().toString();
+						AvailShopName = selectedName;
 						Log.e("entryShopName", selectedName);
 						for (int i = 0; i < _shoptypesData.size(); i++)
 						{
@@ -2321,6 +2357,10 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 								break;
 							}
 						}
+					}
+					else
+					{
+						selectedName = "";
 					}
 
 

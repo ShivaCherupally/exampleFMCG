@@ -6,6 +6,7 @@ package com.fmcg.models;
 
 public class RouteDetailsData
 {
+	private int zoneId;
 	private int routeId;
 	private String zoneName;
 	private String routeName;
@@ -13,13 +14,27 @@ public class RouteDetailsData
 	private boolean isSelected;
 
 
-	public RouteDetailsData(final int routeId, final String zoneName, final String routeName, final String targetAmount, final boolean isSelected)
+
+
+	public RouteDetailsData(final int zoneId, final int routeId, final String zoneName, final String routeName, final String targetAmount, final boolean isSelected)
 	{
+		this.zoneId = zoneId;
 		this.routeId = routeId;
 		this.zoneName = zoneName;
 		this.routeName = routeName;
 		this.targetAmount = targetAmount;
 		this.isSelected = isSelected;
+
+	}
+
+	public int getZoneId()
+	{
+		return zoneId;
+	}
+
+	public void setZoneId(final int zoneId)
+	{
+		this.zoneId = zoneId;
 	}
 
 	public int getRouteId()
