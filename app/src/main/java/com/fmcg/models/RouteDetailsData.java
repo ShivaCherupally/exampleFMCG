@@ -14,9 +14,9 @@ public class RouteDetailsData
 	private boolean isSelected;
 
 
-
-
-	public RouteDetailsData(final int zoneId, final int routeId, final String zoneName, final String routeName, final String targetAmount, final boolean isSelected)
+	public RouteDetailsData(final int zoneId, final int routeId,
+	                        final String zoneName, final String routeName,
+	                        final String targetAmount, final boolean isSelected)
 	{
 		this.zoneId = zoneId;
 		this.routeId = routeId;

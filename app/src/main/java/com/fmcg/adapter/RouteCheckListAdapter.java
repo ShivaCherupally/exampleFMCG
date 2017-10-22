@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,8 @@ import android.widget.Toast;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
 import com.fmcg.models.RouteDetailsData;
-import com.fmcg.util.SharedPrefsUtil;
+import com.fmcg.ui.OrderBookList;
+import com.fmcg.ui.RouteDetails;
 
 import java.util.List;
 
@@ -25,11 +25,15 @@ import java.util.List;
 public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAdapter.ViewHolder>
 {
 	Context mContext;
+	int selected_position = -1;
 
 	private List<RouteDetailsData> stList;
+	private RouteDetails mActivity;
 
-	public RouteCheckListAdapter(List<RouteDetailsData> students)
+
+	public RouteCheckListAdapter(RouteDetails activity, List<RouteDetailsData> students)
 	{
+		mActivity = activity;
 		this.stList = students;
 
 	}
@@ -52,7 +56,7 @@ public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAd
 	}
 
 	@Override
-	public void onBindViewHolder(ViewHolder viewHolder, int position)
+	public void onBindViewHolder(ViewHolder viewHolder, final int position)
 	{
 
 		final int pos = position;
@@ -68,6 +72,8 @@ public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAd
 		{
 			viewHolder.tvTargetAmount.setText("Purpose : " + stList.get(position).getTargetAmount());
 		}
+
+
 
 		/*String zoneName = "Driver is nearby "
 				+ "<font color=\"#E72A02\"><bold>"
@@ -95,8 +101,26 @@ public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAd
 
 		//	viewHolder.tvZoneName.setText(Html.fromHtml(zoneName));
 
-		viewHolder.chkSelected.setChecked(stList.get(position).isSelected());
-		viewHolder.chkSelected.setTag(stList.get(position));
+
+		if (stList.get(position).isSelected())
+		{
+			viewHolder.chkSelected.setChecked(stList.get(position).isSelected());
+			viewHolder.chkSelected.setTag(stList.get(position));
+		}
+		else
+		{
+			if (selected_position == position)
+			{
+				viewHolder.chkSelected.setChecked(true);
+				viewHolder.chkSelected.setTag(stList.get(position));
+			}
+			else
+			{
+				viewHolder.chkSelected.setChecked(false);
+				viewHolder.chkSelected.setTag(stList.get(position));
+			}
+		}
+
 
 
 
@@ -124,7 +148,7 @@ public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAd
 			}
 		});*/
 
-		viewHolder.chkSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+		/*viewHolder.chkSelected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
 			@Override
 			public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked)
@@ -146,24 +170,59 @@ public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAd
 				else
 				{
 					cb.setClickable(true);
-					/*contact.setSelected(true);
+					*//*contact.setSelected(true);
 					cb.setChecked(true);
-					stList.get(pos).setSelected(true);*/
+					stList.get(pos).setSelected(true);*//*
 					contact.setSelected(cb.isChecked());
 					stList.get(pos).setSelected(cb.isChecked());
 
 				}
 
 //				}
-				/*else
+				*//*else
 				{
 					CheckBox cb = (CheckBox) buttonView;
 					RouteDetailsData contact = (RouteDetailsData) cb.getTag();
 					contact.setSelected(false);
 					stList.get(pos).setSelected(false);
-				}*/
+				}*//*
 
 
+			}
+		});*/
+
+		viewHolder.chkSelected.setOnClickListener(new View.OnClickListener()
+		{
+
+			@Override
+			public void onClick(View view)
+			{
+				if (((CheckBox) view).isChecked())
+				{
+
+					for (int i = 0; i < stList.size(); i++)
+					{
+						if (i == position)
+						{
+							selected_position = position;
+							stList.get(position).setSelected(true);
+						}
+						else
+						{
+							selected_position = -1;
+							stList.get(i).setSelected(false);
+						}
+					}
+
+//					selected_position = position;
+//					stList.get(position).setSelected(true);
+				}
+				else
+				{
+//					selected_position = -1;
+//					stList.get(position).setSelected(false);
+				}
+				mActivity.routeDetailChanger();
 			}
 		});
 
@@ -194,6 +253,7 @@ public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAd
 			tvRouteName = (TextView) itemLayoutView.findViewById(R.id.tvRouteName);
 			tvTargetAmount = (TextView) itemLayoutView.findViewById(R.id.tvTargetAmount);
 			chkSelected = (CheckBox) itemLayoutView.findViewById(R.id.chkSelected);
+
 
 		}
 

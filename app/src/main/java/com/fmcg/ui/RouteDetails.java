@@ -333,7 +333,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		try
 		{
 			String data = "";
-			JSONArray selectedrouteNos = new JSONArray();
+			JSONArray checkedRoute = new JSONArray();
 			List<RouteDetailsData> stList = ((RouteCheckListAdapter) mAdapter).getStudentist();
 
 			String alreadyAccessList = Arrays.toString(stList.toArray());
@@ -349,7 +349,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					{
 						data = data + "\n" + String.valueOf(singleStudent.getRouteId()).toString();
 						employeeRoutId = String.valueOf(singleStudent.getRouteId());
-						selectedrouteNos.put(String.valueOf(singleStudent.getRouteId()).toString());
+						checkedRoute.put(String.valueOf(singleStudent.getRouteId()));
 
 						String selectedzoneName = singleStudent.getZoneName();
 						Log.e("selectedzoneName", selectedzoneName);
@@ -362,7 +362,6 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 							Log.e("selectedrouteId", String.valueOf(singleStudent.getRouteId()));
 							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTEID", String.valueOf(singleStudent.getRouteId()));
 						}
-
 					}
 					else
 					{
@@ -373,18 +372,15 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				}
 				if (employeeRoutId != null && !employeeRoutId.isEmpty())
 				{
-					String selcetdRoutesStr = selectedrouteNos.toString();
-					Log.e("selcetdRoutesJSONARRay", selcetdRoutesStr + "");
-					selcetdRoutesStr = selcetdRoutesStr.replace("[", "");
-					selcetdRoutesStr = selcetdRoutesStr.replace("]", "");
-					selcetdRoutesStr = selcetdRoutesStr.replaceAll("\"", "");
-					selcetdRoutesStr = selcetdRoutesStr.replaceAll("\"", "");
+					String checkedRouteAfterreplace = checkedRoute.toString();
 
-					Log.e("selcetdRoutesStr", selcetdRoutesStr + "");
+					checkedRouteAfterreplace = checkedRouteAfterreplace.replace("[", "");
+					checkedRouteAfterreplace = checkedRouteAfterreplace.replace("]", "");
+					checkedRouteAfterreplace = checkedRouteAfterreplace.replaceAll("\"", "");
+					checkedRouteAfterreplace = checkedRouteAfterreplace.replaceAll("\"", "");
 
-//				String jsonString = new Gson().toJson(insertRouteIds(selcetdRoutesStr));
-//				Log.d("jsonString", jsonString);
-					HttpAdapter.routeAccept(RouteDetails.this, "acceptRoute", selcetdRoutesStr);
+					Log.e("checkedRouteId", checkedRouteAfterreplace + "");
+					HttpAdapter.routeAccept(RouteDetails.this, "acceptRoute", checkedRouteAfterreplace);
 				}
 				else
 				{
@@ -633,7 +629,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					boolean isChecked = false;
 					JSONObject jObj = jsonArray.getJSONObject(i);
 					Log.e("AssignData", jObj.toString());
-					int RouteId = jObj.getInt("EmployeeRouteId"); //EmployeeRouteId
+					int RouteId = jObj.getInt("RouteId"); //EmployeeRouteId
 					if (jObj.getString("ZoneName") != null && !jObj.getString("ZoneName").equalsIgnoreCase("null"))
 					{
 						ZoneName = jObj.getString("ZoneName");
@@ -680,8 +676,9 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 						}
 
 					}
-					_routeDetailsData.add(new RouteDetailsData(ZoneId, RouteId, ZoneName, RouteNumber, TargetAmount, isChecked));
-
+					_routeDetailsData.add(new RouteDetailsData(ZoneId, RouteId, ZoneName,
+					                                           RouteNumber, TargetAmount,
+					                                           isChecked));
 				}
 
 				adapterAssigning(_routeDetailsData);
@@ -710,7 +707,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 			mRecyclerView = (RecyclerView) findViewById(R.id.routeRecyclerView);
 			mRecyclerView.setHasFixedSize(true);
 			mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-			mAdapter = new RouteCheckListAdapter(_routeDetailsData);
+			mAdapter = new RouteCheckListAdapter(this, _routeDetailsData);
 			mRecyclerView.setAdapter(mAdapter);
 			acceptLLID.setVisibility(View.GONE);
 			checkRouteNosChecking();
@@ -831,7 +828,6 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		{
 			ja.put(obj);
 		}
-
 		return ja;
 	}*/
 
@@ -858,7 +854,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		try
 		{
 			String data = "";
-			JSONArray selectedrouteNos = new JSONArray();
+			JSONArray selectedrouteNoDb = new JSONArray();
 			List<RouteDetailsData> stList = ((RouteCheckListAdapter) mAdapter).getStudentist();
 
 			String alreadyAccessList = Arrays.toString(stList.toArray());
@@ -876,7 +872,26 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 						Log.e("selectedzoneName", selectedzoneName);
 						if (selectedzoneName != null && !selectedzoneName.isEmpty())
 						{
-							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONEID", String.valueOf(singleStudent.getZoneId()));
+							String zoneidtemp = "";
+
+							if (selectedzoneName.equals("A"))
+							{
+								zoneidtemp = "1";
+							}
+							else if (selectedzoneName.equals("B"))
+							{
+								zoneidtemp = "2";
+							}
+							else if (selectedzoneName.equals("C"))
+							{
+								zoneidtemp = "3";
+							}
+							else if (selectedzoneName.equals("D"))
+							{
+								zoneidtemp = "4";
+							}
+
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONEID", zoneidtemp);
 							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONENAME", selectedzoneName);
 							Log.e("selectedrouteName", singleStudent.getRouteName());
 							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTENAME", singleStudent.getRouteName());
@@ -886,7 +901,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 
 						data = data + "\n" + String.valueOf(singleStudent.getRouteId()).toString();
 						employeeRoutId = String.valueOf(singleStudent.getRouteId());
-						selectedrouteNos.put(String.valueOf(singleStudent.getRouteId()).toString());
+						selectedrouteNoDb.put(String.valueOf(singleStudent.getRouteId()).toString());
 						SharedPrefsUtil.setStringPreference(mContext, "PLAN_STARTED", "ACCEPTED");
 					}
 					else
@@ -896,7 +911,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				}
 				if (employeeRoutId != null && !employeeRoutId.isEmpty())
 				{
-					String selcetdRoutesStr = selectedrouteNos.toString();
+					String selcetdRoutesStr = selectedrouteNoDb.toString();
 					Log.e("selcetdRoutesJSONARRay", selcetdRoutesStr + "");
 					selcetdRoutesStr = selcetdRoutesStr.replace("[", "");
 					selcetdRoutesStr = selcetdRoutesStr.replace("]", "");
@@ -914,5 +929,10 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		{
 
 		}
+	}
+
+	public void routeDetailChanger()
+	{
+		mAdapter.notifyDataSetChanged(); //update adapter
 	}
 }

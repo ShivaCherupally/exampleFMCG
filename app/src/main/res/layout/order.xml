@@ -66,6 +66,8 @@
                     android:layout_gravity="center_vertical"
                     android:background="@color/empty"
                     android:clickable="false"
+                    android:editable="false"
+                    android:focusable="false"
                     android:hint="Zone Name"
                     android:padding="@dimen/eigth"
                     android:textColor="@color/HeaderColor"
@@ -97,8 +99,11 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
                     android:background="@color/empty"
-                    android:clickable="false"
                     android:hint="Route No"
+                    android:editable="false"
+                    android:focusable="false"
+                    android:clickable="false"
+
                     android:padding="@dimen/eigth"
                     android:textColor="@color/HeaderColor"
                     />

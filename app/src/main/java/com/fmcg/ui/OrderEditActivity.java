@@ -212,13 +212,13 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 
 		category_sp = (Spinner) findViewById(R.id.product_category);
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
-		((TextView) zone_sp.getChildAt(0)).setTextColor(getResources().getColor(R.color.HeaderColor));
+//		((TextView) zone_sp.getChildAt(0)).setTextColor(getResources().getColor(R.color.HeaderColor));
 		zone_sp.setVisibility(View.VISIBLE);
 		zone_sp.setEnabled(false);
 		zone_sp.setClickable(false);
 		zone_sp.setBackgroundColor(Color.TRANSPARENT);
 		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
-		((TextView) routeName_sp.getChildAt(0)).setTextColor(getResources().getColor(R.color.HeaderColor));
+//		((TextView) routeName_sp.getChildAt(0)).setTextColor(getResources().getColor(R.color.HeaderColor));
 		routeName_sp.setVisibility(View.VISIBLE);
 		routeName_sp.setBackgroundColor(Color.TRANSPARENT);
 		routeName_sp.setEnabled(false);
@@ -2107,12 +2107,16 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 
 		if (spinnerSelction.equals("ZONE"))
 		{
-			zone_sp.setAdapter(dataAdapter);
+            ArrayAdapter<String> zonedataAdapter = new ArrayAdapter<String>(this, R.layout.spinneroneitem, spinnerTitles);
+			zonedataAdapter.setDropDownViewResource(R.layout.list_item);
+			zone_sp.setAdapter(zonedataAdapter);
 			autoFillDetails();
 		}
 		else if (spinnerSelction.equals("ROUTE"))
 		{
-			routeName_sp.setAdapter(dataAdapter);
+			ArrayAdapter<String> routedataAdapter = new ArrayAdapter<String>(this, R.layout.spinneroneitem, spinnerTitles);
+			routedataAdapter.setDropDownViewResource(R.layout.list_item);
+			routeName_sp.setAdapter(routedataAdapter);
 		}
 		else if (spinnerSelction.equals("AREA"))
 		{

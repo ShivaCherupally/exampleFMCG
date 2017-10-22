@@ -276,6 +276,8 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(GETROUTEDETAILS_BYEMPLOYEE + "?EmployeeId=" + empId, METHOD_GET, "NONE");
+//		operation.execute("http://www.mocky.io/v2/59de74921000002613a85156", METHOD_GET, "NONE");
+		//
 	}
 
 	public static void getZoneDetailsDP(NetworkOperationListener listener, Object tag)
