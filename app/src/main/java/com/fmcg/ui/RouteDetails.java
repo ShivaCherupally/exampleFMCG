@@ -68,7 +68,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 	private Button acceptBtn, resetBtn;
 
 
-	////Route Number 
+	////Route Number
 	ArrayList<ShopNamesData> _routeCodesData = new ArrayList<ShopNamesData>(); //Route Drop Down
 	ArrayList<String> routeNamestitle = new ArrayList<String>();
 	String employeeRoutId = "";
@@ -140,8 +140,8 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		String accepted = SharedPrefsUtil.getStringPreference(mContext, "PLAN_STARTED");
 		if (accepted != null && !accepted.isEmpty())
 		{
-			/*String avalible_list_str = SharedPrefsUtil.getStringPreference(mContext, "AVAILABLE_LIST");
-			Log.e("AVAILABLE_LIST", avalible_list_str);
+		    /*String avalible_list_str = SharedPrefsUtil.getStringPreference(mContext, "AVAILABLE_LIST");
+            Log.e("AVAILABLE_LIST", avalible_list_str);
 
 			convertStringToArraylist(avalible_list_str);
 			System.out.println(myList);
@@ -158,12 +158,12 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				else
 				{
 					*//*final List<RouteDetailsData> objs = stList;
-					objs.remove(singleStudent.getRouteId());*//*
-				}*/
+                    objs.remove(singleStudent.getRouteId());*//*
+                }*/
 			//}
 
 			/*if (accepted.equals("ACCEPTED"))
-			{
+            {
 				accepttxt.setText("Accepted");
 			}*/
 			HttpAdapter.getRouteDetailsByEmployee(RouteDetails.this, "RouteDetailsModel", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
@@ -176,7 +176,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 
 
 		/*accepttxt.setOnClickListener(new View.OnClickListener()
-		{
+        {
 			@Override
 			public void onClick(final View v)
 			{
@@ -185,7 +185,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		});*/
 
 		/*acceptLLID.setOnClickListener(new View.OnClickListener()
-		{
+        {
 			@Override
 			public void onClick(final View v)
 			{
@@ -250,13 +250,13 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		promoDialog.show();
 
 		/*select_option_radio_grp = (RadioGroup) promoDialog.findViewById(R.id.select_option_radio_grp);
-		orderBook = (RadioButton) promoDialog.findViewById(R.id.orderBook);
+        orderBook = (RadioButton) promoDialog.findViewById(R.id.orderBook);
 		inovice = (RadioButton) promoDialog.findViewById(R.id.inovice);
 		orderBook.setVisibility(View.GONE);
 		inovice.setVisibility(View.GONE);*/
 
 		/*select_option_radio_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-		{
+        {
 			@Override
 			public void onCheckedChanged(final RadioGroup radioGroup, final int i)
 			{
@@ -300,8 +300,8 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				Intent in = new Intent(RouteDetails.this, GetShopsByRoute.class);
 				Util.killRouteDetails();
 				startActivity(in);
-				/*if (check1)
-				{
+                /*if (check1)
+                {
 					SharedPrefsUtil.setStringPreference(mContext, "ORDER_ACCEPTED", "ACTIVE");
 					SharedPrefsUtil.setStringPreference(mContext, "INVOICE_ACCEPTED", "");
 					SharedPrefsUtil.setStringPreference(mContext, "PLAN_STARTED", "ACCEPTED");
@@ -334,6 +334,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		{
 			String data = "";
 			JSONArray checkedRoute = new JSONArray();
+			JSONArray uncheckedRoutes = new JSONArray();
 			List<RouteDetailsData> stList = ((RouteCheckListAdapter) mAdapter).getStudentist();
 
 			String alreadyAccessList = Arrays.toString(stList.toArray());
@@ -344,61 +345,43 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 			{
 				for (int i = 0; i < stList.size(); i++)
 				{
-					RouteDetailsData singleStudent = stList.get(i);
-					if (singleStudent.isSelected() == true)
+					RouteDetailsData checkedStatus = stList.get(i);
+					if (checkedStatus.isSelected() == true)
 					{
-						data = data + "\n" + String.valueOf(singleStudent.getRouteId()).toString();
-						employeeRoutId = String.valueOf(singleStudent.getRouteId());
-						checkedRoute.put(String.valueOf(singleStudent.getRouteId()));
-
-						String selectedzoneName = singleStudent.getZoneName();
+						data = data + "\n" + String.valueOf(checkedStatus.getRouteId()).toString();
+						employeeRoutId = String.valueOf(checkedStatus.getEmployeeRouteId());
+						checkedRoute.put(String.valueOf(checkedStatus.getEmployeeRouteId()));
+						String selectedzoneName = checkedStatus.getZoneName();
 						Log.e("selectedzoneName", selectedzoneName);
 						if (selectedzoneName != null && !selectedzoneName.isEmpty())
 						{
-
-							String zoneidtemp = "";
-							if (selectedzoneName.equals("A"))
-							{
-								zoneidtemp = "1";
-							}
-							else if (selectedzoneName.equals("B"))
-							{
-								zoneidtemp = "2";
-							}
-							else if (selectedzoneName.equals("C"))
-							{
-								zoneidtemp = "3";
-							}
-							else if (selectedzoneName.equals("D"))
-							{
-								zoneidtemp = "4";
-							}
-
-							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONEID", zoneidtemp);
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONEID", String.valueOf(checkedStatus.getZoneId()));
 							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONENAME", selectedzoneName);
-							Log.e("selectedrouteName", singleStudent.getRouteName());
-							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTENAME", singleStudent.getRouteName());
-							Log.e("selectedrouteId", String.valueOf(singleStudent.getRouteId()));
-							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTEID", String.valueOf(singleStudent.getRouteId()));
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTENAME", checkedStatus.getRouteName());
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTEID", String.valueOf(checkedStatus.getRouteId()));
 						}
 					}
 					else
 					{
+						uncheckedRoutes.put(String.valueOf(checkedStatus.getEmployeeRouteId()));
 						acceptLLID.setVisibility(View.VISIBLE);
-					/*final List<RouteDetailsData> objs = stList;
-					objs.remove(singleStudent.getRouteId());*/
+                    /*final List<RouteDetailsData> objs = stList;
+                    objs.remove(singleStudent.getRouteId());*/
 					}
 				}
+
 				if (employeeRoutId != null && !employeeRoutId.isEmpty())
 				{
-					String checkedRouteAfterreplace = checkedRoute.toString();
-
-					checkedRouteAfterreplace = checkedRouteAfterreplace.replace("[", "");
-					checkedRouteAfterreplace = checkedRouteAfterreplace.replace("]", "");
-					checkedRouteAfterreplace = checkedRouteAfterreplace.replaceAll("\"", "");
-					checkedRouteAfterreplace = checkedRouteAfterreplace.replaceAll("\"", "");
+					String checkedRouteAfterreplace = replaceSymbols(checkedRoute.toString());
+					String uncheckedRoutesAfterreplace = replaceSymbols(uncheckedRoutes.toString());
+                 /*   checkedRouteAfterreplace = checkedRouteAfterreplace.replace("[", "");
+                    checkedRouteAfterreplace = checkedRouteAfterreplace.replace("]", "");
+                    checkedRouteAfterreplace = checkedRouteAfterreplace.replaceAll("\"", "");
+                    checkedRouteAfterreplace = checkedRouteAfterreplace.replaceAll("\"", "");*/
 					Log.e("checkedRouteId", checkedRouteAfterreplace + "");
-					HttpAdapter.routeAccept(RouteDetails.this, "acceptRoute", checkedRouteAfterreplace);
+					Log.e("uncheckedRouteId", uncheckedRoutesAfterreplace + "");
+//					String availabledata = new Gson().toJson(createJsonAcceptRoutes(checkedRouteAfterreplace, uncheckedRoutesAfterreplace));
+					HttpAdapter.routeAccept(RouteDetails.this, "acceptRoute", checkedRouteAfterreplace,uncheckedRoutesAfterreplace);
 				}
 				else
 				{
@@ -407,7 +390,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				}
 
 			/*if (!data.isEmpty() && data != null)
-			{
+            {
 				Toast.makeText(RouteDetails.this, "Selected RouteId : \n" + data, Toast.LENGTH_LONG).show();
 			}
 			else
@@ -426,16 +409,20 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 
 		}
 
-
-
-
-
-
 		/*else
-		{
+        {
 			Toast.makeText(mContext, "Your My Day Plan Already Accepted", Toast.LENGTH_SHORT).show();
 		}*/
 
+	}
+
+	private String replaceSymbols(String replaceStr)
+	{
+		replaceStr = replaceStr.replace("[", "");
+		replaceStr = replaceStr.replace("]", "");
+		replaceStr = replaceStr.replaceAll("\"", "");
+		replaceStr = replaceStr.replaceAll("\"", "");
+		return replaceStr;
 	}
 
 
@@ -450,7 +437,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 	public void operationCompleted(NetworkResponse response)
 	{
 		Common.disMissDialog();
-		Log.d("outPutResponse", String.valueOf(response));
+		Log.d("outPutResponse", String.valueOf(response.getStatusCode()));
 		if (response.getStatusCode() == 200)
 		{
 			try
@@ -480,6 +467,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 								noPlantxt.setVisibility(View.GONE);
 								JSONArray jsonArray = mJson.getJSONArray("Data");
 //								routeNoSpinnerAdapter(jsonArray);
+								Log.e("Routesdata", jsonArray.toString());
 								routeListDetails(jsonArray);
 							}
 							catch (Exception e)
@@ -511,8 +499,8 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 				}
 				else if (response.getTag().equals("routeDetails"))
 				{
-				/*	try
-					{
+                /*	try
+                    {
 						if (mJson.getString("Message").equals("SuccessFull"))
 						{
 							sublayout.setVisibility(View.VISIBLE);
@@ -648,12 +636,15 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					JSONObject jObj = jsonArray.getJSONObject(i);
 					Log.e("AssignData", jObj.toString());
 					int RouteId = jObj.getInt("RouteId"); //EmployeeRouteId
+
+					int EmployeeRouteId = jObj.getInt("EmployeeRouteId"); //EmployeeRouteId
+
 					if (jObj.getString("ZoneName") != null && !jObj.getString("ZoneName").equalsIgnoreCase("null"))
 					{
 						ZoneName = jObj.getString("ZoneName");
 						try
 						{
-							ZoneId = jObj.getInt("ZoneId");
+							ZoneId = jObj.getInt("ZoneID");
 						}
 						catch (Exception e)
 						{
@@ -694,7 +685,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 						}
 
 					}
-					_routeDetailsData.add(new RouteDetailsData(ZoneId, RouteId, ZoneName,
+					_routeDetailsData.add(new RouteDetailsData(ZoneId, RouteId, EmployeeRouteId, ZoneName,
 					                                           RouteNumber, TargetAmount,
 					                                           isChecked));
 				}
@@ -732,7 +723,6 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		}
 		else
 		{
-
 			noPlantxt.setVisibility(View.VISIBLE);
 			acceptLLID.setVisibility(View.GONE);
 			acceptBtn.setVisibility(View.GONE);
@@ -805,16 +795,6 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		});
 	}
 
-	private void byDefaultSelctRouteNo()
-	{
-		routeNamestitle.clear();
-		routeNamestitle.add("Select Route Number");
-		ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
-		dataAdapter_routeName.setDropDownViewResource(R.layout.list_item);
-		routeNoSpnr.setAdapter(dataAdapter_routeName);
-
-		sublayout.setVisibility(View.GONE);
-	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -838,7 +818,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 	}
 
 	/*public static JSONArray remove(final int idx, final JSONArray from, RouteDetailsData singleStudent)
-	{
+    {
 		final List<JSONObject> objs = singleStudent(from);
 		objs.remove(idx);
 		final JSONArray ja = new JSONArray();
@@ -874,7 +854,6 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 			String data = "";
 			JSONArray selectedrouteNoDb = new JSONArray();
 			List<RouteDetailsData> stList = ((RouteCheckListAdapter) mAdapter).getStudentist();
-
 			String alreadyAccessList = Arrays.toString(stList.toArray());
 			Log.e("availlist", alreadyAccessList);
 			SharedPrefsUtil.setStringPreference(mContext, "AVAILABLE_LIST", alreadyAccessList);
@@ -890,30 +869,9 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 						Log.e("selectedzoneName", selectedzoneName);
 						if (selectedzoneName != null && !selectedzoneName.isEmpty())
 						{
-							String zoneidtemp = "";
-
-							if (selectedzoneName.equals("A"))
-							{
-								zoneidtemp = "1";
-							}
-							else if (selectedzoneName.equals("B"))
-							{
-								zoneidtemp = "2";
-							}
-							else if (selectedzoneName.equals("C"))
-							{
-								zoneidtemp = "3";
-							}
-							else if (selectedzoneName.equals("D"))
-							{
-								zoneidtemp = "4";
-							}
-
-							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONEID", zoneidtemp);
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONEID", String.valueOf(singleStudent.getZoneId()));
 							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONENAME", selectedzoneName);
-							Log.e("selectedrouteName", singleStudent.getRouteName());
 							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTENAME", singleStudent.getRouteName());
-							Log.e("selectedrouteId", String.valueOf(singleStudent.getRouteId()));
 							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTEID", String.valueOf(singleStudent.getRouteId()));
 						}
 
@@ -937,10 +895,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					selcetdRoutesStr = selcetdRoutesStr.replaceAll("\"", "");
 					Log.e("selcetdRoutesStr", selcetdRoutesStr + "");
 				}
-				else
-				{
-					//Toast.makeText(mContext, "Please Select Route Number", Toast.LENGTH_SHORT).show();
-				}
+
 			}
 		}
 		catch (Exception e)
@@ -952,5 +907,27 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 	public void routeDetailChanger()
 	{
 		mAdapter.notifyDataSetChanged(); //update adapter
+	}
+
+
+    /*private String createJsonAcceptRoutes(String checkedRoutes, String uncheckedRoutes) {
+        JSONObject dataObj = new JSONObject();
+        try {
+            dataObj.putOpt("EnableEmployeeRouteId", checkedRoutes);
+            dataObj.putOpt("DisableEmployeeRouteId", uncheckedRoutes);
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Log.d("checkStatus", dataObj.toString());
+        return dataObj.toString();
+    }*/
+
+	public static Map<String, String> createJsonAcceptRoutes(String checked, String unchecked)
+	{
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("DisableEmployeeRouteId", unchecked);
+		map.put("EnableEmployeeRouteId", checked);
+		return map;
 	}
 }

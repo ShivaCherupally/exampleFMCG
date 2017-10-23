@@ -1345,7 +1345,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
-					selected_paymentNameId = "";
+//					selected_paymentNameId = "";
 					payment_sp.setSelection(0);
 //					refreshActivity();
 				}
@@ -1512,7 +1512,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				else
 				{
 					paymentTermsTouchClick = true;
-					selected_paymentNameId = "2";
+//					selected_paymentNameId = "2";
 					if (_paymentsSelectData.size() > 0)
 					{
 						payment_sp.setSelection(getIndexPositionPayment(payment_sp, Integer.parseInt(selected_paymentNameId), _paymentsSelectData), true);
@@ -1942,8 +1942,8 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 					{
 						if (position != 0)
 						{
-							selected_paymentNameId = _paymentsSelectData.get(position - 1).getShopId();
-							String paymentSelected = _paymentsSelectData.get(position - 1).getShopName();
+							selected_paymentNameId = _paymentsSelectData.get(position).getShopId();
+							String paymentSelected = _paymentsSelectData.get(position).getShopName();
 							SharedPrefsUtil.setStringPreference(mContext, "paymentSelected", paymentSelected);
 							Log.e("paymentSelected", paymentSelected);
 							if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
@@ -1962,8 +1962,11 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 								}
 							}
 						}
+						else
+						{
+							selected_paymentNameId = _paymentsSelectData.get(position).getShopId();
+						}
 					}
-
 				}
 				catch (Exception e)
 				{

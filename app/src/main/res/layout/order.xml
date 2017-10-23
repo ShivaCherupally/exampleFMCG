@@ -47,7 +47,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:background="@drawable/rect_bg_black"
+                android:background="@drawable/rect_bg_grey"
                 android:orientation="horizontal">
 
                 <Spinner
@@ -56,6 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:background="@color/empty"
                     android:visibility="gone"
                     />
 
@@ -68,9 +69,9 @@
                     android:clickable="false"
                     android:editable="false"
                     android:focusable="false"
-                    android:hint="Zone Name"
                     android:padding="@dimen/eigth"
-                    android:textColor="@color/grey"
+                    android:text="Zone Name"
+                    android:textColor="@color/black"
                     />
 
             </LinearLayout>
@@ -80,7 +81,7 @@
                 android:layout_height="45dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/rect_bg_black"
+                android:background="@drawable/rect_bg_grey"
                 android:orientation="horizontal">
 
                 <Spinner
@@ -89,6 +90,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:background="@color/empty"
                     android:hint="Route Name"
                     android:singleLine="true"
                     android:visibility="gone"/>
@@ -99,13 +101,12 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
                     android:background="@color/empty"
-                    android:hint="Route No"
+                    android:clickable="false"
                     android:editable="false"
                     android:focusable="false"
-                    android:clickable="false"
-
                     android:padding="@dimen/eigth"
-                    android:textColor="@color/grey"
+                    android:text="Route No"
+                    android:textColor="@color/black"
                     />
             </LinearLayout>
 
@@ -240,7 +241,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-
                 android:visibility="visible">
 
                 <LinearLayout

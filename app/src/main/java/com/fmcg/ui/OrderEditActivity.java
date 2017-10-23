@@ -1136,8 +1136,8 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 					else if (selectedSpinner.equals("PAYMENT_TYPE"))
 					{
 
-						selected_paymentTermsId = _dropDownData.get(position - 1).getShopId();
-						String paymentSelected = _dropDownData.get(position - 1).getShopName();
+						selected_paymentTermsId = _dropDownData.get(position).getShopId();
+						String paymentSelected = _dropDownData.get(position).getShopName();
 						Log.e("paymentSelected", paymentSelected);
 						if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
 						{
@@ -1156,6 +1156,12 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 						}
 					}
 				}
+			}
+			else if (selectedSpinner.equals("PAYMENT_TYPE"))
+			{
+				selected_paymentTermsId = _dropDownData.get(position).getShopId();
+				String paymentSelected = _dropDownData.get(position).getShopName();
+				Log.e("paymentSelected", paymentSelected);
 			}
 		}
 		catch (Exception e)
@@ -2107,7 +2113,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 
 		if (spinnerSelction.equals("ZONE"))
 		{
-            ArrayAdapter<String> zonedataAdapter = new ArrayAdapter<String>(this, R.layout.spinneroneitem, spinnerTitles);
+			ArrayAdapter<String> zonedataAdapter = new ArrayAdapter<String>(this, R.layout.spinneroneitem, spinnerTitles);
 			zonedataAdapter.setDropDownViewResource(R.layout.list_item);
 			zone_sp.setAdapter(zonedataAdapter);
 			autoFillDetails();

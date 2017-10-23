@@ -43,7 +43,7 @@
                 android:layout_height="45dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/rect_bg_black"
+                android:background="@drawable/rect_bg_grey"
                 android:orientation="horizontal">
 
 
@@ -58,7 +58,7 @@
                     android:hint="@string/select_zone"
                     android:maxLines="1"
                     android:padding="8dp"
-                    android:textColor="@color/HeaderColor"
+                    android:textColor="@color/black"
                     android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="17sp"
                     android:visibility="gone"
@@ -69,6 +69,7 @@
                     style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
+                    android:background="@color/empty"
                     android:spinnerMode="dialog"
                     />
             </LinearLayout>
@@ -96,7 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/rect_bg_black"
+                android:background="@drawable/rect_bg_grey"
                 android:orientation="horizontal">
 
                 <EditText
@@ -111,7 +112,7 @@
 
                     android:maxLines="1"
                     android:padding="8dp"
-                    android:textColor="@color/HeaderColor"
+                    android:textColor="@color/empty"
                     android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="17sp"
                     android:visibility="gone"
@@ -123,6 +124,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:background="@color/empty"
                     android:hint="Route Name"
                     android:singleLine="true"/>
             </LinearLayout>

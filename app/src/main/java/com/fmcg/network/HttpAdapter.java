@@ -408,12 +408,16 @@ public class HttpAdapter
 		operation.execute(GET_ROUTE_ACCEPT_BY_EMP, METHOD_POST, jsonString);
 	}*/
 
-	public static void routeAccept(NetworkOperationListener listener, Object tag, String selectedRouteids)
+	public static void routeAccept(NetworkOperationListener listener, Object tag, String checkedRoutesAfterreplace, String uncheckedRoutesAfterreplace)
 	{
 		// TODO Auto-generated method stub
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
-		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + selectedRouteids, METHOD_POST, "NONE");
+		Log.e("RoutesParams", checkedRoutesAfterreplace + uncheckedRoutesAfterreplace);
+		//operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + selectedRouteids, METHOD_POST, "NONE");
+//		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + selectedRouteids, METHOD_POST, "NONE");
+		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EnableEmployeeRouteId=" + checkedRoutesAfterreplace + "&DisbleEmployeeRouteId=" + uncheckedRoutesAfterreplace, METHOD_POST,
+		                  "NONE");
 	}
 
 	public static void getOrderBookList(NetworkOperationListener listener, Object tag)

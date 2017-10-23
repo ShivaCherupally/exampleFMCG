@@ -13,8 +13,11 @@
     <color name="green">#4CB050</color>
     <color name="light_green">#A7C942</color>
     <color name="empty">#00000000</color>
-    <color name="grey">#B0BEC5</color>
     <color name="HeaderColor">#4e4e4e</color>
+    <color name="grey">#B0BEC5</color>
+
+    <color name="grey_code">#e6e6e6</color>
+
     <color name="lightgrey">#E4E4E4</color>
 
     <color name="violet">#7096D7</color>

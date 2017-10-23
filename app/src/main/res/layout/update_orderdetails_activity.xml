@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/rect_bg_black"
+                android:background="@drawable/rect_bg_grey"
                 android:orientation="horizontal">
 
                 <Spinner
@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/rect_bg_black"
+                android:background="@drawable/rect_bg_grey"
                 android:orientation="horizontal">
 
 
@@ -89,7 +89,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
-                    android:background="@color/empty"
+                    android:background="@color/grey"
                     android:clickable="false"
                     android:editable="false"
                     android:focusable="false"

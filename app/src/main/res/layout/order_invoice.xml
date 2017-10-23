@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/rect_bg_black"
+            android:background="@drawable/rect_bg_grey"
             android:orientation="horizontal">
 
             <Spinner
@@ -39,6 +39,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:hint="Zone Name"
+                android:background="@color/empty"
                 android:singleLine="true"
                 android:visibility="gone"/>
 
@@ -52,10 +53,10 @@
                 android:editable="false"
                 android:focusable="false"
 
-                android:hint="Zone Name"
+                android:text="Zone Name"
 
                 android:padding="@dimen/eigth"
-                android:textColor="@color/grey"
+                android:textColor="@color/black"
                 />
         </LinearLayout>
 
@@ -63,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/rect_bg_black"
+            android:background="@drawable/rect_bg_grey"
             android:orientation="horizontal">
 
             <Spinner
@@ -83,12 +84,11 @@
                 android:layout_gravity="center_vertical"
                 android:background="@color/empty"
                 android:clickable="false"
-
                 android:editable="false"
-                android:hint="Route No"
+                android:text="Route No"
                 android:focusable="false"
                 android:padding="@dimen/eigth"
-                android:textColor="@color/grey"
+                android:textColor="@color/black"
                 />
         </LinearLayout>
 

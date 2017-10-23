@@ -431,9 +431,11 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					}
 				}
 			}
-			else
+			else if (selectedSpinner.equals("PAYMENT_TYPE"))
 			{
-				selected_paymentTermsId = "2";
+				selected_paymentTermsId = _dropDownData.get(position).getShopId();
+				String paymentSelected = _dropDownData.get(position).getShopName();
+				Log.e("paymentSelected", paymentSelected);
 			}
 		}
 		catch (Exception e)
@@ -1468,7 +1470,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
 					//paymentTermsId = "";
-					//payment_sp.setSelection(0);
+					payment_sp.setSelection(0);
 //					refreshActivity();
 				}
 			}

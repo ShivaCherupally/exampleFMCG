@@ -1469,11 +1469,9 @@ public class UpdateShopDetailsActvity extends AppCompatActivity implements View.
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
 			{
-				if (position != 0)
-				{
-					paymentDropDown = _paymentsSelectData.get(position - 1).getShopId();
-					selected_paymentNameId = _paymentsSelectData.get(position - 1).getShopId();
-				}
+
+				paymentDropDown = _paymentsSelectData.get(position).getShopId();
+				selected_paymentNameId = _paymentsSelectData.get(position).getShopId();
 			}
 
 			@Override

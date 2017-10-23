@@ -1093,7 +1093,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				dropDownValueSelection(position, _orderStatusData, selectedSpinner);
 				break;
 			case R.id.payment_terms_spinner:
-				selected_paymentTermsId = "2";
+//				selected_paymentTermsId = "2";
 				selectedSpinner = "PAYMENT_TYPE";
 				dropDownValueSelection(position, _paymentsSelectData, selectedSpinner);
 				break;
@@ -1134,7 +1134,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 					}
 					else if (selectedSpinner.equals("PAYMENT_TYPE"))
 					{
-
 						selected_paymentTermsId = _dropDownData.get(position).getShopId();
 						String paymentSelected = _dropDownData.get(position).getShopName();
 						Log.e("paymentSelected", paymentSelected);
@@ -1155,6 +1154,12 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 						}
 					}
 				}
+			}
+			else if (selectedSpinner.equals("PAYMENT_TYPE"))
+			{
+				selected_paymentTermsId = _dropDownData.get(position).getShopId();
+				String paymentSelected = _dropDownData.get(position).getShopName();
+				Log.e("paymentSelected", paymentSelected);
 			}
 		}
 		catch (Exception e)
@@ -1755,7 +1760,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				{
 					promoDialog.dismiss();
 					Util.hideSoftKeyboard(mContext, v);
-					selected_paymentTermsId = "2";
+//					selected_paymentTermsId = "2";
 					payment_sp.setSelection(0);
 //					refreshActivity();
 				}
