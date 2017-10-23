@@ -44,6 +44,7 @@ dependencies {
     compile 'com.akexorcist:googledirectionlibrary:1.0.5'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile 'com.daimajia.swipelayout:library:1.2.0@aar'
+    compile 'com.github.ViksaaSkool:AwesomeSplash:v1.0.0'
 
     //compile 'com.github.ganfra:material-spinner:1.1.1'
     compile project(':volley')

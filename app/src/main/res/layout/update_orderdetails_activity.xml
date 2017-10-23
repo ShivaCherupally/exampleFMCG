@@ -62,7 +62,7 @@
                     android:focusable="false"
                     android:hint="Zone Name"
                     android:padding="@dimen/eigth"
-                    android:textColor="@color/HeaderColor"
+                    android:textColor="@color/black"
                     android:visibility="gone" />
 
             </LinearLayout>
@@ -95,7 +95,7 @@
                     android:focusable="false"
                     android:hint="Route No"
                     android:padding="@dimen/eigth"
-                    android:textColor="@color/HeaderColor"
+                    android:textColor="@color/black"
                     android:visibility="gone" />
             </LinearLayout>
 

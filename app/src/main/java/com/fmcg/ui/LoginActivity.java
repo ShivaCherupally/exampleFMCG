@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -50,6 +51,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 	AppCompatButton loginBtn;
 	String user, pass;
 	public Context context;
+	TextView appname;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -60,9 +62,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 		username = (EditText) findViewById(R.id.username_et);
 		password = (EditText) findViewById(R.id.pass_et);
 		loginBtn = (AppCompatButton) findViewById(R.id.loginBtn);
+		appname = (TextView) findViewById(R.id.appname);
+
 
 		context = LoginActivity.this;
 		sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
+		appname.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/germania_one.ttf"));
 		try
 		{
 			ActionBar bar = getSupportActionBar();

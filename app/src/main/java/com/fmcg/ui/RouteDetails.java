@@ -355,7 +355,26 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 						Log.e("selectedzoneName", selectedzoneName);
 						if (selectedzoneName != null && !selectedzoneName.isEmpty())
 						{
-							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONEID", String.valueOf(singleStudent.getZoneId()));
+
+							String zoneidtemp = "";
+							if (selectedzoneName.equals("A"))
+							{
+								zoneidtemp = "1";
+							}
+							else if (selectedzoneName.equals("B"))
+							{
+								zoneidtemp = "2";
+							}
+							else if (selectedzoneName.equals("C"))
+							{
+								zoneidtemp = "3";
+							}
+							else if (selectedzoneName.equals("D"))
+							{
+								zoneidtemp = "4";
+							}
+
+							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONEID", zoneidtemp);
 							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ZONENAME", selectedzoneName);
 							Log.e("selectedrouteName", singleStudent.getRouteName());
 							SharedPrefsUtil.setStringPreference(mContext, "SELECTED_ROUTENAME", singleStudent.getRouteName());
@@ -378,7 +397,6 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					checkedRouteAfterreplace = checkedRouteAfterreplace.replace("]", "");
 					checkedRouteAfterreplace = checkedRouteAfterreplace.replaceAll("\"", "");
 					checkedRouteAfterreplace = checkedRouteAfterreplace.replaceAll("\"", "");
-
 					Log.e("checkedRouteId", checkedRouteAfterreplace + "");
 					HttpAdapter.routeAccept(RouteDetails.this, "acceptRoute", checkedRouteAfterreplace);
 				}
