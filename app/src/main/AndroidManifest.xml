@@ -61,6 +61,41 @@
             android:theme="@style/AppThemesidemenu"
             android:windowSoftInputMode="stateHidden"/>
 
+        <activity
+            android:name="com.fmcg.ui.MasterCreationActivity"
+            android:label="@string/master_creation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity
+            android:name="com.fmcg.ui.ProfileActivity"
+            android:label="@string/profilee"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity
+            android:name="com.fmcg.ui.ZoneCreationActivity"
+            android:label="@string/zone_creation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity
+            android:name="com.fmcg.ui.RouteCreationActivity"
+            android:label="@string/route_creation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity
+            android:name="com.fmcg.ui.AreaCreationActivity"
+            android:label="@string/area_creation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
 
         <activity
             android:name="com.fmcg.ui.GetShopsByRoute"

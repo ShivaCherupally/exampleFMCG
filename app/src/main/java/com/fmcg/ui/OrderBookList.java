@@ -102,7 +102,7 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 		{
 			if (ACCESS_LIST.equalsIgnoreCase("BOOK_LIST"))
 			{
-				HttpAdapter.getOrderBookList(OrderBookList.this, "Order_Book_List");
+				HttpAdapter.getOrderBookList(OrderBookList.this, SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"), "Order_Book_List");
 				order_or_invoiceActivity.setTitle("Book List");
 				swipeLefttxt.setText("Swipe left to delete a order book list item");
 			}
@@ -110,7 +110,7 @@ public class OrderBookList extends AppCompatActivity implements View.OnClickList
 			{
 				swipeLefttxt.setText("Swipe left to delete a invoice list item");
 				swipeleftlabellayout.setVisibility(View.GONE);
-				HttpAdapter.getInvoiceList(OrderBookList.this, "Invoice_List");
+				HttpAdapter.getInvoiceList(OrderBookList.this, SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"), "Invoice_List");
 				order_or_invoiceActivity.setTitle("Invoice List");
 			}
 		}

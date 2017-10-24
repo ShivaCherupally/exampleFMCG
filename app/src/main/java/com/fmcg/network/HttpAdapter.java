@@ -3,6 +3,8 @@ package com.fmcg.network;
 
 import android.util.Log;
 
+import com.fmcg.util.SharedPrefsUtil;
+
 public class HttpAdapter
 {
 	public static final String METHOD_GET = "GET";
@@ -108,6 +110,11 @@ public class HttpAdapter
 
 
 	public static final String SHOP_COLORS_URL = BASE_URL + "GetShopColorForOrders";
+
+	public static final String ZONE_CREATION = BASE_URL + "GetRouteAcceptByEmployee";
+	public static final String ROUTE_CREATION = BASE_URL + "GetRouteAcceptByEmployee";
+	public static final String AREA_CREATION = BASE_URL + "GetRouteAcceptByEmployee";
+
 //	public static final String SHOP_COLORS_URL = "http://www.mocky.io/v2/5994a54e110000f103723163";
 
 	//CancelOrderNumber
@@ -420,20 +427,20 @@ public class HttpAdapter
 		                  "NONE");
 	}
 
-	public static void getOrderBookList(NetworkOperationListener listener, Object tag)
+	public static void getOrderBookList(NetworkOperationListener listener, String Userid, Object tag)
 	{
 		// TODO Auto-generated method stub
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
-		operation.execute(GET_ORDER_BOOK_LIST, METHOD_GET, "NONE");
+		operation.execute(GET_ORDER_BOOK_LIST + "&UserId=" + Userid, METHOD_GET, "NONE");
 	}
 
-	public static void getInvoiceList(NetworkOperationListener listener, Object tag)
+	public static void getInvoiceList(NetworkOperationListener listener, String Userid, Object tag)
 	{
 		// TODO Auto-generated method stub
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
-		operation.execute(GET_INVOICE_LIST, METHOD_GET, "NONE");
+		operation.execute(GET_INVOICE_LIST + "&UserId=" + Userid, METHOD_GET, "NONE");
 	}
 	//http://202.143.96.20/Orderstest/api/Services/GetOrderBookingDetails?OrderNumber=0
 
@@ -562,4 +569,39 @@ public class HttpAdapter
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(UPDATE_INVOICE_SUBMIT, METHOD_POST, jsonString);
 	}
+
+	public static void zoneCreationSubmit(NetworkOperationListener listener, Object tag, String checkedRoutesAfterreplace, String uncheckedRoutesAfterreplace)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		Log.e("Params", checkedRoutesAfterreplace + uncheckedRoutesAfterreplace);
+		operation.execute(ZONE_CREATION
+				                  + "?EnableEmployeeRouteId=" + checkedRoutesAfterreplace
+				                  + "&DisbleEmployeeRouteId=" + uncheckedRoutesAfterreplace, METHOD_POST, "NONE");
+	}
+
+	public static void routeCreationSubmit(NetworkOperationListener listener, Object tag, String checkedRoutesAfterreplace, String uncheckedRoutesAfterreplace)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		Log.e("Params", checkedRoutesAfterreplace + uncheckedRoutesAfterreplace);
+		operation.execute(ROUTE_CREATION
+				                  + "?EnableEmployeeRouteId=" + checkedRoutesAfterreplace
+				                  + "&DisbleEmployeeRouteId=" + uncheckedRoutesAfterreplace, METHOD_POST, "NONE");
+	}
+
+	public static void areaCreationSubmit(NetworkOperationListener listener, Object tag, String checkedRoutesAfterreplace, String uncheckedRoutesAfterreplace)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		Log.e("Params", checkedRoutesAfterreplace + uncheckedRoutesAfterreplace);
+		operation.execute(AREA_CREATION
+				                  + "?EnableEmployeeRouteId=" + checkedRoutesAfterreplace
+				                  + "&DisbleEmployeeRouteId=" + uncheckedRoutesAfterreplace, METHOD_POST, "NONE");
+	}
+
+
 }

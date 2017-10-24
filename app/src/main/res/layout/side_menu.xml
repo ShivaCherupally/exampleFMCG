@@ -18,8 +18,8 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
             android:layout_marginBottom="@dimen/eigth"
+            android:layout_marginTop="15dp"
             android:background="@drawable/userisconos"/>
 
         <TextView
@@ -63,6 +63,26 @@
                     android:gravity="center_vertical"
                     android:padding="8dp"
                     android:text="Home"
+                    android:textSize="15sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+
+                <TextView
+                    android:id="@+id/profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:drawableLeft="@drawable/ic_menu_new_user"
+                    android:drawablePadding="6dp"
+                    android:gravity="center_vertical"
+                    android:padding="8dp"
+                    android:text="Profile"
                     android:textSize="15sp"
                     android:textStyle="bold"/>
             </LinearLayout>
@@ -177,6 +197,19 @@
                 android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/mastercreation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/adddocuments"
+                android:drawablePadding="6dp"
+                android:gravity="center_vertical"
+                android:padding="8dp"
+                android:text="Master Creation"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <TextView
                 android:id="@+id/shop_update"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -244,7 +277,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/ic_menu_monthly_report"
+                android:drawableLeft="@drawable/adddocuments"
                 android:drawablePadding="6dp"
                 android:gravity="center_vertical"
                 android:padding="8dp"

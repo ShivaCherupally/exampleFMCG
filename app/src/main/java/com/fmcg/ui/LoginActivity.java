@@ -220,7 +220,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 							editor.putString("password", userDetails.Data.EmployeeCode);
 
 							SharedPrefsUtil.setStringPreference(context, "EmployeeId", userDetails.Data.EmployeeId);
+							SharedPrefsUtil.setStringPreference(context, "EmployeeName", userDetails.Data.EmployeeName);
+							SharedPrefsUtil.setStringPreference(context, "EmployeeDesignation", userDetails.Data.EmployeeDesignation);
+
 							SharedPrefsUtil.setStringPreference(context, "EmployeeCode", userDetails.Data.EmployeeCode);
+							SharedPrefsUtil.setStringPreference(context, "MobileNumber", userDetails.Data.MobileNumber);
+
 
 							DateFormat dateInstance = SimpleDateFormat.getDateInstance();
 							String LoginDateandTime = dateInstance.format(Calendar.getInstance().getTime());

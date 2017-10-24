@@ -124,4 +124,13 @@
     <string name="select_route">Select Route</string>
     <string name="select_area">Select Area</string>
 
+    <string name="zone_creation">Zone Creation</string>
+    <string name="route_creation">Route Creation</string>
+    <string name="area_creation">Area Creation</string>
+
+    <string name="master_creation">Master Creation</string>
+    <string name="profilee">Profile</string>
+
+
+
 </resources>

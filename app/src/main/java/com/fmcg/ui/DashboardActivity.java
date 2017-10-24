@@ -108,8 +108,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                                                     OnChartValueSelectedListener
 {
 	SharedPreferences sharedPreferences;
-	TextView mydayPlan, shop, maps, getshops, mylocation, new_customer, endTrip, remarks, logout, order, invoice, userName, shop_update, remainder,
-			viewList, pendingBills;
+	TextView mydayPlan, shop, profile, maps, getshops, mylocation, new_customer, endTrip, remarks, logout, order, invoice, userName, shop_update, remainder,
+			viewList, pendingBills, mastercreation;
 	DrawerLayout drawer;
 	Toolbar toolbar;
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -218,6 +218,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		View view = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.side_menu, navigationView);
 		mydayPlan = (TextView) view.findViewById(R.id.myDayPlan);
 		shop = (TextView) view.findViewById(R.id.shop_tv);
+		profile = (TextView) view.findViewById(R.id.profile);
 		remarks = (TextView) view.findViewById(R.id.remarks);
 		// maps = (TextView) view.findViewById(R.id.maps_tv);
 		getshops = (TextView) view.findViewById(R.id.get_shops_tv);
@@ -232,6 +233,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 		viewList = (TextView) view.findViewById(R.id.viewList);
 		pendingBills = (TextView) view.findViewById(R.id.pendingBills);
+		mastercreation = (TextView) view.findViewById(R.id.mastercreation);
 
 
 		userName = (TextView) view.findViewById(R.id.userName);
@@ -264,6 +266,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 		mydayPlan.setOnClickListener(this);
 		shop.setOnClickListener(this);
+		profile.setOnClickListener(this);
 		mylocation.setOnClickListener(this);
 		getshops.setOnClickListener(this);
 		new_customer.setOnClickListener(this);
@@ -276,6 +279,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		remainder.setOnClickListener(this);
 		viewList.setOnClickListener(this);
 		pendingBills.setOnClickListener(this);
+		mastercreation.setOnClickListener(this);
 
 		navigationView.setNavigationItemSelectedListener(this);
 
@@ -731,11 +735,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 			refreshActivity();
 		}
+
+
 		else if (v.getId() == R.id.get_shops_tv)
 		{
 			Intent i = new Intent(this, GetShopsByRoute.class);
 			startActivity(i);
 		}
+		else if (v.getId() == R.id.profile)
+		{
+			Intent i = new Intent(this, ProfileActivity.class);
+			Util.killProfileActivity();
+			startActivity(i);
+		}
+		//
 		else if (v.getId() == R.id.my_loc_tv)
 		{
 			Intent mylocation = new Intent(this, MyLocation.class);
@@ -751,6 +764,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 			Intent mylocation = new Intent(this, AddNewCustomer.class);
 			startActivity(mylocation);
+		}
+		else if (v.getId() == R.id.mastercreation)
+		{
+			Intent inttt = new Intent(DashboardActivity.this, MasterCreationActivity.class);
+			Util.killMaster();
+			startActivity(inttt);
 		}
 		else if (v.getId() == R.id.remarks)
 		{

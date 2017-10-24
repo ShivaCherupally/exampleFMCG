@@ -30,9 +30,11 @@ import com.fmcg.ui.AddRemainderActivity;
 import com.fmcg.ui.BillingEditActivity;
 import com.fmcg.ui.GetShopsByRoute;
 import com.fmcg.ui.Invoice;
+import com.fmcg.ui.MasterCreationActivity;
 import com.fmcg.ui.Order;
 import com.fmcg.ui.OrderEditActivity;
 import com.fmcg.ui.PendingListActivity;
+import com.fmcg.ui.ProfileActivity;
 import com.fmcg.ui.RemainderListActivity;
 import com.fmcg.ui.Remarks;
 import com.fmcg.ui.RouteDetails;
@@ -240,6 +242,14 @@ public class Util
 		}
 	}
 
+	public static void killMaster()
+	{
+		if (MasterCreationActivity.masteract != null)
+		{
+			MasterCreationActivity.masteract.finish();
+		}
+	}
+
 	public static void killRemainderList()
 	{
 		if (RemainderListActivity.remainderListActivity != null)
@@ -278,6 +288,14 @@ public class Util
 		if (pendingListactvity != null)
 		{
 			pendingListactvity.finish();
+		}
+	}
+
+	public static void killProfileActivity()
+	{
+		if (ProfileActivity.profileact != null)
+		{
+			ProfileActivity.profileact.finish();
 		}
 	}
 

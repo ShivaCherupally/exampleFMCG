@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_margin="@dimen/ten"
+                  android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/zonenameet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:hint="Zone Name"
+            android:imeOptions="actionNext"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:singleLine="true"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="17sp"
+            />
+
+        <EditText
+            android:id="@+id/zonecodeet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:hint="Zone Code"
+            android:imeOptions="actionNext"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:singleLine="true"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="17sp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomHRLID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/ten"
+        android:layout_marginRight="@dimen/ten"
+        android:layout_marginTop="10dp"
+        android:background="@color/empty">
+
+        <TextView
+            android:id="@+id/submit"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="@dimen/ten"
+            android:background="@drawable/submit_rectangle"
+            android:gravity="center"
+            android:text="@string/submit"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+</RelativeLayout>

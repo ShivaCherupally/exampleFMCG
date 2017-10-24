@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="vertical"
+            android:padding="@dimen/eigth">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/eigth"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/userisconos"/>
+
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:padding="8dp"
+                android:text="User Id : BU0004"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/usernameett"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:clickable="false"
+            android:enabled="false"
+            android:hint="User Name"
+            android:imeOptions="actionNext"
+
+            android:maxLines="1"
+            android:padding="8dp"
+            android:singleLine="true"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="17sp"
+            />
+
+
+
+        <EditText
+            android:id="@+id/mobileet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:clickable="false"
+            android:enabled="false"
+            android:hint="Mobile No"
+            android:imeOptions="actionNext"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:singleLine="true"
+
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="17sp"
+            />
+
+        <EditText
+            android:id="@+id/addresset"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:clickable="false"
+            android:enabled="false"
+            android:hint="Address"
+            android:imeOptions="actionDone"
+            android:padding="8dp"
+
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="17sp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomHRLID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/ten"
+        android:layout_marginRight="@dimen/ten"
+        android:layout_marginTop="10dp"
+        android:background="@color/empty"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/submit"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="@dimen/ten"
+            android:background="@drawable/submit_rectangle"
+            android:gravity="center"
+            android:text="@string/submit"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+</RelativeLayout>
