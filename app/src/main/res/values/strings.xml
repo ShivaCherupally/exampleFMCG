@@ -129,8 +129,10 @@
     <string name="area_creation">Area Creation</string>
 
     <string name="master_creation">Master Creation</string>
+    <string name="month_summary">Month Summary</string>
     <string name="profilee">Profile</string>
 
+    <string name="pendingbills">Pending Bills</string>
 
 
 </resources>

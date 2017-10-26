@@ -67,6 +67,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity
+            android:name="com.fmcg.ui.MonthlySummary"
+            android:label="@string/month_summary"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity
+            android:name="com.fmcg.ui.PendingBillsActivity"
+            android:label="@string/pendingbills"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppBaseTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity
             android:name="com.fmcg.ui.ProfileActivity"

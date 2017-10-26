@@ -38,6 +38,21 @@
             android:textCursorDrawable="@drawable/color_cursor"
             android:textSize="17sp"
             />
+
+        <EditText
+            android:id="@+id/zonedeset"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:hint="Zone Description"
+            android:layout_height="60dp"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:singleLine="true"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="17sp"
+            />
     </LinearLayout>
 
     <LinearLayout

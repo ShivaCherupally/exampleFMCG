@@ -1,9 +1,11 @@
 package com.fmcg.ui;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -22,29 +24,34 @@ import com.fmcg.network.NetworkOperationListener;
 import com.fmcg.network.NetworkResponse;
 import com.fmcg.util.AlertDialogManager;
 import com.fmcg.util.Common;
+import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
 import com.fmcg.util.Utility;
-import com.loopj.android.http.RequestParams;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Created by Shiva on 9/24/2017.
- */
 
-public class PendingBillsActivity extends AppCompatActivity implements NetworkOperationListener
+public class MonthlySummary extends AppCompatActivity implements NetworkOperationListener
 {
 	public static Activity remarks;
 	public SharedPreferences sharedPreferences;
 	LinearLayout layouttdata;
 	public TextView monthNametxt, targetamountxt, salesamounttxt, nodata;
-	public TextView subtotaltxt, taxamounttxt, totalamounttxt;
-
-
 	Context mContext;
 	String zonenamestr, zonecodestr, zonedesstr;
 
@@ -53,15 +60,15 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.monthly_summary);
-		remarks = PendingBillsActivity.this;
+		remarks = MonthlySummary.this;
 
-		mContext = PendingBillsActivity.this;
+		mContext = MonthlySummary.this;
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 		if (Utility.isOnline(mContext))
 		{
-			HttpAdapter.pendingBills(PendingBillsActivity.this, "PendingBills", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
+			HttpAdapter.monthSummary(MonthlySummary.this, "MonthSummary", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
 		}
 		else
 		{
@@ -72,10 +79,6 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 		monthNametxt = (TextView) findViewById(R.id.monthNametxt);
 		targetamountxt = (TextView) findViewById(R.id.targetamountxt);
 		salesamounttxt = (TextView) findViewById(R.id.salesamounttxt);
-
-		subtotaltxt = (TextView) findViewById(R.id.subtotaltxt);
-		taxamounttxt = (TextView) findViewById(R.id.taxamounttxt);
-		totalamounttxt = (TextView) findViewById(R.id.totalamounttxt);
 
 
 	}
@@ -113,58 +116,33 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 				JSONObject mJson = new JSONObject(response.getResponseString());
 				Log.e("mJson", mJson.toString());
 				//register
-				if (response.getTag().equals("PendingBills"))
+				if (response.getTag().equals("MonthSummary"))
 				{
 					if (mJson.getString("Status").equals("OK"))
 					{
 
-						Toast.makeText(mContext, "Pending Data", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "Successfully Month Data", Toast.LENGTH_SHORT).show();
 						JSONObject mJsonData = mJson.getJSONObject("Data");
 						if (mJsonData != null)
 						{
 							layouttdata.setVisibility(View.VISIBLE);
 							nodata.setVisibility(View.GONE);
-							if (mJsonData.getString("OrderNumber") != null && !mJsonData.getString("OrderNumber").isEmpty())
+							if (mJsonData.getString("MonthName") != null && !mJsonData.getString("MonthName").isEmpty())
 							{
-								monthNametxt.setText("Order Number : " + mJsonData.getString("OrderNumber"));
+								monthNametxt.setText("Month Name : " + mJsonData.getString("MonthName"));
 							}
-							if (mJsonData.getString("OrderDate") != null && !mJsonData.getString("OrderDate").isEmpty())
+							if (String.valueOf(mJsonData.getInt("TargetAmount")) != null && !String.valueOf(mJsonData.getInt("TargetAmount")).isEmpty())
 							{
-								targetamountxt.setText("Order Date : " + mJsonData.getString("OrderDate"));
+								targetamountxt.setText("Target Amount : " + String.valueOf(mJsonData.getInt("TargetAmount")));
 							}
-							if (mJsonData.getString("ShopName") != null && !mJsonData.getString("ShopName").isEmpty())
+							if (String.valueOf(mJsonData.getDouble("SalesAmount")) != null && !String.valueOf(mJsonData.getDouble("SalesAmount")).isEmpty())
 							{
-								salesamounttxt.setText("Shop Name : " + mJsonData.getString("ShopName"));
-							}
-
-							try
-							{
-
-								if (String.valueOf(mJsonData.getInt("SubTotalAmount")) != null && !String.valueOf(mJsonData.getInt("SubTotalAmount")).isEmpty())
-								{
-									subtotaltxt.setVisibility(View.VISIBLE);
-									subtotaltxt.setText("Sub Total Amount : " + String.valueOf(mJsonData.getDouble("SubTotalAmount")));
-								}
-							}
-							catch (Exception e)
-							{
-
+								salesamounttxt.setText("Sales Amount : " + String.valueOf(mJsonData.getDouble("SalesAmount")));
 							}
 
-							if (String.valueOf(mJsonData.getDouble("TaxAmount")) != null && !String.valueOf(mJsonData.getDouble("TaxAmount")).isEmpty())
-							{
-								taxamounttxt.setVisibility(View.VISIBLE);
-								taxamounttxt.setText("Tax Amount : " + String.valueOf(mJsonData.getDouble("TaxAmount")));
-							}
-							if (String.valueOf(mJsonData.getDouble("TotalAmount")) != null && !String.valueOf(mJsonData.getDouble("TotalAmount")).isEmpty())
-							{
-								totalamounttxt.setVisibility(View.VISIBLE);
-								totalamounttxt.setText("Total Amount : " + String.valueOf(mJsonData.getDouble("TotalAmount")));
-							}
 						}
 						else
 						{
-							Toast.makeText(mContext, "No Data", Toast.LENGTH_SHORT).show();
 							layouttdata.setVisibility(View.GONE);
 							nodata.setVisibility(View.VISIBLE);
 						}
@@ -206,3 +184,5 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 	{
 	}
 }
+
+

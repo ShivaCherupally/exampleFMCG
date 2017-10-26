@@ -38,6 +38,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -109,7 +110,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 {
 	SharedPreferences sharedPreferences;
 	TextView mydayPlan, shop, profile, maps, getshops, mylocation, new_customer, endTrip, remarks, logout, order, invoice, userName, shop_update, remainder,
-			viewList, pendingBills, mastercreation;
+			viewList, pendingBills, mastercreation, month_summary;
+	ImageView profileIv;
 	DrawerLayout drawer;
 	Toolbar toolbar;
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -219,6 +221,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		mydayPlan = (TextView) view.findViewById(R.id.myDayPlan);
 		shop = (TextView) view.findViewById(R.id.shop_tv);
 		profile = (TextView) view.findViewById(R.id.profile);
+		profileIv = (ImageView) view.findViewById(R.id.profileIv);
 		remarks = (TextView) view.findViewById(R.id.remarks);
 		// maps = (TextView) view.findViewById(R.id.maps_tv);
 		getshops = (TextView) view.findViewById(R.id.get_shops_tv);
@@ -234,6 +237,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		viewList = (TextView) view.findViewById(R.id.viewList);
 		pendingBills = (TextView) view.findViewById(R.id.pendingBills);
 		mastercreation = (TextView) view.findViewById(R.id.mastercreation);
+		month_summary = (TextView) view.findViewById(R.id.month_summary);
 
 
 		userName = (TextView) view.findViewById(R.id.userName);
@@ -245,7 +249,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 			if (!UserId.equalsIgnoreCase(null) && !UserId.isEmpty())
 			{
-				userName.setText("User ID : " + UserId);
+				profile.setText("User ID : " + UserId);
 			}
 
 			if (!EmployeeId.isEmpty() && EmployeeId != null && !EmployeeId.equalsIgnoreCase("null"))
@@ -267,6 +271,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		mydayPlan.setOnClickListener(this);
 		shop.setOnClickListener(this);
 		profile.setOnClickListener(this);
+		profileIv.setOnClickListener(this);
 		mylocation.setOnClickListener(this);
 		getshops.setOnClickListener(this);
 		new_customer.setOnClickListener(this);
@@ -280,6 +285,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		viewList.setOnClickListener(this);
 		pendingBills.setOnClickListener(this);
 		mastercreation.setOnClickListener(this);
+		month_summary.setOnClickListener(this);
 
 		navigationView.setNavigationItemSelectedListener(this);
 
@@ -744,9 +750,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 		else if (v.getId() == R.id.profile)
 		{
-			Intent i = new Intent(this, ProfileActivity.class);
-			Util.killProfileActivity();
-			startActivity(i);
+			profilePageAccess();
+
+		}
+		else if (v.getId() == R.id.profileIv)
+		{
+			profilePageAccess();
 		}
 		//
 		else if (v.getId() == R.id.my_loc_tv)
@@ -762,13 +771,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 		else if (v.getId() == R.id.add_new_customer)
 		{
-			Intent mylocation = new Intent(this, AddNewCustomer.class);
-			startActivity(mylocation);
+
+			addNewCustomerActivity();
 		}
 		else if (v.getId() == R.id.mastercreation)
 		{
 			Intent inttt = new Intent(DashboardActivity.this, MasterCreationActivity.class);
 			Util.killMaster();
+			startActivity(inttt);
+		}
+		else if (v.getId() == R.id.month_summary)
+		{
+			Intent inttt = new Intent(DashboardActivity.this, MonthlySummary.class);
+			Util.killMonth();
 			startActivity(inttt);
 		}
 		else if (v.getId() == R.id.remarks)
@@ -791,7 +806,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 		else if (v.getId() == R.id.pendingBills)
 		{
-			Toast.makeText(DashboardActivity.this, "Coming Soon..", Toast.LENGTH_SHORT).show();
+			Intent inttt = new Intent(DashboardActivity.this, PendingBillsActivity.class);
+			Util.killMonth();
+			startActivity(inttt);
+			//Toast.makeText(DashboardActivity.this, "Coming Soon..", Toast.LENGTH_SHORT).show();
 			/*Intent remarks = new Intent(DashboardActivity.this, SampleGoogleDirectionMap.class);
 			Util.killAddRemainder();
 			startActivity(remarks);*/
@@ -817,6 +835,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 
 		drawer.closeDrawer(GravityCompat.START);
+	}
+
+	private void profilePageAccess()
+	{
+		Intent i = new Intent(this, ProfileActivity.class);
+		Util.killProfileActivity();
+		startActivity(i);
 	}
 
 	private void logoutUserDetails()
@@ -1512,6 +1537,28 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			{
 				Intent order = new Intent(DashboardActivity.this, Order.class);
 				startActivity(order);
+			}
+			else
+			{
+				Toast.makeText(mContext, "Please Accept My Daily Program", Toast.LENGTH_SHORT).show();
+			}
+		}
+		else
+		{
+			Toast.makeText(mContext, "Please Accept My Daily Program", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	private void addNewCustomerActivity()
+	{
+		String PLAN_ACCEPTED = SharedPrefsUtil.getStringPreference(mContext, "PLAN_STARTED");
+		//
+		if (!PLAN_ACCEPTED.isEmpty() && PLAN_ACCEPTED != null)
+		{
+			if (PLAN_ACCEPTED.equals("ACCEPTED"))
+			{
+				Intent mylocation = new Intent(this, AddNewCustomer.class);
+				startActivity(mylocation);
 			}
 			else
 			{

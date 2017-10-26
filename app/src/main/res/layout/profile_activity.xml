@@ -41,13 +41,14 @@
             android:id="@+id/usernameett"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
             android:layout_marginTop="10dp"
             android:background="@drawable/rect_white"
             android:clickable="false"
             android:enabled="false"
             android:hint="User Name"
             android:imeOptions="actionNext"
-
             android:maxLines="1"
             android:padding="8dp"
             android:singleLine="true"
@@ -56,11 +57,12 @@
             />
 
 
-
         <EditText
             android:id="@+id/mobileet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
             android:layout_marginTop="10dp"
             android:background="@drawable/rect_white"
             android:clickable="false"
@@ -79,6 +81,8 @@
             android:id="@+id/addresset"
             android:layout_width="match_parent"
             android:layout_height="60dp"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
             android:layout_marginTop="10dp"
             android:background="@drawable/rect_white"
             android:clickable="false"

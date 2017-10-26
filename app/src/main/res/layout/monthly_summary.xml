@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout android:id="@+id/layouttdata"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+        >
+
+
+        <TextView
+            android:id="@+id/monthNametxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+
+            android:hint="Month Name"
+            android:imeOptions="actionNext"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:singleLine="true"
+
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            />
+
+
+        <TextView
+            android:id="@+id/targetamountxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:hint="Target Amount"
+            android:imeOptions="actionNext"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textColor="@color/black"
+
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="17sp"
+            />
+
+        <TextView
+            android:id="@+id/salesamounttxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:hint="Sales Amuont"
+            android:imeOptions="actionDone"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="17sp"
+            />
+
+        <TextView
+            android:id="@+id/subtotaltxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:hint="Sales Amuont"
+            android:imeOptions="actionDone"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="17sp"
+            />
+
+        <TextView
+            android:id="@+id/taxamounttxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:hint="Sales Amuont"
+            android:visibility="gone"
+            android:imeOptions="actionDone"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="17sp"
+            />
+
+        <TextView
+            android:id="@+id/totalamounttxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:hint="Sales Amuont"
+            android:imeOptions="actionDone"
+            android:visibility="gone"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="17sp"
+            />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/nodata"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/ten"
+        android:layout_marginRight="@dimen/ten"
+        android:layout_marginTop="10dp"
+        android:background="@color/empty"
+        android:hint="No Data Available"
+        android:padding="8dp"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:textSize="17sp"
+        />
+
+</RelativeLayout>

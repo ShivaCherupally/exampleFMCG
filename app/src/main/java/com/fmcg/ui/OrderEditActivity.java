@@ -1314,7 +1314,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 				}
 				else
 				{
-					fresETID.setText("-");
+					fresETID.setText("0");
 				}
 				fresETID.setBackgroundColor(Color.TRANSPARENT);
 				fresETID.setClickable(true);

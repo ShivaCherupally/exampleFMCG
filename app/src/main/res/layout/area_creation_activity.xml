@@ -58,11 +58,12 @@
         <EditText
             android:id="@+id/areadeset"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+
             android:layout_marginTop="10dp"
             android:background="@drawable/rect_white"
             android:hint="Area Description"
-            android:imeOptions="actionNext"
+            android:layout_height="60dp"
+            android:imeOptions="actionDone"
             android:maxLines="1"
             android:padding="8dp"
             android:singleLine="true"

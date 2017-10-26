@@ -111,9 +111,14 @@ public class HttpAdapter
 
 	public static final String SHOP_COLORS_URL = BASE_URL + "GetShopColorForOrders";
 
-	public static final String ZONE_CREATION = BASE_URL + "GetRouteAcceptByEmployee";
-	public static final String ROUTE_CREATION = BASE_URL + "GetRouteAcceptByEmployee";
-	public static final String AREA_CREATION = BASE_URL + "GetRouteAcceptByEmployee";
+	public static final String ZONE_CREATION = BASE_URL + "InsertZone";
+	public static final String ROUTE_CREATION = BASE_URL + "InsertRoute";
+	public static final String AREA_CREATION = BASE_URL + "InsertArea";
+
+	public static final String MONTH_SUMMARY = BASE_URL + "GetMonthlySummaryByEmployee";
+	public static final String PENDING_BILLS = BASE_URL + "GetCustomerPendingBills";
+	//GetCustomerPendingBills?EmployeeId=4
+	//GetMonthlySummaryByEmployee?EmployeeId=4
 
 //	public static final String SHOP_COLORS_URL = "http://www.mocky.io/v2/5994a54e110000f103723163";
 
@@ -405,15 +410,25 @@ public class HttpAdapter
 		operation.execute(GET_ROUTE_DETAILS_WITH_ROUTEID + "?EmployeeId=" + empolyeeId + "&RouteId=" + RouteId, METHOD_GET, "NONE");
 	}
 
-	//Route Accepted Service
-	/*public static void routeAccept(NetworkOperationListener listener, Object tag, String jsonString)
+	//Month Summary
+	public static void monthSummary(NetworkOperationListener listener, Object tag, String empolyeeId)
 	{
-		Log.d("jsonrequest", jsonString);
+		Log.d("jsonrequest", empolyeeId);
 		// TODO Auto-generated method stub
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
-		operation.execute(GET_ROUTE_ACCEPT_BY_EMP, METHOD_POST, jsonString);
-	}*/
+		operation.execute(MONTH_SUMMARY + "?EmployeeId=" + empolyeeId, METHOD_GET, "NONE");
+	}
+
+	//Month Summary
+	public static void pendingBills(NetworkOperationListener listener, Object tag, String empolyeeId)
+	{
+		Log.d("jsonrequest", empolyeeId);
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(PENDING_BILLS + "?EmployeeId=" + empolyeeId, METHOD_GET, "NONE");
+	}
 
 	public static void routeAccept(NetworkOperationListener listener, Object tag, String checkedRoutesAfterreplace, String uncheckedRoutesAfterreplace)
 	{
@@ -570,16 +585,16 @@ public class HttpAdapter
 		operation.execute(UPDATE_INVOICE_SUBMIT, METHOD_POST, jsonString);
 	}
 
-	public static void zoneCreationSubmit(NetworkOperationListener listener, Object tag, String checkedRoutesAfterreplace, String uncheckedRoutesAfterreplace)
-	{
-		// TODO Auto-generated method stub
-		NetworkOperation operation = new NetworkOperation(listener, tag);
-		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
-		Log.e("Params", checkedRoutesAfterreplace + uncheckedRoutesAfterreplace);
-		operation.execute(ZONE_CREATION
-				                  + "?EnableEmployeeRouteId=" + checkedRoutesAfterreplace
-				                  + "&DisbleEmployeeRouteId=" + uncheckedRoutesAfterreplace, METHOD_POST, "NONE");
-	}
+//	public static void zoneCreationSubmit(NetworkOperationListener listener, Object tag, String ZoneCode, String ZoneName,String ZoneDescription)
+//	{
+//		// TODO Auto-generated method stub
+//		NetworkOperation operation = new NetworkOperation(listener, tag);
+//		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+//		Log.e("Params", checkedRoutesAfterreplace + uncheckedRoutesAfterreplace);
+//		operation.execute(ZONE_CREATION
+//				                  + "?EnableEmployeeRouteId=" + checkedRoutesAfterreplace
+//				                  + "&DisbleEmployeeRouteId=" + uncheckedRoutesAfterreplace, METHOD_POST, "NONE");
+//	}
 
 	public static void routeCreationSubmit(NetworkOperationListener listener, Object tag, String checkedRoutesAfterreplace, String uncheckedRoutesAfterreplace)
 	{

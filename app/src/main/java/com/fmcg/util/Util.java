@@ -31,6 +31,7 @@ import com.fmcg.ui.BillingEditActivity;
 import com.fmcg.ui.GetShopsByRoute;
 import com.fmcg.ui.Invoice;
 import com.fmcg.ui.MasterCreationActivity;
+import com.fmcg.ui.MonthlySummary;
 import com.fmcg.ui.Order;
 import com.fmcg.ui.OrderEditActivity;
 import com.fmcg.ui.PendingListActivity;
@@ -247,6 +248,13 @@ public class Util
 		if (MasterCreationActivity.masteract != null)
 		{
 			MasterCreationActivity.masteract.finish();
+		}
+	}
+	public static void killMonth()
+	{
+		if (MonthlySummary.remarks != null)
+		{
+			MonthlySummary.remarks.finish();
 		}
 	}
 

@@ -942,7 +942,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		                                                       TableRow.LayoutParams.WRAP_CONTENT));
 
 		TextView description = new TextView(Invoice.this);
-		description.setText("VAT");
+		description.setText("GST");
 		description.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description.setTextSize(15);
 		description.setPadding(10, 10, 10, 10);
@@ -1301,7 +1301,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 
 				TextView description = new TextView(mContext);
-				description.setText(String.valueOf(mProductCategory.VAT));
+				description.setText(String.valueOf(mProductCategory.VAT) + "%");
 				description.setTextSize(15);
 				//description.setPadding(15,0,0,0);
 				description.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);

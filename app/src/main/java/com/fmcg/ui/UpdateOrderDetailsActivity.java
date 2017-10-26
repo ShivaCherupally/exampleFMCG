@@ -463,7 +463,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 
 		TextView remove = new TextView(UpdateOrderDetailsActivity.this);
-		remove.setText("VAT");
+		remove.setText("GST");
 		remove.setBackgroundColor(getResources().getColor(R.color.light_green));
 		remove.setTextSize(15);
 		remove.setPadding(10, 10, 10, 10);
@@ -1179,7 +1179,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				}
 				else
 				{
-					fresETID.setText("-");
+					fresETID.setText("0");
 				}
 				fresETID.setBackgroundColor(Color.TRANSPARENT);
 				fresETID.setClickable(true);
@@ -1196,7 +1196,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 
 
 				TextView description = new TextView(mContext);
-				description.setText(String.valueOf(mProductCategory.VAT));
+				description.setText(String.valueOf(mProductCategory.VAT) + "%");
 				description.setTextSize(15);
 				//description.setPadding(15,0,0,0);
 				description.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,

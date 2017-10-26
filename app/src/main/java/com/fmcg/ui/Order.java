@@ -1273,7 +1273,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				}
 				else
 				{
-					fresETID.setText("-");
+					fresETID.setText("0");
 				}
 				fresETID.setBackgroundColor(Color.TRANSPARENT);
 				fresETID.setClickable(true);
@@ -1337,7 +1337,6 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 						{
 							e.printStackTrace();
 						}
-
 //						notifyDataSetChanged();
 						//notifyAll();
 						/*int childCount = tableLayout.getChildCount();

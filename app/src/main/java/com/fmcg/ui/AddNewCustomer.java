@@ -145,6 +145,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 	String selected_religionNameId = "";
 	String selected_paymentNameId = "";
 
+	EditText availzonenametxt, availroutenoetxt;
 
 	///Dailog
 	private Dialog promoDialog;
@@ -182,17 +183,26 @@ public class AddNewCustomer extends AppCompatActivity implements
 
 
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
+		zone_sp.setVisibility(View.GONE);
 		routecd = (Spinner) findViewById(R.id.routecd);
+		routecd.setVisibility(View.GONE);
 		areaName_sp = (Spinner) findViewById(R.id.area_name);
 		shoptype_sp = (Spinner) findViewById(R.id.shop_type_dp);
 		religion = (Spinner) findViewById(R.id.religion);
 		payment_sp = (Spinner) findViewById(R.id.payment_sp);
 		//routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
 
+		availzonenametxt = (EditText) findViewById(R.id.availzonenametxt);
+		availzonenametxt.setVisibility(View.VISIBLE);
+		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
+		availroutenoetxt.setVisibility(View.VISIBLE);
+
+		availableDetails();
 		defaultAreaNameSelect();
 
-		HttpAdapter.getZoneDetailsDP(AddNewCustomer.this, "zoneName");
-		HttpAdapter.getRoute(AddNewCustomer.this, "routeCode");
+//		HttpAdapter.getZoneDetailsDP(AddNewCustomer.this, "zoneName");
+//		HttpAdapter.getRoute(AddNewCustomer.this, "routeCode");
+
 		HttpAdapter.getReligion(AddNewCustomer.this, "getReligion");
 		HttpAdapter.getPayment(AddNewCustomer.this, "payment");
 		HttpAdapter.shopType(AddNewCustomer.this, "shoptypeDP");
@@ -298,6 +308,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 		invoice = (TextView) view.findViewById(R.id.invoice_tv);
 		shop_update = (TextView) view.findViewById(R.id.shop_update);
 		remainder = (TextView) view.findViewById(R.id.remainder);
+
 
 		userName = (TextView) view.findViewById(R.id.userName);
 		try
@@ -461,66 +472,6 @@ public class AddNewCustomer extends AppCompatActivity implements
 	@Override
 	public void onClick(View v)
 	{
-
-		/*if (v.getId() == R.id.shop_tv)
-		{
-			shopName_spinner.setVisibility(View.GONE);
-			refreshActivity();
-			   *//* Intent homepage=new Intent(this,AddNewCustomer.class);
-			    startActivity(homepage);*//*
-		}
-		else if (v.getId() == R.id.get_shops_tv)
-		{
-			Intent i = new Intent(this, GetShopsByRoute.class);
-			startActivity(i);
-		}
-		else if (v.getId() == R.id.my_loc_tv)
-		{
-			Intent mylocation = new Intent(this, MyLocation.class);
-			startActivity(mylocation);
-		}
-		else if (v.getId() == R.id.shop_update)
-		{
-			Intent mylocation = new Intent(this, UpdateShopDetailsActvity.class);
-			startActivity(mylocation);
-			*//*shopName_spinner.setVisibility(View.VISIBLE);
-			refreshActivity();*//*
-		}
-		else if (v.getId() == R.id.add_new_customer)
-		{
-			shopName_spinner.setVisibility(View.GONE);
-			refreshActivity();
-		}
-		else if (v.getId() == R.id.remarks)
-		{
-			Intent remarks = new Intent(AddNewCustomer.this, Remarks.class);
-			startActivity(remarks);
-		}
-		else if (v.getId() == R.id.remainder)
-		{
-			Intent remarks = new Intent(AddNewCustomer.this, RemainderListActivity.class);
-			startActivity(remarks);
-		}
-
-		else if (v.getId() == R.id.logout)
-		{
-			logoutUserDetails();
-		}
-		else if (v.getId() == R.id.order_booking)
-		{
-			orderBookingActivity();
-		}
-		else if (v.getId() == R.id.invoice_tv)
-		{
-			invoiceGenartionActivity();
-		}
-		else if (v.getId() == R.id.myDayPlan)
-		{
-			Intent myDayplan = new Intent(AddNewCustomer.this, RouteDetails.class);
-			startActivity(myDayplan);
-		}*/
-
-		//drawer.closeDrawer(GravityCompat.START);
 	}
 
 
@@ -740,7 +691,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 				if (position != 0)
 				{
 //					zoneNameDropdown = _zoneNamesData.get(position - 1).getShopId();
-					selected_zoneId = _zoneNamesData.get(position - 1).getShopId();
+//					selected_zoneId = _zoneNamesData.get(position - 1).getShopId();
 					HttpAdapter.getRouteDetails(AddNewCustomer.this, "routeCode", selected_zoneId);
 				}
 			}
@@ -793,7 +744,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 				if (position != 0)
 				{
 					routeNameDropDown = _routeCodesData.get(position - 1).getShopId();
-					selected_roueId = _routeCodesData.get(position - 1).getShopId();
+//					selected_roueId = _routeCodesData.get(position - 1).getShopId();
 					HttpAdapter.getAreaDetailsByRoute(AddNewCustomer.this, "areaNameDP", routeNameDropDown);
 				}
 			}
@@ -1420,5 +1371,24 @@ public class AddNewCustomer extends AppCompatActivity implements
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
 		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
+	}
+
+	private void availableDetails()
+	{
+		selected_zoneId = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ZONEID");
+		selected_roueId = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ROUTEID");
+
+		String availablezonename = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ZONENAME");
+		if (availablezonename != null && !availablezonename.isEmpty())
+		{
+			availzonenametxt.setText(availablezonename);
+		}
+
+		String availableroutename = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ROUTENAME");
+		if (availableroutename != null && !availableroutename.isEmpty())
+		{
+			availroutenoetxt.setText(availableroutename);
+		}
+		HttpAdapter.getAreaDetailsByRoute(AddNewCustomer.this, "areaNameDP", selected_roueId);
 	}
 }

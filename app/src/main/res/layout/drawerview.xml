@@ -47,7 +47,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/rect_bg_black"
+                android:background="@drawable/rect_bg_grey"
                 android:orientation="horizontal">
 
                 <Spinner
@@ -57,7 +57,23 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:hint="Zone Name"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:visibility="visible"/>
+
+                <EditText
+                    android:id="@+id/availzonenametxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/empty"
+                    android:clickable="false"
+                    android:editable="false"
+                    android:focusable="false"
+                    android:padding="@dimen/eigth"
+                    android:text="Zone Name"
+                    android:textColor="@color/black"
+                    android:visibility="gone"
+                    />
             </LinearLayout>
 
             <!--  <LinearLayout
@@ -86,7 +102,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/rect_bg_black"
+                android:background="@drawable/rect_bg_grey"
                 android:orientation="horizontal"
                 android:visibility="visible">
 
@@ -97,7 +113,23 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:hint="@string/routecd"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:visibility="visible"/>
+
+                <EditText
+                    android:id="@+id/availroutenoetxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/empty"
+                    android:clickable="false"
+                    android:editable="false"
+                    android:focusable="false"
+                    android:padding="@dimen/eigth"
+                    android:text="Route No"
+                    android:textColor="@color/black"
+                    android:visibility="gone"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -130,10 +162,10 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:hint="@string/shop_name"
-                android:maxLines="1"
                 android:imeOptions="actionNext"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:paddingLeft="10dp"
+                android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"
                 />
 
@@ -332,6 +364,7 @@
                 android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"/>
+
             <EditText
                 android:id="@+id/descriptionShop"
                 android:layout_width="match_parent"

@@ -787,7 +787,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 
 		TextView description = new TextView(UpdateInvoiceActivity.this);
-		description.setText("VAT");
+		description.setText("GST");
 		description.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description.setTextSize(15);
 		description.setPadding(10, 10, 10, 10);
@@ -1141,7 +1141,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				quantityETID.setTextSize(15);
 				quantityETID.setTextColor(Color.BLACK);
 				quantityETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				quantityETID.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
+				quantityETID.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 				quantityETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                              LayoutParams.WRAP_CONTENT));
 				quantityETID.addTextChangedListener(mTextWatcher);
@@ -1170,7 +1170,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				fresETID.setEnabled(false);
 				fresETID.setTextColor(Color.BLACK);
 				fresETID.setInputType(InputType.TYPE_CLASS_NUMBER);
-				fresETID.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
+				fresETID.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 				fresETID.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                          LayoutParams.WRAP_CONTENT));
 				fresETID.addTextChangedListener(mTextWatcherFres);
@@ -1178,9 +1178,10 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 
 
 				TextView description = new TextView(mContext);
-				description.setText(String.valueOf(mProductCategory.VAT));
+				description.setText(String.valueOf(mProductCategory.VAT) + "%");
 				description.setTextSize(15);
 				//description.setPadding(15,0,0,0);
+				description.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 				description.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                             LayoutParams.WRAP_CONTENT));
 				addView(description);
@@ -1188,7 +1189,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				TextView description2 = new TextView(mContext);
 				description2.setText(String.valueOf(mProductCategory.SubTotalAmount));
 				description2.setTextSize(15);
-				description2.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
+				description2.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 //				description2.setVisibility(GONE);
 				description2.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				                                              LayoutParams.WRAP_CONTENT));

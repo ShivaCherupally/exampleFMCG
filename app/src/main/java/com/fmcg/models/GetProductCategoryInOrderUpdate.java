@@ -12,11 +12,41 @@ public class GetProductCategoryInOrderUpdate
 	public int ProductId;
 	public String ProductName;
 	public String ProductDescription;
-	public int ProductPrice;
+	public double ProductPrice;
 	public double VAT;
-	public int GST;
+	public double GST;
 	public int Quantity;
 	public int Frees;
+
+	public double getProductPrice()
+	{
+		return ProductPrice;
+	}
+
+	public void setProductPrice(final double productPrice)
+	{
+		ProductPrice = productPrice;
+	}
+
+	public double getVAT()
+	{
+		return VAT;
+	}
+
+	public void setVAT(final double VAT)
+	{
+		this.VAT = VAT;
+	}
+
+	public double getGST()
+	{
+		return GST;
+	}
+
+	public void setGST(final double GST)
+	{
+		this.GST = GST;
+	}
 
 	public int getProductId()
 	{
@@ -46,31 +76,6 @@ public class GetProductCategoryInOrderUpdate
 	public void setProductDescription(final String productDescription)
 	{
 		ProductDescription = productDescription;
-	}
-
-	public int getProductPrice()
-	{
-		return ProductPrice;
-	}
-
-	public void setProductPrice(final int productPrice)
-	{
-		ProductPrice = productPrice;
-	}
-
-	public double getVAT()
-	{
-		return VAT;
-	}
-
-	public void setVAT(final double VAT)
-	{
-		this.VAT = VAT;
-	}
-
-	public int getGST()
-	{
-		return GST;
 	}
 
 	public void setGST(final int GST)
