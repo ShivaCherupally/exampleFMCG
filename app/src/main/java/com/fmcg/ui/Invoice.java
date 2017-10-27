@@ -136,6 +136,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	String OrderDeliveryDate = "";
 	Context mContext;
 
+	String AvailableTotalAmount = "";
 	String TotalAmount = "";
 	boolean orderCancel = false;
 	String invoiceOrderno = "";
@@ -581,7 +582,8 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 						if (valid)
 						{
 
-							TotalAmount = String.format("%.2f", Double.valueOf(TotalAmount));
+//							TotalAmount = String.format("%.2f", Double.valueOf(TotalAmount));
+//							AvailableTotalAmount ;//= TotalAmount;
 
 							/*String jsonString = createJsonInvoiceSubmit(invoiceNum.getText().toString(), ZoneId, RouteId, AreaId,
 							                                            selected_shopId, orderNUm, "Y", "",
@@ -621,7 +623,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 							String jsonString = createJsonInvoiceSubmit(invoiceNum.getText().toString(), selected_zoneId, selected_roueId, selected_areaNameId,
 							                                            selected_ShopId, orderNUm, "Y", "",
 							                                            SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"),
-							                                            TotalAmount, paidAmt.getText().toString(),
+							                                            AvailableTotalAmount, paidAmt.getText().toString(),
 							                                            selected_orderStatusId, selected_paymentTermsId, chequeDate, CreditDays);
 							Log.e("parameters", jsonString + "");
 							HttpAdapter.invoiceSubmit(this, "invoiceSubmit", jsonString);
@@ -787,7 +789,8 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 							for (int i = 0; i < jsonArray.length(); i++)
 							{
 								TotalAmount = jsonArray.getString(i);
-								Log.e("totalAmount", TotalAmount);
+								AvailableTotalAmount = String.format("%.2f", Double.valueOf(TotalAmount));
+								Log.e("totalAmount", AvailableTotalAmount);
 							}
 							totalAmt.setText("Total Amount: " + String.format("%.2f", Double.valueOf(TotalAmount)));
 						}
@@ -1072,7 +1075,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 			String paidAmount = paidAmt.getText().toString();
 			if (!paidAmount.equalsIgnoreCase(null) && !paidAmount.isEmpty())
 			{
-				double totalValue = Double.parseDouble(TotalAmount);
+				double totalValue = Double.parseDouble(AvailableTotalAmount);
 				double paidValue = Double.parseDouble(paidAmount);
 				if (totalValue != paidValue)
 				{

@@ -15,19 +15,44 @@ public class GetOrderSummary
     public String TaxAmount;
     public String TotalAmount;*/
 
-	public int SubTotalAmount;
+	public double SubTotalAmount;
 	public int Quantity;
-	public int ProductPrice;
+	public double ProductPrice;
 	public int Frees;
 	public double TotalAmount;
 	public double VAT;
 	public String ProductName;
 	public double TaxAmount;
-	public int GST;
+	public double GST;
 
-	public int getSubTotalAmount()
+	public double getSubTotalAmount()
 	{
 		return SubTotalAmount;
+	}
+
+	public void setSubTotalAmount(final double subTotalAmount)
+	{
+		SubTotalAmount = subTotalAmount;
+	}
+
+	public double getProductPrice()
+	{
+		return ProductPrice;
+	}
+
+	public void setProductPrice(final double productPrice)
+	{
+		ProductPrice = productPrice;
+	}
+
+	public double getGST()
+	{
+		return GST;
+	}
+
+	public void setGST(final double GST)
+	{
+		this.GST = GST;
 	}
 
 	public void setSubTotalAmount(final int subTotalAmount)
@@ -45,10 +70,6 @@ public class GetOrderSummary
 		Quantity = quantity;
 	}
 
-	public int getPrice()
-	{
-		return ProductPrice;
-	}
 
 	public void setPrice(final int productPrice)
 	{
@@ -105,10 +126,6 @@ public class GetOrderSummary
 		TaxAmount = taxAmount;
 	}
 
-	public int getGST()
-	{
-		return GST;
-	}
 
 	public void setGST(final int GST)
 	{

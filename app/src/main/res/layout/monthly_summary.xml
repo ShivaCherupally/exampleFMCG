@@ -18,12 +18,10 @@
             android:layout_marginLeft="@dimen/ten"
             android:layout_marginRight="@dimen/ten"
             android:layout_marginTop="10dp"
-            android:background="@drawable/rect_white"
-
             android:hint="Month Name"
             android:imeOptions="actionNext"
             android:maxLines="1"
-            android:padding="8dp"
+            android:paddingTop="@dimen/five"
             android:singleLine="true"
 
             android:textColor="@color/black"
@@ -37,12 +35,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ten"
             android:layout_marginRight="@dimen/ten"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/rect_white"
             android:hint="Target Amount"
             android:imeOptions="actionNext"
             android:maxLines="1"
-            android:padding="8dp"
+            android:paddingTop="@dimen/ten"
             android:textColor="@color/black"
 
             android:textCursorDrawable="@drawable/color_cursor"
@@ -55,11 +51,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ten"
             android:layout_marginRight="@dimen/ten"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/rect_white"
             android:hint="Sales Amuont"
             android:imeOptions="actionDone"
-            android:padding="8dp"
+            android:paddingTop="@dimen/ten"
             android:textColor="@color/black"
             android:textCursorDrawable="@drawable/color_cursor"
             android:textSize="17sp"
@@ -69,7 +63,6 @@
             android:id="@+id/subtotaltxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginLeft="@dimen/ten"
             android:layout_marginRight="@dimen/ten"
             android:layout_marginTop="10dp"
@@ -80,6 +73,7 @@
             android:textColor="@color/black"
             android:textCursorDrawable="@drawable/color_cursor"
             android:textSize="17sp"
+            android:visibility="gone"
             />
 
         <TextView
@@ -91,12 +85,12 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/rect_white"
             android:hint="Sales Amuont"
-            android:visibility="gone"
             android:imeOptions="actionDone"
             android:padding="8dp"
             android:textColor="@color/black"
             android:textCursorDrawable="@drawable/color_cursor"
             android:textSize="17sp"
+            android:visibility="gone"
             />
 
         <TextView
@@ -109,11 +103,11 @@
             android:background="@drawable/rect_white"
             android:hint="Sales Amuont"
             android:imeOptions="actionDone"
-            android:visibility="gone"
             android:padding="8dp"
             android:textColor="@color/black"
             android:textCursorDrawable="@drawable/color_cursor"
             android:textSize="17sp"
+            android:visibility="gone"
             />
     </LinearLayout>
 
@@ -127,6 +121,7 @@
         android:layout_marginLeft="@dimen/ten"
         android:layout_marginRight="@dimen/ten"
         android:layout_marginTop="10dp"
+        android:visibility="gone"
         android:background="@color/empty"
         android:hint="No Data Available"
         android:padding="8dp"

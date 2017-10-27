@@ -223,8 +223,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 							SharedPrefsUtil.setStringPreference(context, "EmployeeName", userDetails.Data.EmployeeName);
 							SharedPrefsUtil.setStringPreference(context, "EmployeeDesignation", userDetails.Data.EmployeeDesignation);
 
+
 							SharedPrefsUtil.setStringPreference(context, "EmployeeCode", userDetails.Data.EmployeeCode);
-							SharedPrefsUtil.setStringPreference(context, "MobileNumber", userDetails.Data.MobileNumber);
+							if (userDetails.Data.MobileNumber != null && !userDetails.Data.MobileNumber.isEmpty())
+							{
+								SharedPrefsUtil.setStringPreference(context, "MobileNumber", userDetails.Data.MobileNumber);
+							}
+							if (userDetails.Data.RoleId != null && !userDetails.Data.RoleId.isEmpty())
+							{
+								SharedPrefsUtil.setStringPreference(context, "RoleId", userDetails.Data.RoleId);
+							}
 
 
 							DateFormat dateInstance = SimpleDateFormat.getDateInstance();

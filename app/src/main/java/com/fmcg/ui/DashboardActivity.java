@@ -120,7 +120,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	private LocationManager locationManager;
 	public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 	Context mContext;
-	String UserId = "", EmployeeId = "";
+	String UserId = "", EmployeeId = "", RoleId = "";
 
 	//////// Pie Chart
 	private PieChart mChart;// mChart2;
@@ -245,12 +245,28 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 			UserId = SharedPrefsUtil.getStringPreference(mContext, "EmployeeCode");
 			EmployeeId = SharedPrefsUtil.getStringPreference(mContext, "EmployeeId");
+			RoleId = SharedPrefsUtil.getStringPreference(mContext, "RoleId");
 			Log.e("EmployeeId", EmployeeId);
+			Log.e("RoleId", RoleId);
 
 			if (!UserId.equalsIgnoreCase(null) && !UserId.isEmpty())
 			{
 				profile.setText("User ID : " + UserId);
 			}
+
+			if (!RoleId.equalsIgnoreCase(null) && !RoleId.isEmpty())
+			{
+				if (RoleId.equals("5"))
+				{
+					mastercreation.setVisibility(View.VISIBLE);
+				}
+				else
+				{
+					mastercreation.setVisibility(View.VISIBLE);
+				}
+
+			}
+
 
 			if (!EmployeeId.isEmpty() && EmployeeId != null && !EmployeeId.equalsIgnoreCase("null"))
 			{

@@ -11,5 +11,6 @@ public class LoginData
 	public String EmployeeCode;
 	public String EmployeeDesignation;
 	public String RouetCode;
+	public String RoleId;
 	public List<GetShopsArray> Data;
 }

@@ -11,7 +11,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,14 +38,21 @@ import java.util.Map;
  * Created by Shiva on 9/24/2017.
  */
 
-public class PendingBillsActivity extends AppCompatActivity implements NetworkOperationListener
+public class PendingBillsActivity extends AppCompatActivity implements NetworkOperationListener, View.OnClickListener
 {
 	public static Activity remarks;
 	public SharedPreferences sharedPreferences;
-	LinearLayout layouttdata;
-	public TextView monthNametxt, targetamountxt, salesamounttxt, nodata;
-	public TextView subtotaltxt, taxamounttxt, totalamounttxt;
+//	LinearLayout layouttdata;
+//	public TextView monthNametxt, targetamountxt, salesamounttxt, nodata;
+//	public TextView subtotaltxt, taxamounttxt, totalamounttxt;
 
+	public TextView ordernotxt, orderdatetxt, shopNametxt, subtotaltxt, taxamounttxt, totalamounttxt;
+	Button editBtn;
+//	public TextView orderlabeltxt, shopNameLabeltxt, noOfPrductLabeltxt, subTotalLabeltxt, taxAmountLabel;
+
+	public FrameLayout userdetailsframe;  // Arrow click first time Visible
+	private FrameLayout expanded_frameLayout; // Arrow Close Icon invisible
+	LinearLayout oreder_invoiceViewDetailsLayout, statusLayout, noofprductLayout;
 
 	Context mContext;
 	String zonenamestr, zonecodestr, zonedesstr;
@@ -52,7 +61,7 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.monthly_summary);
+		setContentView(R.layout.order_or_invice_item);
 		remarks = PendingBillsActivity.this;
 
 		mContext = PendingBillsActivity.this;
@@ -67,15 +76,30 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 		{
 			Toast.makeText(mContext, "Please Check internet Connection", Toast.LENGTH_SHORT).show();
 		}
-		layouttdata = (LinearLayout) findViewById(R.id.layouttdata);
-		nodata = (TextView) findViewById(R.id.nodata);
-		monthNametxt = (TextView) findViewById(R.id.monthNametxt);
-		targetamountxt = (TextView) findViewById(R.id.targetamountxt);
-		salesamounttxt = (TextView) findViewById(R.id.salesamounttxt);
+//		layouttdata = (LinearLayout) findViewById(R.id.layouttdata);
+//		nodata = (TextView) findViewById(R.id.nodata);
+		ordernotxt = (TextView) findViewById(R.id.ordernotxt);
+		orderdatetxt = (TextView) findViewById(R.id.orderdatetxt);
+		shopNametxt = (TextView) findViewById(R.id.shopNametxt);
 
 		subtotaltxt = (TextView) findViewById(R.id.subtotaltxt);
 		taxamounttxt = (TextView) findViewById(R.id.taxamounttxt);
 		totalamounttxt = (TextView) findViewById(R.id.totalamounttxt);
+		editBtn = (Button) findViewById(R.id.editBtn);
+		editBtn.setVisibility(View.INVISIBLE);
+
+		//View Details
+		userdetailsframe = (FrameLayout) findViewById(R.id.userdetailsframe);
+		expanded_frameLayout = (FrameLayout) findViewById(R.id.expanded_frameLayout);
+		oreder_invoiceViewDetailsLayout = (LinearLayout) findViewById(R.id.oreder_invoiceViewDetailsLayout);
+
+		statusLayout = (LinearLayout) findViewById(R.id.statusLayout);
+		noofprductLayout = (LinearLayout) findViewById(R.id.noofprductLayout);
+		statusLayout.setVisibility(View.GONE);
+		noofprductLayout.setVisibility(View.GONE);
+		oreder_invoiceViewDetailsLayout.setVisibility(View.GONE);
+		userdetailsframe.setOnClickListener(this);
+		expanded_frameLayout.setOnClickListener(this);
 
 
 	}
@@ -122,19 +146,19 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 						JSONObject mJsonData = mJson.getJSONObject("Data");
 						if (mJsonData != null)
 						{
-							layouttdata.setVisibility(View.VISIBLE);
-							nodata.setVisibility(View.GONE);
+//							layouttdata.setVisibility(View.VISIBLE);
+//							nodata.setVisibility(View.GONE);
 							if (mJsonData.getString("OrderNumber") != null && !mJsonData.getString("OrderNumber").isEmpty())
 							{
-								monthNametxt.setText("Order Number : " + mJsonData.getString("OrderNumber"));
+								ordernotxt.setText(mJsonData.getString("OrderNumber"));
 							}
 							if (mJsonData.getString("OrderDate") != null && !mJsonData.getString("OrderDate").isEmpty())
 							{
-								targetamountxt.setText("Order Date : " + mJsonData.getString("OrderDate"));
+								orderdatetxt.setText(mJsonData.getString("OrderDate"));
 							}
 							if (mJsonData.getString("ShopName") != null && !mJsonData.getString("ShopName").isEmpty())
 							{
-								salesamounttxt.setText("Shop Name : " + mJsonData.getString("ShopName"));
+								shopNametxt.setText(mJsonData.getString("ShopName"));
 							}
 
 							try
@@ -143,7 +167,7 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 								if (String.valueOf(mJsonData.getInt("SubTotalAmount")) != null && !String.valueOf(mJsonData.getInt("SubTotalAmount")).isEmpty())
 								{
 									subtotaltxt.setVisibility(View.VISIBLE);
-									subtotaltxt.setText("Sub Total Amount : " + String.valueOf(mJsonData.getDouble("SubTotalAmount")));
+									subtotaltxt.setText(String.valueOf(mJsonData.getDouble("SubTotalAmount")));
 								}
 							}
 							catch (Exception e)
@@ -154,19 +178,19 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 							if (String.valueOf(mJsonData.getDouble("TaxAmount")) != null && !String.valueOf(mJsonData.getDouble("TaxAmount")).isEmpty())
 							{
 								taxamounttxt.setVisibility(View.VISIBLE);
-								taxamounttxt.setText("Tax Amount : " + String.valueOf(mJsonData.getDouble("TaxAmount")));
+								taxamounttxt.setText(String.valueOf(mJsonData.getDouble("TaxAmount")));
 							}
 							if (String.valueOf(mJsonData.getDouble("TotalAmount")) != null && !String.valueOf(mJsonData.getDouble("TotalAmount")).isEmpty())
 							{
 								totalamounttxt.setVisibility(View.VISIBLE);
-								totalamounttxt.setText("Total Amount : " + String.valueOf(mJsonData.getDouble("TotalAmount")));
+								totalamounttxt.setText(String.valueOf(mJsonData.getDouble("TotalAmount")));
 							}
 						}
 						else
 						{
 							Toast.makeText(mContext, "No Data", Toast.LENGTH_SHORT).show();
-							layouttdata.setVisibility(View.GONE);
-							nodata.setVisibility(View.VISIBLE);
+//							layouttdata.setVisibility(View.GONE);
+//							nodata.setVisibility(View.VISIBLE);
 						}
 
 //						refeshActivity();
@@ -174,8 +198,8 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 					else
 					{
 						Toast.makeText(mContext, "No Data", Toast.LENGTH_SHORT).show();
-						layouttdata.setVisibility(View.GONE);
-						nodata.setVisibility(View.VISIBLE);
+//						layouttdata.setVisibility(View.GONE);
+//						nodata.setVisibility(View.VISIBLE);
 //
 					}
 				}
@@ -188,8 +212,8 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 		}
 		else
 		{
-			layouttdata.setVisibility(View.GONE);
-			nodata.setVisibility(View.VISIBLE);
+//			layouttdata.setVisibility(View.GONE);
+//			nodata.setVisibility(View.VISIBLE);
 		}
 
 	}
@@ -204,5 +228,34 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 	@Override
 	public void showToast(String string, int lengthLong)
 	{
+	}
+
+	@Override
+	public void onClick(final View viewid)
+	{
+		if (viewid.getId() == R.id.userdetailsframe)
+		{
+			oreder_invoiceViewDetailsLayout.setVisibility(View.VISIBLE);
+			expanded_frameLayout.setVisibility(View.VISIBLE);
+		}
+		else if (viewid.getId() == R.id.expanded_frameLayout)
+		{
+			oreder_invoiceViewDetailsLayout.setVisibility(View.GONE);
+			expanded_frameLayout.setVisibility(View.GONE);
+		}
+		else
+		{
+
+		}
+
+		/*viewHolder.userdetailsframe.setOnClickListener(new View.OnClickListener()
+			{
+				@Override
+				public void onClick(final View view)
+				{
+					viewHolder.oreder_invoiceViewDetailsLayout.setVisibility(View.VISIBLE);
+					viewHolder.expanded_frameLayout.setVisibility(View.VISIBLE);
+				}
+			});*/
 	}
 }
