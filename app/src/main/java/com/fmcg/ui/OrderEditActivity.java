@@ -709,7 +709,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 								{
 									if (positionvalue != 0)
 									{
-										productCategoryId = String.valueOf(positionvalue);
+//										productCategoryId = String.valueOf(positionvalue);
 										list.add(productDP.get(positionvalue - 1));
 										displayTableView(list);
 									}
@@ -1521,9 +1521,9 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		}
 		if (!cameracaptured)
 		{
-			if (productCategoryId == null || productCategoryId.isEmpty() || productCategoryId.equals("0"))
+			if (list.size() == 0)
 			{
-				Toast.makeText(getApplicationContext(), "Please Select Product Category Name", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Please Add Product", Toast.LENGTH_SHORT).show();
 				ret = false;
 				return ret;
 			}

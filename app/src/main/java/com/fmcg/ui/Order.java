@@ -734,7 +734,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 								{
 									if (positionvalue != 0)
 									{
-										productCategoryId = String.valueOf(positionvalue);
+//										productCategoryId = String.valueOf(positionvalue);
 										list.add(productDP.get(positionvalue - 1));
 										displayTableView(list);
 									}
@@ -885,6 +885,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 			dataObj.putOpt("AreaId", AreaId);
 			dataObj.putOpt("ShopId", ShopId);
 			dataObj.putOpt("IsShopClosed", IsShopClosed);
+			Log.e("ShopClosedImage", ShopClosedImage);
 			dataObj.putOpt("ShopClosedImage", ShopClosedImage);
 			dataObj.putOpt("OrderDeliveryDate", OrderDeliveryDate);
 			dataObj.putOpt("OrderStatusId", OrderStatusId);
@@ -1478,9 +1479,10 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		}
 		if (!cameracaptured)
 		{
-			if (productCategoryId == null || productCategoryId.isEmpty() || productCategoryId.equals("0"))
+//			if (list.size() == 0|| productCategoryId.isEmpty() || productCategoryId.equals("0"))
+			if (list.size() == 0)
 			{
-				Toast.makeText(getApplicationContext(), "Please Select Product Category Name", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Please Add Product", Toast.LENGTH_SHORT).show();
 				ret = false;
 				return ret;
 			}
