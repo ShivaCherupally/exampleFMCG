@@ -4,23 +4,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
 
-
     >
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomHRLID"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-
-
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -232,100 +232,94 @@
                 android:id="@+id/capturedImage"
                 android:layout_width="fill_parent"
                 android:layout_height="100dp"
-                android:visibility="gone">
-
-            </ImageView>
+                android:visibility="gone"/>
 
             <LinearLayout
-                android:id="@+id/items_li"
+                android:id="@+id/statusBaseLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/rect_bg_black"
-                    android:orientation="horizontal">
-
-                    <Spinner
-                        android:id="@+id/product_category"
-                        style="@style/spinner_bg_style"
-                        android:layout_width="300dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:background="@color/empty"
-                        android:hint="Product Category Name"
-                        android:padding="@dimen/eigth"
-                        />
-
-                    <ImageView
-                        android:id="@+id/product_addiv"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/plusimg"
-                        android:padding="@dimen/eigth"/>
-                </LinearLayout>
-
-
-                <TableLayout android:id="@+id/tableRow1"
-                             xmlns:android="http://schemas.android.com/apk/res/android"
-                             android:layout_width="match_parent"
-                             android:layout_height="match_parent"
-                             android:layout_marginTop="10dp"
-                             android:background="@drawable/edittext_whites"
-                             android:padding="8dp"
-                             android:shrinkColumns="*"
-                             android:stretchColumns="*"/>
+                >
 
 
                 <LinearLayout
+                    android:id="@+id/items_li"
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/rect_bg_black"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
-                    <Spinner
-                        android:id="@+id/payment_terms_spinner"
-                        style="@style/spinner_bg_style"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:hint="Payment Terms Name"
-                        android:singleLine="true"/>
+                        android:layout_height="45dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/rect_bg_black"
+                        android:orientation="horizontal">
+
+                        <Spinner
+                            android:id="@+id/product_category"
+                            style="@style/spinner_bg_style"
+                            android:layout_width="300dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:background="@color/empty"
+                            android:hint="Product Category Name"
+                            android:padding="@dimen/eigth"
+                            />
+
+                        <ImageView
+                            android:id="@+id/product_addiv"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/plusimg"
+                            android:padding="@dimen/eigth"/>
+                    </LinearLayout>
+
+
+                    <TableLayout android:id="@+id/tableRow1"
+                                 xmlns:android="http://schemas.android.com/apk/res/android"
+                                 android:layout_width="match_parent"
+                                 android:layout_height="match_parent"
+                                 android:layout_marginTop="10dp"
+                                 android:background="@drawable/edittext_whites"
+                                 android:padding="8dp"
+                                 android:shrinkColumns="*"
+                                 android:stretchColumns="*"/>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/rect_bg_black"
+                        android:orientation="horizontal">
+
+                        <Spinner
+                            android:id="@+id/payment_terms_spinner"
+                            style="@style/spinner_bg_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:hint="Payment Terms Name"
+                            android:singleLine="true"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/paymentSelected"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical"
+                        android:padding="3dp"
+
+                        android:text="Selecte Payment Status"
+                        android:textColor="@color/HeaderColor"
+                        android:textSize="17sp"
+                        android:visibility="gone"/>
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/paymentSelected"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:padding="3dp"
-
-                    android:text="Selecte Payment Status"
-                    android:textColor="@color/HeaderColor"
-                    android:textSize="17sp"
-                    android:visibility="gone"/>
-
-                <EditText
-                    android:id="@+id/Remarks_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/rect_bg_black"
-                    android:gravity="start"
-                    android:hint="Remarks"
-                    android:inputType="text"
-
-                    android:padding="8dp"
-                    android:textColor="@color/black"/>
 
                 <CheckBox
                     android:id="@+id/isOrder"
@@ -346,9 +340,55 @@
                     android:visibility="gone"/>
             </LinearLayout>
 
+            <EditText
+                android:id="@+id/Remarks_et"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_bg_black"
+                android:gravity="start"
+                android:hint="Remarks"
+                android:inputType="text"
+
+                android:padding="8dp"
+                android:textColor="@color/black"/>
+
 
         </LinearLayout>
     </ScrollView>
+
+    <!-- <LinearLayout
+         android:id="@+id/bottomHRLID"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         android:layout_margin="10dp"
+         android:background="@color/empty"
+         android:clickable="false"
+         android:descendantFocusability="afterDescendants"
+         android:focusableInTouchMode="false">
+
+         <TextView
+             android:id="@+id/submit"
+             android:layout_width="match_parent"
+             android:layout_height="40dp"
+
+             android:background="@drawable/submit_rectangle"
+             android:clickable="true"
+             android:descendantFocusability="beforeDescendants"
+             android:focusableInTouchMode="true"
+             android:gravity="center"
+
+             android:text="@string/submit"
+             android:textAllCaps="true"
+             android:textColor="@color/white"
+
+
+             android:textSize="16sp"
+             android:textStyle="bold"
+             />
+     </LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/bottomHRLID"
@@ -356,10 +396,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
-        android:background="@color/empty"
-        android:clickable="false"
-        android:descendantFocusability="afterDescendants"
-        android:focusableInTouchMode="false">
+        android:background="@color/empty">
 
         <TextView
             android:id="@+id/submit"
@@ -367,16 +404,12 @@
             android:layout_height="40dp"
 
             android:background="@drawable/submit_rectangle"
-            android:clickable="true"
-            android:descendantFocusability="beforeDescendants"
-            android:focusableInTouchMode="true"
             android:gravity="center"
-
             android:text="@string/submit"
+
             android:textAllCaps="true"
+
             android:textColor="@color/white"
-
-
             android:textSize="16sp"
             android:textStyle="bold"
             />

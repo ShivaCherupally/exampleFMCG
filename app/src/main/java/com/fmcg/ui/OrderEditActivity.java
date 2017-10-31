@@ -196,6 +196,8 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 	boolean paymentTermsTouchClick = false;
 
 	EditText availzonenametxt, availroutenoetxt;
+	LinearLayout statusBaseLayout;
+	String orderStatusName = "";
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -251,7 +253,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 
 		product_addiv = (ImageView) findViewById(R.id.product_addiv);
 		list_li = (LinearLayout) findViewById(R.id.items_li);
-
+		statusBaseLayout = (LinearLayout) findViewById(R.id.statusBaseLayout);
 		selectRouteNameBind();
 		selectAreaNameBind();
 
@@ -411,6 +413,10 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 			else if (resultCode == RESULT_CANCELED)
 			{
 				cameracaptured = true;
+				isShopClosed.setChecked(false);
+				isShopClosed.setSelected(false);
+				capture.setVisibility(View.GONE);
+				list_li.setVisibility(View.VISIBLE);
 				Toast.makeText(getApplicationContext(),
 				               "User cancelled image capture", Toast.LENGTH_SHORT)
 				     .show();
@@ -418,6 +424,10 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 			else
 			{
 				cameracaptured = true;
+				isShopClosed.setChecked(false);
+				isShopClosed.setSelected(false);
+				capture.setVisibility(View.GONE);
+				list_li.setVisibility(View.VISIBLE);
 				Toast.makeText(getApplicationContext(),
 				               "Sorry! Failed to capture image", Toast.LENGTH_SHORT)
 				     .show();
@@ -523,7 +533,6 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 			paymentSelectedStr = SharedPrefsUtil.getStringPreference(mContext, "paymentSelected");
 			if (paymentSelectedStr != null && !paymentSelectedStr.isEmpty() && !paymentSelectedStr.equalsIgnoreCase("null"))
 			{
-
 				if (paymentSelectedStr.equalsIgnoreCase("Credit-days"))
 				{
 					CreditDays = paymentSelected.getText().toString();
@@ -797,7 +806,8 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 					else
 					{
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
-						Toast.makeText(mContext, "Upload Failed..", Toast.LENGTH_SHORT).show();
+//						Toast.makeText(mContext, "Upload Failed..", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "Server Upload Failed.." + "Data : " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
 						refreshActivity();
 					}
 				}
@@ -890,7 +900,15 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 				dataObj.putOpt("CreditDays", "0");
 			}
 
-			dataObj.putOpt("IsOrdered", IsOrdered);
+//			dataObj.putOpt("IsOrdered", IsOrdered);
+			if (orderStatusName.equals("Order Not Given"))
+			{
+				dataObj.putOpt("IsOrdered", "N");
+			}
+			else
+			{
+				dataObj.putOpt("IsOrdered", IsOrdered);
+			}
 			dataObj.putOpt("IsInvoice", IsInvoice);
 			dataObj.putOpt("Remarks", Remarks);
 			dataObj.putOpt("EmployeeId", EmployeeId);
@@ -1132,6 +1150,17 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 					else if (selectedSpinner.equals("ORDER_STATUS"))
 					{
 						selected_orderStatusId = _dropDownData.get(position - 1).getShopId();
+						orderStatusName = _dropDownData.get(position - 1).getShopName();
+						Log.e("orderStatusName", orderStatusName);
+						if (orderStatusName.equals("Order Not Given"))
+						{
+//							cameracaptured = true;
+							statusBaseLayout.setVisibility(View.GONE);
+						}
+						else
+						{
+							statusBaseLayout.setVisibility(View.VISIBLE);
+						}
 					}
 					else if (selectedSpinner.equals("PAYMENT_TYPE"))
 					{
@@ -1519,19 +1548,22 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 			ret = false;
 			return ret;
 		}
-		if (!cameracaptured)
+		if (!orderStatusName.equals("Order Not Given"))
 		{
-			if (list.size() == 0)
+			if (!cameracaptured)
 			{
-				Toast.makeText(getApplicationContext(), "Please Add Product", Toast.LENGTH_SHORT).show();
-				ret = false;
-				return ret;
-			}
-			if (selected_paymentTermsId == null || selected_paymentTermsId.isEmpty() || selected_paymentTermsId.equals("0"))
-			{
-				Toast.makeText(getApplicationContext(), "Please Select Payment Terms Name", Toast.LENGTH_SHORT).show();
-				ret = false;
-				return ret;
+				if (list.size() == 0)
+				{
+					Toast.makeText(getApplicationContext(), "Please Add Product", Toast.LENGTH_SHORT).show();
+					ret = false;
+					return ret;
+				}
+				if (selected_paymentTermsId == null || selected_paymentTermsId.isEmpty() || selected_paymentTermsId.equals("0"))
+				{
+					Toast.makeText(getApplicationContext(), "Please Select Payment Terms Name", Toast.LENGTH_SHORT).show();
+					ret = false;
+					return ret;
+				}
 			}
 		}
 

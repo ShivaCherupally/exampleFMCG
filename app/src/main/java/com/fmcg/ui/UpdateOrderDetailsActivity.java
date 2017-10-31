@@ -153,6 +153,9 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	String SPINNER_SELECTION = "";
 	AutoCompleteTextView shopName_autoComplete;
 	ImageView product_addiv;
+	LinearLayout statusBaseLayout;
+	String orderStatusName = "";
+
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -190,6 +193,8 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		product_category_spinner = (Spinner) findViewById(R.id.product_category_spinner);
 		payment_terms_spinner = (Spinner) findViewById(R.id.payment_terms_spinner);
 		product_addiv = (ImageView) findViewById(R.id.product_addiv);
+
+		statusBaseLayout = (LinearLayout) findViewById(R.id.statusBaseLayout);
 
 		tableLayout = (TableLayout) findViewById(R.id.tableLayout);
 		submit = (TextView) findViewById(R.id.submit);
@@ -770,7 +775,8 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 					else
 					{
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
-						Toast.makeText(mContext, "Update Failed..", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(mContext, "Update Failed..", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "Server Upload Failed.." + "Data : " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
 						Intent in = new Intent(UpdateOrderDetailsActivity.this, DashboardActivity.class);
 						Util.killupdateorderBook();
 						startActivity(in);
@@ -1001,6 +1007,17 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			else if (selectedSpinner.equals("ORDER_STATUS"))
 			{
 				selected_orderStatusId = _dropDownData.get(position - 1).getShopId();
+				orderStatusName = _dropDownData.get(position - 1).getShopName();
+				Log.e("orderStatusName", orderStatusName);
+				if (orderStatusName.equals("Order Not Given"))
+				{
+//							cameracaptured = true;
+					statusBaseLayout.setVisibility(View.GONE);
+				}
+				else
+				{
+					statusBaseLayout.setVisibility(View.VISIBLE);
+				}
 			}
 			else if (selectedSpinner.equals("PAYMENT_TYPE"))
 			{
@@ -1372,17 +1389,21 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			ret = false;
 			return ret;
 		}
-		if (selected_orderStatusId == null || selected_orderStatusId.isEmpty() || selected_orderStatusId.equals("0"))
+
+		if (!orderStatusName.equals("Order Not Given"))
 		{
-			Toast.makeText(getApplicationContext(), "Please Select Order Status", Toast.LENGTH_SHORT).show();
-			ret = false;
-			return ret;
-		}
-		if (selected_paymentTermsId == null || selected_paymentTermsId.isEmpty() || selected_paymentTermsId.equals("0"))
-		{
-			Toast.makeText(getApplicationContext(), "Please Select Payment Terms Name", Toast.LENGTH_SHORT).show();
-			ret = false;
-			return ret;
+			if (selected_orderStatusId == null || selected_orderStatusId.isEmpty() || selected_orderStatusId.equals("0"))
+			{
+				Toast.makeText(getApplicationContext(), "Please Select Order Status", Toast.LENGTH_SHORT).show();
+				ret = false;
+				return ret;
+			}
+			if (selected_paymentTermsId == null || selected_paymentTermsId.isEmpty() || selected_paymentTermsId.equals("0"))
+			{
+				Toast.makeText(getApplicationContext(), "Please Select Payment Terms Name", Toast.LENGTH_SHORT).show();
+				ret = false;
+				return ret;
+			}
 		}
 		return ret;
 	}

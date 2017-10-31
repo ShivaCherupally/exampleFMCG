@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="@dimen/ten">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="@dimen/ten">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/eigth"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
             </LinearLayout>
 
 
@@ -49,7 +49,7 @@
                     style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:background="@color/empty" />
+                    android:background="@color/empty"/>
 
                 <EditText
                     android:id="@+id/availzonenametxt"
@@ -63,7 +63,7 @@
                     android:hint="Zone Name"
                     android:padding="@dimen/eigth"
                     android:textColor="@color/black"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
 
             </LinearLayout>
 
@@ -82,7 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:background="@color/empty" />
+                    android:background="@color/empty"/>
 
                 <EditText
                     android:id="@+id/availroutenoetxt"
@@ -96,7 +96,7 @@
                     android:hint="Route No"
                     android:padding="@dimen/eigth"
                     android:textColor="@color/black"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <LinearLayout
@@ -112,7 +112,7 @@
                     style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"/>
             </LinearLayout>
 
 
@@ -152,7 +152,7 @@
                     android:textColor="@color/HeaderColor"
                     android:textCursorDrawable="@drawable/color_cursor">
 
-                    <requestFocus />
+                    <requestFocus/>
                 </AutoCompleteTextView>
 
             </LinearLayout>
@@ -172,7 +172,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:hint="Order Type"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
             </LinearLayout>
 
             <!--<LinearLayout
@@ -192,78 +192,85 @@
                     />
             </LinearLayout>-->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rect_bg_black"
-                android:orientation="horizontal">
-
-                <Spinner
-                    android:id="@+id/product_category_spinner"
-                    style="@style/spinner_bg_style"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1.8"
-                    android:background="@color/empty"
-                    android:hint="Product Category Name"
-                    android:padding="@dimen/eigth" />
-
-                <ImageView
-                    android:id="@+id/product_addiv"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="@dimen/ten"
-                    android:background="@drawable/plusimg"
-                    android:padding="@dimen/eigth" />
-            </LinearLayout>
-
-
-            <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/tableLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/edittext_whites"
-                android:padding="8dp"
-                android:shrinkColumns="*"
-                android:stretchColumns="*"
-                android:visibility="gone" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginBottom="@dimen/ten"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rect_bg_black"
-                android:orientation="horizontal">
-
-                <Spinner
-                    android:id="@+id/payment_terms_spinner"
-                    style="@style/spinner_bg_style"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:hint="Payment Terms Name"
-                    android:singleLine="true" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/paymentSelected"
+                android:id="@+id/statusBaseLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="10dp"
-                android:gravity="center_vertical"
-                android:padding="3dp"
+                android:orientation="vertical">
 
-                android:text="date"
-                android:textColor="@color/HeaderColor"
-                android:textSize="17sp"
-                android:visibility="gone" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rect_bg_black"
+                    android:orientation="horizontal">
+
+                    <Spinner
+                        android:id="@+id/product_category_spinner"
+                        style="@style/spinner_bg_style"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1.8"
+                        android:background="@color/empty"
+                        android:hint="Product Category Name"
+                        android:padding="@dimen/eigth"/>
+
+                    <ImageView
+                        android:id="@+id/product_addiv"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="@dimen/ten"
+                        android:background="@drawable/plusimg"
+                        android:padding="@dimen/eigth"/>
+                </LinearLayout>
+
+
+                <TableLayout android:id="@+id/tableLayout"
+                             xmlns:android="http://schemas.android.com/apk/res/android"
+                             android:layout_width="match_parent"
+                             android:layout_height="match_parent"
+                             android:layout_marginBottom="10dp"
+                             android:layout_marginTop="10dp"
+                             android:background="@drawable/edittext_whites"
+                             android:padding="8dp"
+                             android:shrinkColumns="*"
+                             android:stretchColumns="*"
+                             android:visibility="gone"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="@dimen/ten"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rect_bg_black"
+                    android:orientation="horizontal">
+
+                    <Spinner
+                        android:id="@+id/payment_terms_spinner"
+                        style="@style/spinner_bg_style"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:hint="Payment Terms Name"
+                        android:singleLine="true"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/paymentSelected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center_vertical"
+                    android:padding="3dp"
+
+                    android:text="date"
+                    android:textColor="@color/HeaderColor"
+                    android:textSize="17sp"
+                    android:visibility="gone"/>
+            </LinearLayout>
 
 
         </LinearLayout>
@@ -288,7 +295,7 @@
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
     </LinearLayout>
 
 </RelativeLayout>
