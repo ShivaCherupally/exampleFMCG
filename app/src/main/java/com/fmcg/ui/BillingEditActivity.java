@@ -195,10 +195,10 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		zone_sp.setVisibility(View.VISIBLE);
 		zone_sp.setEnabled(false);
 		zone_sp.setClickable(false);
-		zone_sp.setBackgroundColor(Color.TRANSPARENT);
+//		zone_sp.setBackgroundColor(Color.TRANSPARENT);
 		routeName_sp = (Spinner) findViewById(R.id.routeName_spinner);
 		routeName_sp.setVisibility(View.VISIBLE);
-		routeName_sp.setBackgroundColor(Color.TRANSPARENT);
+//		routeName_sp.setBackgroundColor(Color.TRANSPARENT);
 		routeName_sp.setEnabled(false);
 		routeName_sp.setClickable(false);
 

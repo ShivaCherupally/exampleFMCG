@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -198,6 +199,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 	EditText availzonenametxt, availroutenoetxt;
 	LinearLayout statusBaseLayout;
 	String orderStatusName = "";
+	ProgressDialog progressdailog;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -338,6 +340,8 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 				boolean validated = validationEntryData();
 				if (validated)
 				{
+					progressdailog = Utility.setProgressDailog(mContext);
+					progressdailog.show();
 					dataUploadInServer();
 				}
 			}
@@ -810,6 +814,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 						Toast.makeText(mContext, "Server Upload Failed.." + "Data : " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
 						refreshActivity();
 					}
+					progressdailog.dismiss();
 				}
 				else if (response.getTag().equals("GetOrderNumber"))
 				{
@@ -869,12 +874,11 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 	                                     String Remarks, String EmployeeId, JSONArray cartItemsArray
 	)
 	{
-		JSONObject studentsObj = new JSONObject();
-		JSONObject dataObj = new JSONObject();
-		try
-		{
-//			dataObj.putOpt("OrderNumber", OrderNumber);
-			dataObj.putOpt("ZoneId", ZoneId);
+//		JSONObject studentsObj = new JSONObject();
+//		JSONObject dataObj = new JSONObject();
+//		try
+//		{
+			/*dataObj.putOpt("ZoneId", ZoneId);
 			dataObj.putOpt("RouteId", RouteId);
 			dataObj.putOpt("AreaId", AreaId);
 			dataObj.putOpt("ShopId", ShopId);
@@ -913,6 +917,71 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 			dataObj.putOpt("Remarks", Remarks);
 			dataObj.putOpt("EmployeeId", EmployeeId);
 
+			studentsObj.put("ProductList", cartItemsArray);
+			studentsObj.put("OrderBookingDate", dataObj);
+		}
+		catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.d("orderjson", studentsObj.toString());
+		return studentsObj.toString();*/
+		JSONObject studentsObj = new JSONObject();
+		JSONObject dataObj = new JSONObject();
+		try
+		{
+//			dataObj.putOpt("OrderNumber", OrderNumber);
+
+			dataObj.putOpt("ZoneId", ZoneId);
+			dataObj.putOpt("RouteId", RouteId);
+			dataObj.putOpt("AreaId", AreaId);
+			dataObj.putOpt("ShopId", ShopId);
+			dataObj.putOpt("IsShopClosed", IsShopClosed);
+			Log.e("ShopClosedImage", ShopClosedImage);
+			dataObj.putOpt("ShopClosedImage", ShopClosedImage);
+			dataObj.putOpt("OrderDeliveryDate", OrderDeliveryDate);
+			dataObj.putOpt("OrderStatusId", OrderStatusId);
+			dataObj.putOpt("PaymentTermsId", PaymentTermsId); //PaymentTermsId // Added New param for paymnet tersms
+			if (chequeDate != null && !chequeDate.isEmpty())
+			{
+				dataObj.putOpt("PaymentDateCheque", chequeDate);
+			}
+			else
+			{
+				dataObj.putOpt("ChequeDate", null);
+			}
+			if (creditDays != null && !creditDays.isEmpty())
+			{
+				dataObj.putOpt("CreditDays", creditDays);
+			}
+			else
+			{
+				dataObj.putOpt("CreditDays", "0");
+			}
+
+			if (orderStatusName.equals("Order Not Given"))
+			{
+				dataObj.putOpt("IsOrdered", "N");
+				Log.e("isOrder", dataObj.putOpt("IsOrdered", "N") + "");
+			}
+			else
+			{
+				if (IsShopClosed.equals("Y"))
+				{
+					dataObj.putOpt("IsOrdered", "N");
+					Log.e("isOrder", dataObj.putOpt("IsOrdered", "N") + "");
+				}
+				else
+				{
+					dataObj.putOpt("IsOrdered", "Y");
+					Log.e("isOrder", dataObj.putOpt("IsOrdered", "Y") + "");
+				}
+			}
+
+			dataObj.putOpt("IsInvoice", IsInvoice);
+			dataObj.putOpt("Remarks", Remarks);
+			dataObj.putOpt("EmployeeId", EmployeeId);
 			studentsObj.put("ProductList", cartItemsArray);
 			studentsObj.put("OrderBookingDate", dataObj);
 		}
@@ -1097,15 +1166,18 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 					AvailShopName = "";
 					selectedSpinner = "AREA";
 					dropDownValueSelection(position, _areaNamesData, selectedSpinner);
-					break;
 				}
+				break;
 			/*case R.id.shopName_autoComplete:
 				selectedSpinner = "SHOP";
 				dropDownValueSelection(position, _shopNamesData, selectedSpinner);
 				break;*/
 			case R.id.order_status_spinner:
-				selectedSpinner = "ORDER_STATUS";
-				dropDownValueSelection(position, _orderStatusData, selectedSpinner);
+				if (orderStatusTouchClick)
+				{
+					selectedSpinner = "ORDER_STATUS";
+					dropDownValueSelection(position, _orderStatusData, selectedSpinner);
+				}
 				break;
 			case R.id.payment_terms_spinner:
 				if (paymentTermsTouchClick)
@@ -2254,6 +2326,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 
 	private void autoFillDetails()
 	{
+		orderStatusTouchClick = false;
 		try
 		{
 			if (SharedPrefsUtil.getStringPreference(mContext, "KEY_DESCRIPTION") != null && !SharedPrefsUtil.getStringPreference(mContext, "KEY_DESCRIPTION").isEmpty())

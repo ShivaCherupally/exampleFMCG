@@ -265,12 +265,27 @@
                     android:layout_marginBottom="10dp"
                     android:gravity="center_vertical"
                     android:padding="3dp"
-
                     android:text="date"
                     android:textColor="@color/HeaderColor"
                     android:textSize="17sp"
                     android:visibility="gone"/>
+
+
             </LinearLayout>
+
+            <EditText
+                android:id="@+id/Remarks_et"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_bg_black"
+                android:gravity="start"
+                android:hint="Remarks"
+                android:inputType="text"
+
+                android:padding="8dp"
+                android:textColor="@color/black"/>
 
 
         </LinearLayout>

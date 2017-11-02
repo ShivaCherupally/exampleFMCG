@@ -72,9 +72,11 @@
                 style="@style/spinner_bg_style"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+
                 android:layout_gravity="center"
                 android:hint="Route Name"
                 android:singleLine="true"
+
                 android:visibility="gone"/>
 
             <EditText

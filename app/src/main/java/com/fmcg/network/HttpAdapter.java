@@ -14,9 +14,9 @@ public class HttpAdapter
 	public static final String METHOD_PUT = "PUT";
 
 	//Live Url
-//	public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
+	public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
 	//Test Url
-	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
+//	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
 
 
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
@@ -150,16 +150,6 @@ public class HttpAdapter
 		operation.execute(SHOPROUTE + "?RouteID=1", METHOD_GET, "");
 	}
 
-	public static void orderbook(NetworkOperationListener listener, Object tag, String jsonString)
-	{
-		// TODO Auto-generated method stub
-		Log.d("jsonrequest", jsonString);
-		NetworkOperation operation = new NetworkOperation(listener, tag);
-		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
-		operation.execute(ORDERBOOK, METHOD_POST, jsonString);
-	}
-
-
 	public static void invoiceSubmit(NetworkOperationListener listener, Object tag, String jsonString)
 	{
 		// TODO Auto-generated method stub
@@ -167,6 +157,16 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(INVOICE_SUBMIT, METHOD_POST, jsonString);
+	}
+
+
+	public static void orderbook(NetworkOperationListener listener, Object tag, String jsonString)
+	{
+		// TODO Auto-generated method stub
+		Log.d("jsonrequest", jsonString);
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(ORDERBOOK, METHOD_POST, jsonString);
 	}
 
 	public static void invoiceCancel(NetworkOperationListener listener, Object tag, String jsonString)

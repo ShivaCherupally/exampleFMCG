@@ -199,6 +199,8 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 	LinearLayout statusBaseLayout;
 	String orderStatusName = "";
 
+	ProgressDialog progressdailog;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -326,6 +328,8 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				boolean validated = validationEntryData();
 				if (validated)
 				{
+					progressdailog = Utility.setProgressDailog(mContext);
+					progressdailog.show();
 					dataUploadInServer();
 				}
 			}
@@ -812,6 +816,8 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				}
 				else if (response.getTag().equals("orderbook"))
 				{
+
+					//{"Data":null,"StatusCode":null,"Status":null,"ResponseID":null,"Message":null}
 					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
 					{
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
@@ -826,6 +832,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 //						Toast.makeText(mContext, "Upload Failed.." + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
 						refreshActivity();
 					}
+					progressdailog.dismiss();
 				}
 				else if (response.getTag().equals("GetOrderNumber"))
 				{
@@ -890,6 +897,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		try
 		{
 //			dataObj.putOpt("OrderNumber", OrderNumber);
+
 			dataObj.putOpt("ZoneId", ZoneId);
 			dataObj.putOpt("RouteId", RouteId);
 			dataObj.putOpt("AreaId", AreaId);
@@ -920,10 +928,20 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 			if (orderStatusName.equals("Order Not Given"))
 			{
 				dataObj.putOpt("IsOrdered", "N");
+				Log.e("isOrder", dataObj.putOpt("IsOrdered", "N") + "");
 			}
 			else
 			{
-				dataObj.putOpt("IsOrdered", IsOrdered);
+				if (IsShopClosed.equals("Y"))
+				{
+					dataObj.putOpt("IsOrdered", "N");
+					Log.e("isOrder", dataObj.putOpt("IsOrdered", "N") + "");
+				}
+				else
+				{
+					dataObj.putOpt("IsOrdered", "Y");
+					Log.e("isOrder", dataObj.putOpt("IsOrdered", "Y") + "");
+				}
 			}
 
 			dataObj.putOpt("IsInvoice", IsInvoice);
@@ -931,6 +949,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 			dataObj.putOpt("EmployeeId", EmployeeId);
 			studentsObj.put("ProductList", cartItemsArray);
 			studentsObj.put("OrderBookingDate", dataObj);
+
 		}
 		catch (JSONException e)
 		{
@@ -945,7 +964,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 	{
 		AlertDialog alertDialog = new AlertDialog.Builder(Order.this).create();
 		alertDialog.setTitle("Alert");
-		alertDialog.setMessage("App needs to access the Camera.");
+		alertDialog.setMessage("Bright Udyog needs to access the Camera.");
 
 		alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "DONT ALLOW",
 		                      new DialogInterface.OnClickListener()

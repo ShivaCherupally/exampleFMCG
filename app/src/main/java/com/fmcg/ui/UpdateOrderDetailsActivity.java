@@ -65,7 +65,6 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 {
 	public static Activity orderBookActivity;
 	//	public List<PaymentDropDown> paymentDP;
-	public List<OrderStatusDropdown> orderstatusDP;
 	public List<GetProductCategoryInOrderUpdate> productDP;
 	public List<GetProductCategoryInOrderUpdate> storedProductCategories = new ArrayList<GetProductCategoryInOrderUpdate>();
 	public List<GetZoneDetails> zoneDetailsDP;
@@ -203,7 +202,6 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		paymentSelected.setVisibility(View.GONE);
 
 
-		orderstatusDP = new ArrayList<>();
 		productDP = new ArrayList<>();
 		zoneDetailsDP = new ArrayList<>();
 		areaDetailsDP = new ArrayList<>();
@@ -269,16 +267,6 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				product_category_spinner.performClick();
 			}
 		});
-/*
-        zone_name_spinner.setOnItemSelectedListener(this);
-		routeName_spinner.setOnItemSelectedListener(this);
-		areaName_spinner.setOnItemSelectedListener(this);
-//		shopname_spinner.setOnItemSelectedListener(this);
-		order_status_spinner.setOnItemSelectedListener(this);
-		product_category_spinner.setOnItemSelectedListener(this);
-		payment_terms_spinner.setOnItemSelectedListener(this);*/
-
-
 	}
 
 	private void editOrderDetailsaccess(final String editBookListData)
@@ -321,6 +309,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			selected_areaNameId = String.valueOf(editDatajsonObj.getInt("AreaId"));
 			selected_ShopId = String.valueOf(editDatajsonObj.getInt("ShopId"));
 			selected_orderStatusId = String.valueOf(editDatajsonObj.getInt("OrderStatusId"));
+			Log.e("selected_orderStatusId", selected_orderStatusId);
 			selected_paymentTermsId = editDatajsonObj.getString("PaymentTermsId");
 
 			if (selected_zoneId != null && !selected_zoneId.isEmpty())
@@ -332,7 +321,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 
 			if (selected_orderStatusId != null && !selected_orderStatusId.isEmpty())
 			{
-				order_status_spinner.setSelection(getIndex(order_status_spinner, Integer.parseInt(selected_orderStatusId), _orderStatusData), false);
+				order_status_spinner.setSelection(getIndex(order_status_spinner, Integer.parseInt(selected_orderStatusId), _orderStatusData));
 			}
 
 			if (selected_paymentTermsId != null && !selected_paymentTermsId.equals("0") && !selected_paymentTermsId.equalsIgnoreCase("null"))
@@ -346,8 +335,6 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			else
 			{
 				paymentTermsTouchClick = true;
-//				selected_paymentTermsId = "2";
-//				payment_terms_spinner.setSelection(0);
 				if (_paymentsSelectData.size() > 0)
 				{
 					payment_terms_spinner.setSelection(getIndexPositionPayment(payment_terms_spinner, Integer.parseInt(selected_paymentTermsId), _paymentsSelectData), true);
@@ -360,71 +347,6 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		}
 	}
 
-	/*private void headers()
-	{
-		android.widget.TableRow row = new android.widget.TableRow(this);
-
-		TextView taskdate = new TextView(UpdateOrderDetailsActivity.this);
-		taskdate.setTextSize(15);
-		taskdate.setPadding(10, 10, 10, 10);
-		taskdate.setText("Prod");
-		taskdate.setBackgroundColor(getResources().getColor(R.color.light_green));
-		taskdate.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-		row.addView(taskdate);
-
-		TextView title = new TextView(UpdateOrderDetailsActivity.this);
-		title.setText("Prc");
-		title.setBackgroundColor(getResources().getColor(R.color.light_green));
-		title.setTextSize(15);
-		title.setPadding(10, 10, 10, 10);
-		title.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                               android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-		row.addView(title);
-
-
-		TextView taskhour = new TextView(UpdateOrderDetailsActivity.this);
-		taskhour.setText("Qty");
-		taskhour.setBackgroundColor(getResources().getColor(R.color.light_green));
-		taskhour.setTextSize(15);
-		taskhour.setPadding(10, 10, 10, 10);
-		taskhour.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                                  android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-		row.addView(taskhour);
-
-		TextView description3 = new TextView(UpdateOrderDetailsActivity.this);
-		description3.setText("Fres");
-		description3.setBackgroundColor(getResources().getColor(R.color.light_green));
-		description3.setTextSize(15);
-		description3.setPadding(10, 10, 10, 10);
-		row.addView(description3);
-		description3.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-
-		TextView description = new TextView(UpdateOrderDetailsActivity.this);
-		description.setText("VAT");
-		description.setBackgroundColor(getResources().getColor(R.color.light_green));
-		description.setTextSize(15);
-		description.setPadding(10, 10, 10, 10);
-		row.addView(description);
-		description.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                                     android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-
-		TextView description2 = new TextView(UpdateOrderDetailsActivity.this);
-		description2.setText("GST");
-		description2.setBackgroundColor(getResources().getColor(R.color.light_green));
-		description2.setTextSize(15);
-		description2.setPadding(10, 10, 10, 10);
-		description2.setVisibility(View.GONE);
-		row.addView(description2);
-		description2.setLayoutParams(new android.widget.TableRow.LayoutParams(android.widget.TableRow.LayoutParams.MATCH_PARENT,
-		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
-
-
-		tableLayout.addView(row, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
-		                                                      TableLayout.LayoutParams.WRAP_CONTENT));
-
-	}*/
 
 	private void headers()
 	{
@@ -845,31 +767,6 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	                                     String EmployeeId, JSONArray cartItemsArray
 	)
 	{
-	    /*JSONObject studentsObj = new JSONObject();
-		JSONObject dataObj = new JSONObject();
-		try
-		{
-			dataObj.putOpt("ZoneId", ZoneId);
-			dataObj.putOpt("RouteId", RouteId);
-			dataObj.putOpt("AreaId", AreaId);
-			dataObj.putOpt("ShopId", ShopId);
-			dataObj.putOpt("OrderDeliveryDate", OrderDeliveryDate);
-			dataObj.putOpt("OrderStatusId", OrderStatusId);
-			dataObj.putOpt("EmployeeId", EmployeeId);
-			dataObj.putOpt("OrderId", OrderId);
-			dataObj.putOpt("OrderNumber", orderNumInvoice.getText().toString());
-			studentsObj.put("ProductList", cartItemsArray);
-			studentsObj.put("OrderBookingDate", dataObj);
-		}
-		catch (JSONException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Log.d("orderjson", studentsObj.toString());
-		return studentsObj.toString();*/
-
-
 		JSONObject studentsObj = new JSONObject();
 		JSONObject dataObj = new JSONObject();
 		try
@@ -1006,17 +903,19 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			}*/
 			else if (selectedSpinner.equals("ORDER_STATUS"))
 			{
-				selected_orderStatusId = _dropDownData.get(position - 1).getShopId();
-				orderStatusName = _dropDownData.get(position - 1).getShopName();
-				Log.e("orderStatusName", orderStatusName);
-				if (orderStatusName.equals("Order Not Given"))
+				if (orderStatusTouchClick)
 				{
-//							cameracaptured = true;
-					statusBaseLayout.setVisibility(View.GONE);
-				}
-				else
-				{
-					statusBaseLayout.setVisibility(View.VISIBLE);
+					selected_orderStatusId = _dropDownData.get(position - 1).getShopId();
+					orderStatusName = _dropDownData.get(position - 1).getShopName();
+					Log.e("orderStatusName", orderStatusName);
+					if (orderStatusName.equals("Order Not Given"))
+					{
+						statusBaseLayout.setVisibility(View.GONE);
+					}
+					else
+					{
+						statusBaseLayout.setVisibility(View.VISIBLE);
+					}
 				}
 			}
 			else if (selectedSpinner.equals("PAYMENT_TYPE"))
