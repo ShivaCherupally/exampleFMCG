@@ -802,17 +802,28 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_ORDER_STATUS_ID", selected_orderStatusId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_DESCRIPTION", remarksET.getText().toString());
-
 						Toast.makeText(mContext, "Successfully Your Order Booked.", Toast.LENGTH_SHORT).show();
 						Toast.makeText(mContext, "Your Order Number is " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
 						dailogBoxAfterSubmit();
 					}
 					else
 					{
-						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
-//						Toast.makeText(mContext, "Upload Failed..", Toast.LENGTH_SHORT).show();
-						Toast.makeText(mContext, "Server Upload Failed.." + "Data : " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
-						refreshActivity();
+						if (mJson.getString("Message").equalsIgnoreCase("Shop Closed")){
+							SharedPrefsUtil.setStringPreference(mContext, "KEY_ZONE_ID", selected_zoneId);
+							SharedPrefsUtil.setStringPreference(mContext, "KEY_ROUTE_ID", selected_roueId);
+							SharedPrefsUtil.setStringPreference(mContext, "KEY_AREANAME_ID", selected_areaNameId);
+							SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_NAME", shopName_autoComplete.getText().toString());
+							SharedPrefsUtil.setStringPreference(mContext, "KEY_PAYMENT_ID", selected_paymentTermsId);
+							SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopId);
+							SharedPrefsUtil.setStringPreference(mContext, "KEY_ORDER_STATUS_ID", selected_orderStatusId);
+							SharedPrefsUtil.setStringPreference(mContext, "KEY_DESCRIPTION", remarksET.getText().toString());
+							Toast.makeText(mContext, "Successfully Shop Closed", Toast.LENGTH_SHORT).show();
+							dailogBoxAfterSubmit();
+						}else {
+							Toast.makeText(mContext, "Upload Failed.." + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
+							refreshActivity();
+						}
+
 					}
 					progressdailog.dismiss();
 				}
@@ -962,8 +973,8 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 
 			if (orderStatusName.equals("Order Not Given"))
 			{
-				dataObj.putOpt("IsOrdered", "N");
-				Log.e("isOrder", dataObj.putOpt("IsOrdered", "N") + "");
+				dataObj.putOpt("IsOrdered", "Y");
+				Log.e("isOrder", dataObj.putOpt("IsOrdered", "Y") + "");
 			}
 			else
 			{

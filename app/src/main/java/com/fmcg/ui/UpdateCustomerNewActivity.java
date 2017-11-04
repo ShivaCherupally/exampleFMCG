@@ -211,7 +211,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		{
 			if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 			{
-				showGPSDisabledAlertToUser();
+//				showGPSDisabledAlertToUser();
 			}
 			if (mGoogleApiClient == null)
 			{
@@ -804,7 +804,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		{
 			if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 			{
-				showGPSDisabledAlertToUser();
+//				showGPSDisabledAlertToUser();
 			}
 			if (mGoogleApiClient == null)
 			{
@@ -829,7 +829,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 						if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 						{
-							showGPSDisabledAlertToUser();
+//							showGPSDisabledAlertToUser();
 						}
 
 						if (mGoogleApiClient == null)

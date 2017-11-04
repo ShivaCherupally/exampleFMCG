@@ -816,7 +816,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				}
 				else if (response.getTag().equals("orderbook"))
 				{
-
+					progressdailog.dismiss();
 					//{"Data":null,"StatusCode":null,"Status":null,"ResponseID":null,"Message":null}
 					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
 					{
@@ -827,12 +827,16 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 					}
 					else
 					{
-						Log.e("response", mJson.getString("Message").equalsIgnoreCase("Fail") + "Fail");
-						Toast.makeText(mContext, "Server Upload Failed.." + "Data : " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
-//						Toast.makeText(mContext, "Upload Failed.." + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
-						refreshActivity();
+						if (mJson.getString("Message").equalsIgnoreCase("Shop Closed")){
+							Toast.makeText(mContext, "Successfully Shop Closed", Toast.LENGTH_SHORT).show();
+							dailogBoxAfterSubmit();
+						}else {
+							Toast.makeText(mContext, "Upload Failed.." + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
+							refreshActivity();
+						}
+
 					}
-					progressdailog.dismiss();
+
 				}
 				else if (response.getTag().equals("GetOrderNumber"))
 				{
@@ -927,8 +931,8 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 			if (orderStatusName.equals("Order Not Given"))
 			{
-				dataObj.putOpt("IsOrdered", "N");
-				Log.e("isOrder", dataObj.putOpt("IsOrdered", "N") + "");
+				dataObj.putOpt("IsOrdered", "Y");
+				Log.e("isOrder", dataObj.putOpt("IsOrdered", "Y") + "");
 			}
 			else
 			{

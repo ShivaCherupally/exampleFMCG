@@ -75,6 +75,7 @@
 
                 android:layout_gravity="center"
                 android:hint="Route Name"
+                android:background="@color/empty"
                 android:singleLine="true"
 
                 android:visibility="gone"/>

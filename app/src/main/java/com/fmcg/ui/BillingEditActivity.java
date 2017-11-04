@@ -171,6 +171,8 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 
 	EditText availzonenametxt, availroutenoetxt;
 
+	String AvailableTotalAmount = "";
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -808,6 +810,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 							JSONArray jsonArray = mJson.getJSONArray("Data");
 							for (int i = 0; i < jsonArray.length(); i++)
 							{
+								AvailableTotalAmount = String.format("%.2f", Double.valueOf(TotalAmount));
 								TotalAmount = jsonArray.getString(i);
 								Log.e("totalAmount", TotalAmount);
 							}
@@ -1094,18 +1097,27 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 			String paidAmount = paidAmt.getText().toString();
 			if (!paidAmount.equalsIgnoreCase(null) && !paidAmount.isEmpty())
 			{
-				double totalValue = Double.parseDouble(TotalAmount);
+				/*double totalValue = Double.parseDouble(TotalAmount);
 				double paidValue = Double.parseDouble(paidAmount);
 				if (totalValue >= paidValue)
 				{
 					//Toast.makeText(getApplicationContext(), "Paid Amount " + paidValue, Toast.LENGTH_SHORT).show();
-					/*Toast.makeText(getApplicationContext(), "Please Check Paid Amount", Toast.LENGTH_SHORT).show();
+					*//*Toast.makeText(getApplicationContext(), "Please Check Paid Amount", Toast.LENGTH_SHORT).show();
 					ret = false;
-					return ret;*/
+					return ret;*//*
 				}
 				else
 				{
 					Toast.makeText(getApplicationContext(), "Please Check Paid Amount", Toast.LENGTH_SHORT).show();
+					ret = false;
+					return ret;
+				}*/
+
+				double totalValue = Double.parseDouble(AvailableTotalAmount);
+				double paidValue = Double.parseDouble(paidAmount);
+				if (totalValue != paidValue)
+				{
+					Toast.makeText(getApplicationContext(), "Please Check Total Amount", Toast.LENGTH_SHORT).show();
 					ret = false;
 					return ret;
 				}

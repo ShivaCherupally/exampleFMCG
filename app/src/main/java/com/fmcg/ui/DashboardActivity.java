@@ -201,7 +201,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 			if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 			{
-				showGPSDisabledAlertToUser();
+//				showGPSDisabledAlertToUser();
 			}
 			if (mGoogleApiClient == null)
 			{
@@ -1453,7 +1453,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 			if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 			{
-				showGPSDisabledAlertToUser();
+//				showGPSDisabledAlertToUser();
 			}
 			if (mGoogleApiClient == null)
 			{
@@ -1481,7 +1481,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 						if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 						{
-							showGPSDisabledAlertToUser();
+//							showGPSDisabledAlertToUser();
 						}
 
 						if (mGoogleApiClient == null)

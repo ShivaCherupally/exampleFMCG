@@ -220,7 +220,7 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
 		{
 			if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 			{
-				showGPSDisabledAlertToUser();
+//				showGPSDisabledAlertToUser();
 			}
 			if (mGoogleApiClient == null)
 			{
@@ -1245,7 +1245,7 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
 		{
 			if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 			{
-				showGPSDisabledAlertToUser();
+//				showGPSDisabledAlertToUser();
 			}
 			if (mGoogleApiClient == null)
 			{
@@ -1273,7 +1273,7 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
 
 						if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 						{
-							showGPSDisabledAlertToUser();
+//							showGPSDisabledAlertToUser();
 						}
 
 						if (mGoogleApiClient == null)
