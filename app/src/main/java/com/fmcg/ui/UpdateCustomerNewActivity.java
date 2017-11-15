@@ -341,7 +341,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	private void selectRouteNameBind()
 	{
 		routeNamestitle.add("Select Route No");
-		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, R.layout.spinner_item, routeNamestitle);
 		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		routecd.setAdapter(dataAdapter_areaName);
 	}
@@ -351,7 +351,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		selected_areaNameId = "";
 		areaNamestitle.clear();
 		areaNamestitle.add("Select Area Name");
-		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, R.layout.spinner_item, areaNamestitle);
 		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
 	}
@@ -1041,7 +1041,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			e.printStackTrace();
 		}
 
-		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, zoneNamestitle);
+		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this, R.layout.spinner_item, zoneNamestitle);
 //		dataAdapter_zoneName.setDropDownViewResource(R.layout.list_item);
 		dataAdapter_zoneName.setDropDownViewResource(R.layout.list_item);
 		zone_sp.setAdapter(dataAdapter_zoneName);
@@ -1107,7 +1107,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			e.printStackTrace();
 		}
 		//Routedetails adapter
-		ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, routeNamestitle);
+		ArrayAdapter<String> dataAdapter_routeName = new ArrayAdapter<String>(this, R.layout.spinner_item, routeNamestitle);
 		dataAdapter_routeName.setDropDownViewResource(R.layout.list_item);
 		routecd.setAdapter(dataAdapter_routeName);
 
@@ -1203,6 +1203,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				JSONObject jsnobj = jsonArray.getJSONObject(i);
 				String shopId = jsnobj.getString("AreaId");
 				String shopNamee = jsnobj.getString("AreaName");
+				shopNamee = Util.capitalize(shopNamee);
 				_areaNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}
 			areaNamestitle.add("Select Area Name");
@@ -1219,7 +1220,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			e.printStackTrace();
 		}
 
-		dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+		dataAdapter_areaName = new ArrayAdapter<String>(this, R.layout.spinner_item, areaNamestitle);
 		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
 
@@ -1285,7 +1286,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		catch (Exception e)
 		{
 		}
-		dataAdapter_shopNames = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shooNamestitle);
+		dataAdapter_shopNames = new ArrayAdapter<String>(this, R.layout.spinner_item, shooNamestitle);
 		dataAdapter_shopNames.setDropDownViewResource(R.layout.list_item);
 //		shopName_spinner.setAdapter(dataAdapter_shopNames);
 
@@ -1294,8 +1295,24 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		shopName_autoComplete.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
 //		shopName_autoComplete.setTextColor(Color.RED);
 
-		shopName_autoComplete.setTextColor(Color.BLACK);
-		shopName_autoComplete.setTextSize(16);
+//		shopName_autoComplete.setTextColor(Color.He);
+		shopName_autoComplete.setTextSize(15);
+
+		/*shopName_autoComplete.setOnTouchListener(new View.OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(final View v, final MotionEvent event)
+			{
+//				shopName_autoComplete.requestFocus();
+				if (_shopNamesData.size() > 0) {
+					// show all suggestions
+					if (!shopName_autoComplete.getText().toString().equals(""))
+						dataAdapter_shopNames.getFilter().filter(null);
+					shopName_autoComplete.showDropDown();
+				}
+				return false;
+			}
+		});*/
 
 		shopName_autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener()
 		{
@@ -1304,6 +1321,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			{
 				try
 				{
+					shopName_autoComplete.showDropDown();
 					String selectedName = shopName_autoComplete.getText().toString();
 					Log.e("entryShopName", selectedName);
 					for (int i = 0; i < _shopNamesData.size(); i++)
@@ -1317,12 +1335,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 							break;
 						}
 					}
-					/*if (position != 0)
-					{
-						selected_ShopId = _shopNamesData.get(position - 1).getShopId();
-						Log.e("selected_ShopId", selected_ShopId + "Selected");
-						HttpAdapter.shopEditDetails(UpdateCustomerNewActivity.this, "editShopDetails", selected_ShopId);
-					}*/
+
+
 				}
 				catch (Exception e)
 				{
@@ -1330,33 +1344,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				}
 			}
 		});
-
-		/*shopName_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-			{
-				try
-				{
-					if (position != 0)
-					{
-						selected_ShopId = _shopNamesData.get(position - 1).getShopId();
-						HttpAdapter.shopEditDetails(UpdateCustomerNewActivity.this, "editShopDetails", selected_ShopId);
-					}
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-
-			}
-		});*/
 	}
 
 	private void shopTypeNameSpinnerAdapter(final JSONArray jsonArray)
@@ -1388,7 +1375,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 		}
 		ArrayAdapter<String> dataAdapter_shopType = new ArrayAdapter<String>(this,
-		                                                                     android.R.layout.simple_spinner_item, shoptypesNamestitle);
+		                                                                     R.layout.spinner_item, shoptypesNamestitle);
 		dataAdapter_shopType.setDropDownViewResource(R.layout.list_item);
 		shoptype_sp.setAdapter(dataAdapter_shopType);
 
@@ -1445,7 +1432,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		{
 			e.printStackTrace();
 		}
-		dataAdapter_religion = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, religionsNamestitle);
+		dataAdapter_religion = new ArrayAdapter<String>(this, R.layout.spinner_item, religionsNamestitle);
 		dataAdapter_religion.setDropDownViewResource(R.layout.list_item);
 		religion.setAdapter(dataAdapter_religion);
 		selected_religionNameId = "1";
@@ -1497,7 +1484,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		{
 			e.printStackTrace();
 		}
-		dataAdapter_payment = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, paymentNamestitle);
+		dataAdapter_payment = new ArrayAdapter<String>(this, R.layout.spinner_item, paymentNamestitle);
 		dataAdapter_payment.setDropDownViewResource(R.layout.list_item);
 		payment_sp.setAdapter(dataAdapter_payment);
 

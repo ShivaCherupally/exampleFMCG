@@ -43,6 +43,8 @@ import com.fmcg.ui.UpdateOrderDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import me.srodrigo.androidhintspinner.HintAdapter;
 import me.srodrigo.androidhintspinner.HintSpinner;
@@ -250,6 +252,7 @@ public class Util
 			MasterCreationActivity.masteract.finish();
 		}
 	}
+
 	public static void killMonth()
 	{
 		if (MonthlySummary.remarks != null)
@@ -515,6 +518,19 @@ public class Util
 					}
 				});
 		defaultHintSpinner.init();
+	}
+
+
+	public static String capitalize(String capString)
+	{
+		StringBuffer capBuffer = new StringBuffer();
+		Matcher capMatcher = Pattern.compile("([a-z])([a-z]*)", Pattern.CASE_INSENSITIVE).matcher(capString);
+		while (capMatcher.find())
+		{
+			capMatcher.appendReplacement(capBuffer, capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase());
+		}
+
+		return capMatcher.appendTail(capBuffer).toString();
 	}
 
 

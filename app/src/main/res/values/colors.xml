@@ -75,6 +75,7 @@
     <color name="trackingText">#808080</color>
     <color name="collectionText">#4e4e4e</color>
     <color name="textHint">#c3c3c3</color>
+    <color name="textColorAll">#999999</color>
 
 
     <color name="grey_color">#edf0f1</color>

@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textColor="#000000"
-    android:textSize="16sp"
+    android:textColor="@color/HeaderTitleColor"
+    android:layout_marginRight="@dimen/five"
+    android:textSize="15sp"
     />

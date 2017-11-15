@@ -10,5 +10,5 @@
           android:text="Shiva"
           android:singleLine="true"
           android:textAppearance="?android:attr/textAppearanceMediumInverse"
-          android:textColor="@color/black"
-          android:textSize="16sp"/>
+          android:textColor="@color/HeaderTitleColor"
+          android:textSize="15sp"/>

@@ -123,6 +123,8 @@
 
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:hint="@string/routecd"
                     android:singleLine="true"/>
 
@@ -145,6 +147,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/arealayout"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_gravity="center_horizontal"
@@ -174,27 +177,37 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:hint="@string/routecd"
                     android:singleLine="true"/>
 
 
             </LinearLayout>
 
-            <AutoCompleteTextView
-                android:id="@+id/shopName_autoComplete"
-                android:layout_width="fill_parent"
+            <RelativeLayout
+                android:id="@+id/dropdownAutoCompleteTextView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/textView1"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rect_white"
-                android:hint="Enter Shop Name"
-                android:textColor="@color/HeaderColor"
-                android:textCursorDrawable="@drawable/color_cursor">
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
 
-                <requestFocus/>
-            </AutoCompleteTextView>
-
+                <AutoCompleteTextView
+                    android:id="@+id/shopName_autoComplete"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_white"
+                    android:dropDownAnchor="@+id/dropdownAutoCompleteTextView"
+                    android:focusable="true"
+                    android:dropDownHeight="100dp"
+                    android:focusableInTouchMode="true"
+                    android:hint="Enter Shop Name"
+                    android:textSize="15sp"
+                    android:nextFocusDown="@+id/shopname"
+                    android:textColor="@color/HeaderTitleColor"
+                    android:textCursorDrawable="@drawable/color_cursor"/>
+            </RelativeLayout>
 
             <EditText
                 android:id="@+id/shopname"
@@ -208,8 +221,9 @@
                 android:maxLines="1"
                 android:padding="8dp"
                 android:singleLine="true"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="17sp"
+                android:textSize="15sp"
                 />
 
             <LinearLayout
@@ -257,6 +271,7 @@
                 android:maxLines="1"
                 android:padding="8dp"
                 android:singleLine="true"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="17sp"/>
 
@@ -282,6 +297,7 @@
                 android:gravity="top"
                 android:hint="Shop Address"
                 android:inputType="text"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
                 >
 
@@ -294,14 +310,16 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-
                 android:background="@drawable/rect_white"
+
                 android:hint="@string/pin"
                 android:imeOptions="actionNext"
                 android:inputType="number"
                 android:maxLength="6"
                 android:padding="8dp"
                 android:singleLine="true"
+                android:textSize="15sp"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
                 >
 
@@ -378,6 +396,7 @@
                 android:longClickable="true"
                 android:padding="8dp"
                 android:singleLine="true"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
                 />
 
@@ -397,6 +416,7 @@
                 android:maxLength="10"
                 android:padding="8dp"
                 android:singleLine="true"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
                 />
 
@@ -413,6 +433,7 @@
                 android:inputType="number"
                 android:padding="8dp"
                 android:singleLine="true"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"/>
 
             <EditText
@@ -425,21 +446,24 @@
                 android:hint="Owner Name"
                 android:imeOptions="actionNext"
                 android:maxLines="1"
-
                 android:padding="8dp"
+
                 android:singleLine="true"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="17sp"/>
+
             <EditText
                 android:id="@+id/descriptionShop"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:gravity="top"
                 android:hint="Description"
-                android:layout_marginBottom="10dp"
                 android:inputType="text"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
                 />
 
@@ -505,12 +529,12 @@
             android:background="@drawable/submit_rectangle"
             android:gravity="center"
             android:text="@string/submit"
-            android:textStyle="bold"
-
             android:textAllCaps="true"
-            android:textColor="@color/white"
 
+            android:textColor="@color/white"
             android:textSize="17sp"
+
+            android:textStyle="bold"
             />
     </LinearLayout>
 </RelativeLayout>

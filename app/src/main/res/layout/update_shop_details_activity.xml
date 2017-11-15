@@ -32,6 +32,8 @@
                     style="@style/spinner_bg_style"
                     android:layout_width="fill_parent"
                     android:layout_height="45dp"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"
                     />
             </LinearLayout>
 
@@ -65,30 +67,13 @@
                     style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_gravity="center"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"
                     android:hint="Zone Name"
                     android:singleLine="true"/>
             </LinearLayout>
 
-            <!--  <LinearLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="45dp"
-                  android:layout_marginLeft="20dp"
-                  android:layout_marginRight="20dp"
-                  android:layout_marginTop="20dp"
-                  android:background="@drawable/edittext_whites"
-                  android:orientation="horizontal"
-                  android:visibility="gone">
 
-                  <Spinner
-                      android:id="@+id/routeName_spinner"
-                      style="@style/spinner_bg_style"
-                      android:layout_width="match_parent"
-                      android:layout_height="40dp"
-                      android:layout_gravity="center"
-                      android:hint="@string/routecd"
-                      android:singleLine="true"/>
-              </LinearLayout>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -103,10 +88,10 @@
                     android:id="@+id/routecd"
                     style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
-
                     android:layout_height="40dp"
-                    android:layout_gravity="center"
                     android:hint="@string/routecd"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"
                     android:singleLine="true"/>
 
                 <EditText
@@ -130,7 +115,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edittext_whites"
                 android:orientation="horizontal">
@@ -156,8 +140,9 @@
                     style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_gravity="center"
                     android:hint="@string/routecd"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"
                     android:singleLine="true"/>
             </LinearLayout>
 
@@ -174,6 +159,7 @@
                 android:imeOptions="actionNext"
                 android:maxLines="1"
                 android:padding="8dp"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="17sp"
                 />
@@ -206,6 +192,7 @@
                 android:hint="@string/owner"
                 android:imeOptions="actionNext"
                 android:padding="8dp"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="17sp"/>
 
@@ -220,6 +207,7 @@
                 android:hint="Land mark"
                 android:imeOptions="actionNext"
                 android:padding="8dp"
+                android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
 
                 android:textSize="17sp"/>
@@ -241,6 +229,7 @@
 
                     android:imeOptions="actionNext"
                     android:maxLines="5"
+                    android:textColor="@color/HeaderTitleColor"
                     android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="17dp"/>
             </LinearLayout>
@@ -251,7 +240,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-
+                android:textColor="@color/HeaderTitleColor"
                 android:background="@drawable/rect_white"
                 android:hint="@string/pin"
                 android:imeOptions="actionNext"
@@ -320,7 +309,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-
+                android:textColor="@color/HeaderTitleColor"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:hint="@string/emailid"
@@ -343,6 +332,7 @@
                 android:imeOptions="actionNext"
                 android:inputType="number"
                 android:maxLength="10"
+                android:textColor="@color/HeaderTitleColor"
                 android:padding="8dp"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"/>
@@ -359,6 +349,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:padding="8dp"
+                android:textColor="@color/HeaderTitleColor"
                 android:singleLine="true"
                 android:textCursorDrawable="@drawable/color_cursor"/>
 
