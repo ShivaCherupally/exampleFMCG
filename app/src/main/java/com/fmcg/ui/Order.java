@@ -34,6 +34,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -124,6 +125,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 	private EditText remarksET;
 	private LinearLayout list_li;
 	private ImageView capture;
+	CardView cardvieww;
 	private TableLayout tableLayout;
 	int j;
 
@@ -224,9 +226,11 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		payment_sp = (Spinner) findViewById(R.id.payment_terms_spinner);
 
 		isShopClosed = (CheckBox) findViewById(R.id.isClosed);
+		isShopClosed.setVisibility(View.GONE);
 		ordered = (CheckBox) findViewById(R.id.isOrder);
 		invoice = (CheckBox) findViewById(R.id.isInvoice);
 		capture = (ImageView) findViewById(R.id.capturedImage);
+		cardvieww = (CardView) findViewById(R.id.cardvieww);
 		uploadImage = (TextView) findViewById(R.id.upLoadImage);
 		shopClosed = (TextView) findViewById(R.id.shopClosed);
 		orderNumInvoice = (TextView) findViewById(R.id.orderNumber_invoice);
@@ -291,11 +295,13 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 					{
 						list_li.setVisibility(View.VISIBLE);
 					}
+					cardvieww.setVisibility(View.VISIBLE);
 					capture.setVisibility(View.VISIBLE);
 					handleTaskWithUserPermission(CAMERA_REQUES_CODE);
 				}
 				else
 				{
+					cardvieww.setVisibility(View.GONE);
 					capture.setVisibility(View.GONE);
 					list_li.setVisibility(View.VISIBLE);
 				}
@@ -827,10 +833,13 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 					}
 					else
 					{
-						if (mJson.getString("Message").equalsIgnoreCase("Shop Closed")){
+						if (mJson.getString("Message").equalsIgnoreCase("Shop Closed"))
+						{
 							Toast.makeText(mContext, "Successfully Shop Closed", Toast.LENGTH_SHORT).show();
 							dailogBoxAfterSubmit();
-						}else {
+						}
+						else
+						{
 							Toast.makeText(mContext, "Upload Failed.." + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
 							refreshActivity();
 						}
@@ -1175,15 +1184,28 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 						selected_orderStatusId = _dropDownData.get(position - 1).getShopId();
 						orderStatusName = _dropDownData.get(position - 1).getShopName();
 						Log.e("orderStatusName", orderStatusName);
-						if (orderStatusName.equals("Order Not Given"))
+
+						if (orderStatusName.equals("Shop Was Closed"))
 						{
-//							cameracaptured = true;
-							statusBaseLayout.setVisibility(View.GONE);
+							//039be5
+							cameraAccess();
 						}
 						else
 						{
-							statusBaseLayout.setVisibility(View.VISIBLE);
+							if (orderStatusName.equals("Order Not Given"))
+							{
+//							cameracaptured = true;
+								statusBaseLayout.setVisibility(View.GONE);
+								cardvieww.setVisibility(View.GONE);
+							}
+							else
+							{
+								normalModeAccess();
+
+							}
 						}
+
+
 					}
 					else if (selectedSpinner.equals("PAYMENT_TYPE"))
 					{
@@ -1220,6 +1242,30 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 
 		}
 
+
+	}
+
+	private void normalModeAccess()
+	{
+		cardvieww.setVisibility(View.GONE);
+		list_li.setVisibility(View.VISIBLE);
+		statusBaseLayout.setVisibility(View.VISIBLE);
+	}
+
+	private void cameraAccess()
+	{
+
+		if (list_li.getVisibility() == View.VISIBLE)
+		{
+			list_li.setVisibility(View.GONE);
+		}
+		else
+		{
+			list_li.setVisibility(View.VISIBLE);
+		}
+		cardvieww.setVisibility(View.VISIBLE);
+		capture.setVisibility(View.VISIBLE);
+		handleTaskWithUserPermission(CAMERA_REQUES_CODE);
 
 	}
 

@@ -1547,6 +1547,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		String PLAN_ACCEPTED = SharedPrefsUtil.getStringPreference(mContext, "PLAN_STARTED");
 		String ORDER_ACCEPTED = SharedPrefsUtil.getStringPreference(mContext, "ORDER_ACCEPTED");
 		//
+//		PLAN_ACCEPTED  = "ACCEPTED";
 		if (!PLAN_ACCEPTED.isEmpty() && PLAN_ACCEPTED != null)
 		{
 			if (PLAN_ACCEPTED.equals("ACCEPTED"))

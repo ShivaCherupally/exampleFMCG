@@ -49,7 +49,8 @@ public class Splashscreen extends AppCompatActivity
 			ActionBar actionBar = getSupportActionBar();
 			actionBar.hide();
 //			this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-			textViewId.setTypeface(Typeface.createFromAsset(context.getAssets(), "OpenSans-Semibold.ttf"));
+//			textViewId.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/germania_one.ttf"));
+			textViewId.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/germania_one.ttf"));
 		}
 		catch (Exception e)
 		{
