@@ -1168,8 +1168,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		if (dataAdapter_shopNames != null)
 		{
 			dataAdapter_shopNames.clear();
-//			shopName_autoComplete.clearListSelection();
-//			shopName_autoComplete.notifyAll();
 		}
 
 		shopName_autoComplete.setText("");
@@ -1188,7 +1186,34 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		payment_sp.setSelection(0);
 		selected_paymentNameId = "2";
 		descriptionShop.setText("");
+	}
 
+	private void clearDataInClose()
+	{
+//		_shopNamesData.clear();
+//		shooNamestitle.clear();
+		selected_ShopId = "";
+		/*if (dataAdapter_shopNames != null)
+		{
+			dataAdapter_shopNames.clear();
+		}*/
+
+		shopName_autoComplete.setText("");
+		shopname.setText("");
+		ownername.setText("");
+		landmark.setText("");
+		shop_address.setText("");
+		pin.setText("");
+		emailId.setText("");
+		mobile.setText("");
+		phone.setText("");
+		selected_ShopTypeId = "";
+		shoptype_sp.setSelection(0);
+		religion.setSelection(0);
+		selected_religionNameId = "";
+		payment_sp.setSelection(0);
+		selected_paymentNameId = "2";
+		descriptionShop.setText("");
 	}
 
 	private void areaNameSpinnerAdapter(final JSONArray jsonArray)
@@ -1718,7 +1743,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 					/*Intent in = new Intent(UpdateCustomerNewActivity.this, DashboardActivity.class);
 					Util.killorderBook();
 					startActivity(in);*/
-					clearAllData();
+					clearDataInClose();
 //					refreshActivity();
 				}
 			}

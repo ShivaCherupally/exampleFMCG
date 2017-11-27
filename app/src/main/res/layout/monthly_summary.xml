@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/ten"
             android:layout_marginRight="@dimen/ten"
-            android:hint="Sales Amuont"
+            android:hint="Sales Amount"
             android:imeOptions="actionDone"
             android:paddingTop="@dimen/ten"
             android:textColor="@color/black"

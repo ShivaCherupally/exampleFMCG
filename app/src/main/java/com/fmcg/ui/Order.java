@@ -50,6 +50,7 @@ import android.widget.TableRow;
 
 import com.fmcg.Dotsoft.BuildConfig;
 import com.fmcg.Dotsoft.R;
+import com.fmcg.Dotsoft.util.AlertDialogManager;
 import com.fmcg.Dotsoft.util.Common;
 import com.fmcg.models.GetAreaDetails;
 import com.fmcg.models.GetProductCategory;
@@ -325,6 +326,8 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 		orderStatus_sp.setOnItemSelectedListener(this);
 		payment_sp.setOnItemSelectedListener(this);
 
+
+//		AlertDialogManager.showAlertOnly(mContext, "SHiva", "Good", "NIce");
 
 		submit.setOnClickListener(new View.OnClickListener()
 		{

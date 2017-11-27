@@ -79,6 +79,7 @@ public class MonthlySummary extends AppCompatActivity implements NetworkOperatio
 		monthNametxt = (TextView) findViewById(R.id.monthNametxt);
 		targetamountxt = (TextView) findViewById(R.id.targetamountxt);
 		salesamounttxt = (TextView) findViewById(R.id.salesamounttxt);
+		salesamounttxt.setVisibility(View.GONE);
 
 
 	}
@@ -131,14 +132,38 @@ public class MonthlySummary extends AppCompatActivity implements NetworkOperatio
 							{
 								monthNametxt.setText("Month Name : " + mJsonData.getString("MonthName"));
 							}
+							else
+							{
+								monthNametxt.setVisibility(View.GONE);
+							}
+
 							if (String.valueOf(mJsonData.getInt("TargetAmount")) != null && !String.valueOf(mJsonData.getInt("TargetAmount")).isEmpty())
 							{
-								targetamountxt.setText("Target Amount : " + String.valueOf(mJsonData.getInt("TargetAmount")));
+								targetamountxt.setText("Target Amount : " + "\u20B9" + " " + String.valueOf(mJsonData.getInt("TargetAmount")));
 							}
-							if (String.valueOf(mJsonData.getDouble("SalesAmount")) != null && !String.valueOf(mJsonData.getDouble("SalesAmount")).isEmpty())
+							else
 							{
-								salesamounttxt.setText("Sales Amount : " + String.valueOf(mJsonData.getDouble("SalesAmount")));
+								targetamountxt.setVisibility(View.GONE);
 							}
+
+
+							if (mJsonData.getString("SalesAmount") != null)
+							{
+								if (String.valueOf(mJsonData.getDouble("SalesAmount")) != null && !String.valueOf(mJsonData.getDouble("SalesAmount")).isEmpty())
+								{
+									salesamounttxt.setVisibility(View.VISIBLE);
+									salesamounttxt.setText("Sales Amount : " + "\u20B9" + " " + String.valueOf(mJsonData.getDouble("SalesAmount")));
+								}
+								else
+								{
+									salesamounttxt.setVisibility(View.GONE);
+								}
+							}
+							else
+							{
+								salesamounttxt.setVisibility(View.GONE);
+							}
+
 
 						}
 						else
