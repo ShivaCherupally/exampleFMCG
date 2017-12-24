@@ -1094,10 +1094,9 @@ public class GetShopsByRoute extends AppCompatActivity
 					                                           .title(route.endAddress)
 					                                           .position(route.endLocation)));
 
-			PolylineOptions polylineOptionstemp = new PolylineOptions().
-					                                                           geodesic(true).
-					                                                           color(Color.BLUE).
-					                                                           width(2);
+			PolylineOptions polylineOptionstemp = new PolylineOptions().geodesic(true).
+					                                                   color(Color.BLUE).
+					                                                   width(2);
 
 			for (int i = 0; i < points.size(); i++)
 			{
@@ -1143,26 +1142,25 @@ public class GetShopsByRoute extends AppCompatActivity
 			PolylineOptions lineOptions = null;
 			MarkerOptions markerOptions = new MarkerOptions();
 
+//			points = points.get(0);
+//			latdis = points.get(points.size() - 1);
+
 			for (int i = 0; i < result.size(); i++)
 			{
 				MarkerOptions markerOptionicon = new MarkerOptions();
-
 				points = new ArrayList();
 				lineOptions = new PolylineOptions();
-
 				List<HashMap<String, String>> path = result.get(i);
-
 				for (int j = 0; j < path.size(); j++)
 				{
 					HashMap<String, String> point = path.get(j);
-
 					double lat = Double.parseDouble(point.get("lat"));
 					double lng = Double.parseDouble(point.get("lng"));
 					LatLng position = new LatLng(lat, lng);
 					points.add(position);
 				}
 				lineOptions.addAll(points);
-				lineOptions.width(5);
+				lineOptions.width(7);
 				lineOptions.color(Color.BLACK);
 				lineOptions.geodesic(true);
 			}
@@ -1218,13 +1216,20 @@ public class GetShopsByRoute extends AppCompatActivity
 				if (availShopId.equals(shopIdsAvailableList.get(i)))
 				{
 					if (_setColorData.get(k).getShopName().equalsIgnoreCase("N"))
-
 					{
+						//markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+//						Drawable shopicon = getResources().getDrawable(R.drawable.shopicon);
+//						BitmapDescriptor shopiconimg = getMarkerIconFromDrawable(shopicon);
+//						markerOptions.icon(shopiconimg);
 						markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 						googleMap.addMarker(markerOptions);
 					}
 					else
 					{
+//						Drawable shopicon = getResources().getDrawable(R.drawable.shopicon);
+//						BitmapDescriptor shopiconimg = getMarkerIconFromDrawable(shopicon);
+//						markerOptions.icon(shopiconimg);
+
 						markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 						googleMap.addMarker(markerOptions);
 					}

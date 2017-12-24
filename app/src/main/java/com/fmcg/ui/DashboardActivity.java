@@ -5,14 +5,17 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -23,6 +26,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -49,6 +53,7 @@ import com.fmcg.models.RemainderData;
 import com.fmcg.network.HttpAdapter;
 import com.fmcg.network.NetworkOperationListener;
 import com.fmcg.network.NetworkResponse;
+import com.fmcg.service.LocationMonitoringService;
 import com.fmcg.util.Common;
 import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
@@ -71,6 +76,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.identity.intents.Address;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -86,17 +92,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * Created by SHiva on 5/28/2017.
@@ -104,7 +107,8 @@ import java.util.Map;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
                                                                     View.OnClickListener, GoogleApiClient.ConnectionCallbacks,
-                                                                    LocationListener, GoogleApiClient.OnConnectionFailedListener, NetworkOperationListener, AdapterView.OnItemSelectedListener,
+                                                                    LocationListener, GoogleApiClient.OnConnectionFailedListener,
+                                                                    NetworkOperationListener, AdapterView.OnItemSelectedListener,
                                                                     SeekBar.OnSeekBarChangeListener,
                                                                     OnChartValueSelectedListener
 {
@@ -157,6 +161,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 	Activity mactivity;
 	boolean doubleBackToExitPressedOnce = false;
+	private LocationManager locationTracker;
+
+	private boolean mAlreadyStartedService = false;
+	TextView heading;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -171,6 +179,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		targetAmount = (TextView) findViewById(R.id.targetAmount);
 		salesAmount = (TextView) findViewById(R.id.salesAmount);
 		month = (TextView) findViewById(R.id.month);
+		heading = (TextView) findViewById(R.id.heading);
 
 		//normalTest();
 		mactivity = DashboardActivity.this;
@@ -190,10 +199,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		drawer.setDrawerListener(toggle);
 		toggle.syncState();
 
+		Log.e("Current Time", "Time" + DateUtil.currentTime());
+		SharedPrefsUtil.setStringPreference(mContext, "STARTTIME", DateUtil.currentTime());
+
+
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-
 		{
 			checkLocationPermission();
 		}
@@ -213,8 +225,64 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		// Create the LocationRequest object
 		mLocationRequest = LocationRequest.create()
 		                                  .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-		                                  .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-		                                  .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+		                                  .setInterval(60000)        // 10 seconds, in milliseconds
+		                                  .setFastestInterval(60000); // 1 second, in milliseconds
+
+//		trackLocationService();
+		LocalBroadcastManager.getInstance(this).registerReceiver(
+				new BroadcastReceiver()
+				{
+					public void onReceive(Context context, Intent intent)
+					{
+						String latitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LATITUDE);
+						String longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
+
+						if (latitude != null && longitude != null)
+						{
+							try
+							{
+								Geocoder geocoder = new Geocoder(DashboardActivity.this, Locale.getDefault());
+								List<android.location.Address> address = geocoder.getFromLocation(Double.valueOf(latitude), Double.valueOf(longitude), 1);
+								android.location.Address obj = address.get(0);
+								String addressname = obj.getAddressLine(0);
+
+								String locality = obj.getLocality();
+								String areaname = obj.getFeatureName();
+
+								android.location.Address returnedAddress = address.get(0);
+								StringBuilder strReturnedAddress = new StringBuilder("");
+								for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++)
+								{
+									strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+								}
+								String strAdd = strReturnedAddress.toString();
+								Log.e("Current Location", strReturnedAddress.toString());
+								String startTime = SharedPrefsUtil.getStringPreference(mContext, "STARTTIME");
+								/*add = add + "\n" + obj.getCountryName();
+		add = add + "\n" + obj.getCountryCode();
+        add = add + "\n" + obj.getAdminArea();
+        add = add + "\n" + obj.getPostalCode();
+        add = add + "\n" + obj.getSubAdminArea();
+        add = add + "\n" + obj.getLocality();
+        add = add + "\n" + obj.getSubThoroughfare();*/
+								/*heading.setText("Your Location" + "\n Address :" + locality
+										                + "\n Latitude : " + latitude
+										                + "\n Longitude: " + longitude);*/
+								String jsonString = createJsonTrack(EmployeeId, startTime, DateUtil.currentTime(), latitude, longitude, strAdd);
+								HttpAdapter.userTracking(DashboardActivity.this, "TRACKING_STATUS", jsonString);
+							}
+							catch (Exception e)
+							{
+
+							}
+
+
+							Log.e("trackLat Lan", "Service Started"
+									+ "\n Latitude : " + latitude + "\n Longitude: " + longitude);
+						}
+					}
+				}, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST)
+		);
 
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 		View view = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.side_menu, navigationView);
@@ -1051,6 +1119,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 						}
 					}
 				}
+				else if (response.getTag().equals("TRACKING_STATUS"))
+				{
+					if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						Toast.makeText(getApplicationContext(), "Your Location Tracking...", Toast.LENGTH_SHORT).show();
+						return;
+					}
+					else
+					{
+						Toast.makeText(getApplicationContext(), "Tracking Failed", Toast.LENGTH_SHORT).show();
+					}
+
+				}
+				//
 
 			}
 			catch (JSONException e)
@@ -1059,6 +1141,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			}
 
 
+		}
+		else
+		{
+			Log.e("server error", "server error");
 		}
 	}
 
@@ -1481,6 +1567,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 						if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
 						{
+							trackLocationEveryFiveMint();
 //							showGPSDisabledAlertToUser();
 						}
 
@@ -1539,6 +1626,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				.addApi(LocationServices.API)
 				.build();
 		mGoogleApiClient.connect();
+		trackLocationEveryFiveMint();
 	}
 
 
@@ -1800,5 +1888,57 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	{
 		startService(new Intent(getBaseContext(), RemainderService.class));
 		super.onPause();
+
+	}
+
+
+	@Override
+	protected void onDestroy()
+	{
+		stopService(new Intent(this, LocationMonitoringService.class));
+		mAlreadyStartedService = false;
+		super.onDestroy();
+	}
+
+	private void trackLocationEveryFiveMint()
+	{
+
+		//And it will be keep running until you close the entire application from task manager.
+		//This method will executed only once.
+
+		if (!mAlreadyStartedService && heading != null)
+		{
+
+//			heading.setText("Your Location");
+
+			//Start location sharing service to app server.........
+			Intent intent = new Intent(this, LocationMonitoringService.class);
+			startService(intent);
+
+			mAlreadyStartedService = true;
+			//Ends................................................
+		}
+	}
+
+	private String createJsonTrack(String Userid, String TarckInTime, String TrackOutTime,
+	                               String Latitude, String Longitude, String Areaname)
+	{
+		JSONObject dataObj = new JSONObject();
+		try
+		{
+			dataObj.putOpt("Userid", Userid);
+			dataObj.putOpt("TrackInTime", "0");
+			dataObj.putOpt("TrackOutTime", "1");
+			dataObj.putOpt("Latitude", Latitude);
+			dataObj.putOpt("Longitude", Longitude);
+			dataObj.putOpt("Areaname", Areaname);
+		}
+		catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.e("params", dataObj.toString());
+		return dataObj.toString();
 	}
 }

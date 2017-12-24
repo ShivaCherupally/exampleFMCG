@@ -199,6 +199,22 @@ public class DateUtil
 		return updateDate;
 	}
 
+	public static String currentTime()
+	{
+		String currentTime = "";
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat simDf = new SimpleDateFormat("hh:mm a");
+		try
+		{
+			currentTime = simDf.format(c.getTime());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return currentTime;
+	}
+
 
 
 	public static String presentDate()

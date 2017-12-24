@@ -286,9 +286,8 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 
 			//View Details
 			userdetailsframe = (FrameLayout) itemLayoutView.findViewById(R.id.userdetailsframe);
-
-
 			expanded_frameLayout = (FrameLayout) itemLayoutView.findViewById(R.id.expanded_frameLayout);
+			expanded_frameLayout.setVisibility(View.GONE);
 			expanded_frameLayout.setOnClickListener(new View.OnClickListener()
 			{
 				@Override

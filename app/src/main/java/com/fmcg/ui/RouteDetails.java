@@ -37,6 +37,7 @@ import com.fmcg.network.HttpAdapter;
 import com.fmcg.network.NetworkOperationListener;
 import com.fmcg.network.NetworkResponse;
 import com.fmcg.util.AlertDialogManager;
+import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
 import com.fmcg.util.Util;
 import com.google.gson.Gson;
@@ -141,7 +142,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 		if (accepted != null && !accepted.isEmpty())
 		{
 		    /*String avalible_list_str = SharedPrefsUtil.getStringPreference(mContext, "AVAILABLE_LIST");
-            Log.e("AVAILABLE_LIST", avalible_list_str);
+	        Log.e("AVAILABLE_LIST", avalible_list_str);
 
 			convertStringToArraylist(avalible_list_str);
 			System.out.println(myList);
@@ -297,6 +298,16 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 			public void onClick(final View v)
 			{
 				SharedPrefsUtil.setStringPreference(mContext, "PLAN_STARTED", "ACCEPTED");
+				try
+				{
+					SharedPrefsUtil.setStringPreference(mContext, "STARTTIME", DateUtil.currentTime());
+				}
+				catch (Exception e)
+				{
+
+				}
+
+
 				Intent in = new Intent(RouteDetails.this, GetShopsByRoute.class);
 				Util.killRouteDetails();
 				startActivity(in);
@@ -381,7 +392,7 @@ public class RouteDetails extends AppCompatActivity implements NetworkOperationL
 					Log.e("checkedRouteId", checkedRouteAfterreplace + "");
 					Log.e("uncheckedRouteId", uncheckedRoutesAfterreplace + "");
 //					String availabledata = new Gson().toJson(createJsonAcceptRoutes(checkedRouteAfterreplace, uncheckedRoutesAfterreplace));
-					HttpAdapter.routeAccept(RouteDetails.this, "acceptRoute", checkedRouteAfterreplace,uncheckedRoutesAfterreplace);
+					HttpAdapter.routeAccept(RouteDetails.this, "acceptRoute", checkedRouteAfterreplace, uncheckedRoutesAfterreplace);
 				}
 				else
 				{

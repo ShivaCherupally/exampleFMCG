@@ -96,7 +96,8 @@ import static com.fmcg.util.Common.orderNUmberString;
  * Created by Shiva on 9/22/2017.
  */
 
-public class OrderEditActivity extends AppCompatActivity implements NetworkOperationListener, AdapterView.OnItemSelectedListener, View.OnTouchListener
+public class OrderEditActivity extends AppCompatActivity implements NetworkOperationListener,
+                                                                    AdapterView.OnItemSelectedListener, View.OnTouchListener
 {
 	public static Activity orderBookeditActivity;
 	public List<GetProductCategory> productDP;

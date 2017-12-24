@@ -285,6 +285,17 @@
         </receiver>
 
         <service android:name="com.fmcg.ui.RemainderService"/>
+        <!--<service
+            android:name="com.fmcg.ui.TrackerService"
+            android:enabled="true"
+            android:exported="true"/>-->
+        <service android:name="com.fmcg.service.LocationMonitoringService"/>
+
+        <!--<receiver android:name=".LocationReceiver">
+            <intent-filter>
+                <action android:name="my.action"/>
+            </intent-filter>
+        </receiver>-->
 
 
     </application>

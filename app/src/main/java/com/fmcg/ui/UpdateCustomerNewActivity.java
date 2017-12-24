@@ -89,7 +89,8 @@ import java.util.Map;
 
 public class UpdateCustomerNewActivity extends AppCompatActivity implements View.OnClickListener, LocationListener,
                                                                             GoogleApiClient.OnConnectionFailedListener,
-                                                                            GoogleApiClient.ConnectionCallbacks, NetworkOperationListener
+                                                                            GoogleApiClient.ConnectionCallbacks,
+                                                                            NetworkOperationListener
 {
 	SharedPreferences sharedPreferences;
 	public List<GetZoneDetails> zoneDetailsDP;
@@ -174,8 +175,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		landmark = (EditText) findViewById(R.id.landmark);
 		payment = (EditText) findViewById(R.id.payment);
 		submit = (Button) findViewById(R.id.submit);
-
-
 		shopName_spinner = (Spinner) findViewById(R.id.shopName_spinner);
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
 		routecd = (Spinner) findViewById(R.id.routecd);
@@ -184,13 +183,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		religion = (Spinner) findViewById(R.id.religion);
 		payment_sp = (Spinner) findViewById(R.id.payment_sp);
 		emailId = (EditText) findViewById(R.id.emailId);
-
 		zoneDetailsDP = new ArrayList<>();
 		routeDetailsDP = new ArrayList<>();
-
 		shopName_autoComplete = (AutoCompleteTextView) findViewById(R.id.shopName_autoComplete);
-
-
 		selectRouteNameBind();
 		defaultAreaNameSelect();
 
@@ -202,7 +197,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		HttpAdapter.shopType(UpdateCustomerNewActivity.this, "shoptypeDP");
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 		{
 			checkLocationPermission();

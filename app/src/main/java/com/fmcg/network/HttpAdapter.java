@@ -14,9 +14,9 @@ public class HttpAdapter
 	public static final String METHOD_PUT = "PUT";
 
 	//Live Url
-//	public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
+	public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
 	//Test Url
-	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
+//	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
 
 
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
@@ -123,6 +123,10 @@ public class HttpAdapter
 
 	public static final String MONTH_SUMMARY = BASE_URL + "GetMonthlySummaryByEmployee";
 	public static final String PENDING_BILLS = BASE_URL + "GetCustomerPendingBills";
+	public static final String USER_TRACKING = BASE_URL + "InsertMobileUserTracking";
+
+	//userTracking
+	//public static final String PENDING_BILLS = BASE_URL + "GetCustomerPendingBills";
 	//GetCustomerPendingBills?EmployeeId=4
 	//GetMonthlySummaryByEmployee?EmployeeId=4
 
@@ -444,7 +448,8 @@ public class HttpAdapter
 		Log.e("RoutesParams", checkedRoutesAfterreplace + uncheckedRoutesAfterreplace);
 		//operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + selectedRouteids, METHOD_POST, "NONE");
 //		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + selectedRouteids, METHOD_POST, "NONE");
-		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EnableEmployeeRouteId=" + checkedRoutesAfterreplace + "&DisbleEmployeeRouteId=" + uncheckedRoutesAfterreplace, METHOD_POST,
+		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EnableEmployeeRouteId=" +
+				                  checkedRoutesAfterreplace + "&DisbleEmployeeRouteId=" + uncheckedRoutesAfterreplace, METHOD_POST,
 		                  "NONE");
 	}
 
@@ -602,7 +607,8 @@ public class HttpAdapter
 //				                  + "&DisbleEmployeeRouteId=" + uncheckedRoutesAfterreplace, METHOD_POST, "NONE");
 //	}
 
-	public static void routeCreationSubmit(NetworkOperationListener listener, Object tag, String checkedRoutesAfterreplace, String uncheckedRoutesAfterreplace)
+	public static void routeCreationSubmit(NetworkOperationListener listener,
+	                                       Object tag, String checkedRoutesAfterreplace, String uncheckedRoutesAfterreplace)
 	{
 		// TODO Auto-generated method stub
 		NetworkOperation operation = new NetworkOperation(listener, tag);
@@ -611,6 +617,14 @@ public class HttpAdapter
 		operation.execute(ROUTE_CREATION
 				                  + "?EnableEmployeeRouteId=" + checkedRoutesAfterreplace
 				                  + "&DisbleEmployeeRouteId=" + uncheckedRoutesAfterreplace, METHOD_POST, "NONE");
+	}
+
+	public static void userTracking(NetworkOperationListener listener, Object tag, String jsonString)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(USER_TRACKING, METHOD_POST, jsonString);
 	}
 
 	public static void areaCreationSubmit(NetworkOperationListener listener, Object tag, String checkedRoutesAfterreplace, String uncheckedRoutesAfterreplace)
