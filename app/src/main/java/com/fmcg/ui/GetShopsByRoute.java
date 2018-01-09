@@ -407,7 +407,7 @@ public class GetShopsByRoute extends AppCompatActivity
 		latdis = points.get(points.size() - 1);
 		/*GoogleDirection.withServerKey(serverKey).from(latSource)
 		        .to(latdis).transportMode(TransportMode.TRANSIT).execute(this);*/
-        /*GoogleDirection.withServerKey("AIzaSyBFjK8UInAeNGfhx8attCH8UNY6xzNjuwU")
+	    /*GoogleDirection.withServerKey("AIzaSyBFjK8UInAeNGfhx8attCH8UNY6xzNjuwU")
                 .from(latSource)
                 .to(latdis)
                 .execute(new DirectionCallback() {
@@ -1095,8 +1095,8 @@ public class GetShopsByRoute extends AppCompatActivity
 					                                           .position(route.endLocation)));
 
 			PolylineOptions polylineOptionstemp = new PolylineOptions().geodesic(true).
-					                                                   color(Color.BLUE).
-					                                                   width(2);
+					color(Color.BLUE).
+					                                                           width(2);
 
 			for (int i = 0; i < points.size(); i++)
 			{
@@ -1140,14 +1140,10 @@ public class GetShopsByRoute extends AppCompatActivity
 		{
 			ArrayList points = null;
 			PolylineOptions lineOptions = null;
-			MarkerOptions markerOptions = new MarkerOptions();
-
 //			points = points.get(0);
 //			latdis = points.get(points.size() - 1);
-
 			for (int i = 0; i < result.size(); i++)
 			{
-				MarkerOptions markerOptionicon = new MarkerOptions();
 				points = new ArrayList();
 				lineOptions = new PolylineOptions();
 				List<HashMap<String, String>> path = result.get(i);
@@ -1161,7 +1157,7 @@ public class GetShopsByRoute extends AppCompatActivity
 				}
 				lineOptions.addAll(points);
 				lineOptions.width(7);
-				lineOptions.color(Color.BLACK);
+				lineOptions.color(Color.RED);
 				lineOptions.geodesic(true);
 			}
 
@@ -1229,7 +1225,6 @@ public class GetShopsByRoute extends AppCompatActivity
 //						Drawable shopicon = getResources().getDrawable(R.drawable.shopicon);
 //						BitmapDescriptor shopiconimg = getMarkerIconFromDrawable(shopicon);
 //						markerOptions.icon(shopiconimg);
-
 						markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 						googleMap.addMarker(markerOptions);
 					}

@@ -258,6 +258,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 								String strAdd = strReturnedAddress.toString();
 								Log.e("Current Location", strReturnedAddress.toString());
 								String startTime = SharedPrefsUtil.getStringPreference(mContext, "STARTTIME");
+//								obj.getAdminArea();
 								/*add = add + "\n" + obj.getCountryName();
 		add = add + "\n" + obj.getCountryCode();
         add = add + "\n" + obj.getAdminArea();
