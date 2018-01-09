@@ -14,9 +14,9 @@ public class HttpAdapter
 	public static final String METHOD_PUT = "PUT";
 
 	//Live Url
-//	public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
+	public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
 	//Test Url
-	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
+//	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
 
 
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";

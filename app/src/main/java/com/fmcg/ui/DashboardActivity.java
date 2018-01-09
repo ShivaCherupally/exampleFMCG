@@ -229,7 +229,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		                                  .setFastestInterval(60000); // 1 second, in milliseconds
 
 //		trackLocationService();
-		LocalBroadcastManager.getInstance(this).registerReceiver(
+		/*LocalBroadcastManager.getInstance(this).registerReceiver(
 				new BroadcastReceiver()
 				{
 					public void onReceive(Context context, Intent intent)
@@ -259,16 +259,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 								Log.e("Current Location", strReturnedAddress.toString());
 								String startTime = SharedPrefsUtil.getStringPreference(mContext, "STARTTIME");
 //								obj.getAdminArea();
-								/*add = add + "\n" + obj.getCountryName();
+								*//*add = add + "\n" + obj.getCountryName();
 		add = add + "\n" + obj.getCountryCode();
         add = add + "\n" + obj.getAdminArea();
         add = add + "\n" + obj.getPostalCode();
         add = add + "\n" + obj.getSubAdminArea();
         add = add + "\n" + obj.getLocality();
-        add = add + "\n" + obj.getSubThoroughfare();*/
-								/*heading.setText("Your Location" + "\n Address :" + locality
+        add = add + "\n" + obj.getSubThoroughfare();*//*
+								*//*heading.setText("Your Location" + "\n Address :" + locality
 										                + "\n Latitude : " + latitude
-										                + "\n Longitude: " + longitude);*/
+										                + "\n Longitude: " + longitude);*//*
 								String jsonString = createJsonTrack(EmployeeId, startTime, DateUtil.currentTime(), latitude, longitude, strAdd);
 								HttpAdapter.userTracking(DashboardActivity.this, "TRACKING_STATUS", jsonString);
 							}
@@ -283,7 +283,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 						}
 					}
 				}, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST)
-		);
+		);*/
 
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 		View view = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.side_menu, navigationView);
@@ -1446,8 +1446,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		else
 		{
 			//If everything went fine lets get latitude and longitude
-			Toast.makeText(getApplicationContext(), "Latitude : " + location.getLatitude(), Toast.LENGTH_SHORT).show();
-			Toast.makeText(getApplicationContext(), "Longitude : " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+//			Toast.makeText(getApplicationContext(), "Latitude : " + location.getLatitude(), Toast.LENGTH_SHORT).show();
+//			Toast.makeText(getApplicationContext(), "Longitude : " + location.getLongitude(), Toast.LENGTH_SHORT).show();
 			/*lat.setText("" + location.getLatitude());
 			lang.setText("" + location.getLongitude());*/
 
