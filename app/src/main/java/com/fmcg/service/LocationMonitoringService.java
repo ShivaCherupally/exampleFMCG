@@ -164,13 +164,13 @@ public class LocationMonitoringService extends Service implements
 		{
 			Log.e("lastsavedTime", SharedPrefsUtil.getStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK"));
 			Log.e("currentTime", DateUtil.currentTime());
-			if (SharedPrefsUtil.getStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK").equals(DateUtil.currentTime()))
+			if (!SharedPrefsUtil.getStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK").equals(DateUtil.currentTime()))
 			{
-//				Toast.makeText(getApplicationContext(), "One Min Not Completed", Toast.LENGTH_SHORT).show();
+				saveLatLontoServer(intent);
 			}
 			else
 			{
-				saveLatLontoServer(intent);
+				Toast.makeText(getApplicationContext(), "One Min Not Completed", Toast.LENGTH_SHORT).show();
 			}
 		}
 		else
@@ -221,7 +221,8 @@ public class LocationMonitoringService extends Service implements
 								/*heading.setText("Your Location" + "\n Address :" + locality
 										                + "\n Latitude : " + latitude
 										                + "\n Longitude: " + longitude);*/
-				String jsonString = createJsonTrack(SharedPrefsUtil.getStringPreference(getApplicationContext(), "EmployeeId"), startTime, DateUtil.currentTime(), latitude,
+				String jsonString = createJsonTrack(SharedPrefsUtil.getStringPreference(getApplicationContext(), "EmployeeId"),
+				                                    startTime, DateUtil.currentTime(), latitude,
 				                                    longitude, strAdd);
 				HttpAdapter.userTracking(LocationMonitoringService.this, "TRACKING_STATUS", jsonString);
 			}
@@ -262,6 +263,7 @@ public class LocationMonitoringService extends Service implements
 					}
 					else
 					{
+//						SharedPrefsUtil.setStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK", DateUtil.currentTime());
 						Toast.makeText(getApplicationContext(), "Tracking Failed", Toast.LENGTH_SHORT).show();
 					}
 

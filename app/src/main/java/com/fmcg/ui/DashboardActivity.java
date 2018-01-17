@@ -931,6 +931,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 	private void logoutUserDetails()
 	{
+//		stopService(new Intent(MyService.MY_SERVICE));
+		Intent intent = new Intent(this, LocationMonitoringService.class);
+		stopService(intent);
 		sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.clear();
@@ -1440,7 +1443,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 		if (location == null)
 		{
-			LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+//			LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
 		}
 		else
@@ -1913,6 +1916,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //			heading.setText("Your Location");
 
 			//Start location sharing service to app server.........
+
+
 			Intent intent = new Intent(this, LocationMonitoringService.class);
 			startService(intent);
 
