@@ -661,16 +661,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 	public class CreateShopTask extends AsyncTask<String, String, String>
 	{
-		//ProgressDialog pd = new ProgressDialog(UpdateCustomerNewActivity.this);
 		@Override
 		protected void onPreExecute()
 		{
-			/*// TODO Auto-generated method stub
-			pd.setMessage("Please wait...");
-			pd.setIndeterminate(false);
-			pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pd.setCancelable(false);
-			pd.show();*/
 		}
 
 		@Override
@@ -722,7 +715,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	@Override
 	public void onConnected(Bundle bundle)
 	{
-		if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+		if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
+				PackageManager.PERMISSION_GRANTED)
 		{
 			LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 		}
@@ -783,12 +777,10 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		{
 			if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
 			{
-				ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-				                                  MY_PERMISSIONS_REQUEST_LOCATION);
+				ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},MY_PERMISSIONS_REQUEST_LOCATION);
 			}
 			else
 			{
-				// No explanation needed, we can request the permission.
 				ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
 				                                  MY_PERMISSIONS_REQUEST_LOCATION);
 			}

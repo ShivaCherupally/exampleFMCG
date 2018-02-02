@@ -106,6 +106,7 @@
     <string name="sub_total">Sub Total</string>
     <string name="tax_amount">Tax Amount</string>
     <string name="total_amount">Total Amount</string>
+    <string name="gstno">Enter GST No</string>
 
 
     <string name="accept_txt">Accept</string>

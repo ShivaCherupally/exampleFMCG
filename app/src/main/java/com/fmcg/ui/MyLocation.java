@@ -40,8 +40,6 @@ public class MyLocation extends AppCompatActivity implements OnMapReadyCallback
 
 		mapFragment = (MapFragment) getFragmentManager()
 				.findFragmentById(R.id.my_location);
-
-
 		try
 		{
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)

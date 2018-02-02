@@ -7,11 +7,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -193,6 +196,9 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 	AutoCompleteTextView shopName_autoComplete;
 	EditText availzonenametxt, availroutenoetxt;
+	Button pendingBtn;
+	boolean pendingBillAccess = true;
+	TextView paybillamounttxt;
 
 
 	@Override
@@ -240,6 +246,9 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 
 		availzonenametxt = (EditText) findViewById(R.id.availzonenametxt);
 		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
+		pendingBtn = (Button) findViewById(R.id.pendingBtn);
+		paybillamounttxt= (TextView) findViewById(R.id.paybillamounttxt);
+		paybillamounttxt.setText("\u20B9" + " 0.0");
 
 		availableDetails();
 
@@ -290,6 +299,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 //		shopName_sp.setOnItemSelectedListener(this);
 		orderStatus_sp.setOnItemSelectedListener(this);
 		payment_sp.setOnItemSelectedListener(this);
+		pendingBtn.setOnClickListener(this);
 	}
 
 
@@ -562,6 +572,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		}
 	}
 
+	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	@Override
 	public void onClick(View v)
 	{
@@ -652,6 +663,34 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				else
 				{
 					Toast.makeText(mContext, "No internet Connection", Toast.LENGTH_SHORT).show();
+				}
+				break;
+			case R.id.pendingBtn:
+				if (pendingBillAccess)
+				{
+					pendingBillAccess = false;
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+					{
+						pendingBtn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+					}
+					else
+					{
+						pendingBtn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+					}
+					paybillamounttxt.setText("\u20B9" + " 0.0");
+				}
+				else
+				{
+					pendingBillAccess = true;
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+					{
+						pendingBtn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+					}
+					else
+					{
+						pendingBtn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
+					}
+					paybillamounttxt.setText("\u20B9" + " 0.0");
 				}
 				break;
 		}

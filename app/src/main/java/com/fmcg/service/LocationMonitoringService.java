@@ -48,8 +48,6 @@ public class LocationMonitoringService extends Service implements
 	private static final String TAG = LocationMonitoringService.class.getSimpleName();
 	GoogleApiClient mLocationClient;
 	LocationRequest mLocationRequest = new LocationRequest();
-
-
 	public static final String ACTION_LOCATION_BROADCAST = LocationMonitoringService.class.getName() + "LocationBroadcast";
 	public static final String EXTRA_LATITUDE = "extra_latitude";
 	public static final String EXTRA_LONGITUDE = "extra_longitude";
@@ -62,20 +60,14 @@ public class LocationMonitoringService extends Service implements
 				.addOnConnectionFailedListener(this)
 				.addApi(LocationServices.API)
 				.build();
-
-
 		mLocationRequest.setInterval(60000);
 		mLocationRequest.setFastestInterval(60000);
 
 
 		int priority = LocationRequest.PRIORITY_HIGH_ACCURACY; //by default
-		//PRIORITY_BALANCED_POWER_ACCURACY, PRIORITY_LOW_POWER, PRIORITY_NO_POWER are the other priority modes
-
-
 		mLocationRequest.setPriority(priority);
 		mLocationClient.connect();
 
-		//Make it stick to the notification panel so it is less prone to get cancelled by the Operating System.
 		return START_STICKY;
 	}
 
@@ -86,28 +78,16 @@ public class LocationMonitoringService extends Service implements
 		return null;
 	}
 
-	/*
-	 * LOCATION CALLBACKS
-	 */
+
 	@Override
 	public void onConnected(Bundle dataBundle)
 	{
+
 		if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
 				!= PackageManager.PERMISSION_GRANTED && ActivityCompat
 				.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
 				!= PackageManager.PERMISSION_GRANTED)
 		{
-			// TODO: Consider calling
-			//    ActivityCompat#requestPermissions
-			// here to request the missing permissions, and then overriding
-			//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-			//                                          int[] grantResults)
-			// to handle the case where the user grants the permission. See the documentation
-			// for ActivityCompat#requestPermissions for more details.
-
-			Log.d(TAG, "== Error On onConnected() Permission not granted");
-			//Permission not granted by user so cancel the further execution.
-
 			return;
 		}
 		LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient, mLocationRequest, this);
@@ -131,12 +111,9 @@ public class LocationMonitoringService extends Service implements
 	public void onLocationChanged(Location location)
 	{
 		Log.d(TAG, "Location changed");
-
-
 		if (location != null)
 		{
 			Log.d(TAG, "== location != null");
-
 			//Send result to activities
 			sendMessageToUI(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
 		}
@@ -156,26 +133,31 @@ public class LocationMonitoringService extends Service implements
 		String latitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LATITUDE);
 		String longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
 
-		Toast.makeText(getApplicationContext(), "Lat " + latitude, Toast.LENGTH_SHORT).show();
-		Toast.makeText(getApplicationContext(), "Lon " + longitude, Toast.LENGTH_SHORT).show();
 
-		if (SharedPrefsUtil.getStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK") != null && !SharedPrefsUtil
-				.getStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK").isEmpty())
+
+		if (SharedPrefsUtil.getStringPreference(getApplicationContext(), "USER_LOGOUT") != null &&
+				SharedPrefsUtil.getStringPreference(getApplicationContext(), "USER_LOGOUT").equals("NO"))
 		{
-			Log.e("lastsavedTime", SharedPrefsUtil.getStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK"));
-			Log.e("currentTime", DateUtil.currentTime());
-			if (!SharedPrefsUtil.getStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK").equals(DateUtil.currentTime()))
+			Toast.makeText(getApplicationContext(), "Lat " + latitude, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "Lon " + longitude, Toast.LENGTH_SHORT).show();
+			if (SharedPrefsUtil.getStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK") != null && !SharedPrefsUtil
+					.getStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK").isEmpty())
 			{
-				saveLatLontoServer(intent);
+				Log.e("lastsavedTime", SharedPrefsUtil.getStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK"));
+				Log.e("currentTime", DateUtil.currentTime());
+				if (!SharedPrefsUtil.getStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK").equals(DateUtil.currentTime()))
+				{
+					saveLatLontoServer(intent);
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "One Min Not Completed", Toast.LENGTH_SHORT).show();
+				}
 			}
 			else
 			{
-				Toast.makeText(getApplicationContext(), "One Min Not Completed", Toast.LENGTH_SHORT).show();
+				saveLatLontoServer(intent);
 			}
-		}
-		else
-		{
-			saveLatLontoServer(intent);
 		}
 
 
@@ -257,6 +239,7 @@ public class LocationMonitoringService extends Service implements
 				{
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
+						SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_ACCESSED", "DONE");
 						SharedPrefsUtil.setStringPreference(getApplicationContext(), "CHECK_ONE_MIN_TRACK", DateUtil.currentTime());
 						Toast.makeText(getApplicationContext(), "Your Location Tracking...", Toast.LENGTH_SHORT).show();
 						return;

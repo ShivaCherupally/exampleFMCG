@@ -63,7 +63,6 @@ public class RemainderService extends Service
 		notificationIntent.addCategory("android.intent.category.DEFAULT");
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.SECOND, 15);
-
 		PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		try

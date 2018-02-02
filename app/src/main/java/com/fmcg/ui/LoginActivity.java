@@ -241,6 +241,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 							Log.e("LoginDate", LoginDateandTime + "Y");
 							editor.commit();
 
+							SharedPrefsUtil.setStringPreference(getApplicationContext(), "USER_LOGOUT", "NO");
+
 							Intent login = new Intent(LoginActivity.this, DashboardActivity.class);
 							startActivity(login);
 							finish();

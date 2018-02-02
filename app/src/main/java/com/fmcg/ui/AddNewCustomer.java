@@ -32,6 +32,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -110,7 +111,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 	Toolbar toolbar;
 	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, location, createdby, locationName, payment, emailId, descriptionShop;
 	private TextView submit;
-	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp;
+	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp, gst_sp;
 	//Define a request code to send to Google Play services
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	private GoogleApiClient mGoogleApiClient;
@@ -145,7 +146,8 @@ public class AddNewCustomer extends AppCompatActivity implements
 	String selected_religionNameId = "";
 	String selected_paymentNameId = "";
 
-	EditText availzonenametxt, availroutenoetxt;
+
+	EditText availzonenametxt, availroutenoetxt,gstNoEt;
 
 	///Dailog
 	private Dialog promoDialog;
@@ -154,6 +156,9 @@ public class AddNewCustomer extends AppCompatActivity implements
 	Button alert_submit;
 	boolean check1 = false;
 	boolean check2 = false;
+	String[] gstlist = {"Select GST", "YES", "NO"};
+	boolean gsttouch = false;
+	String GstSelection = "";
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -184,6 +189,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
 		zone_sp.setVisibility(View.GONE);
+		gst_sp = (Spinner) findViewById(R.id.gst_sp);
 		routecd = (Spinner) findViewById(R.id.routecd);
 		routecd.setVisibility(View.GONE);
 		areaName_sp = (Spinner) findViewById(R.id.area_name);
@@ -195,10 +201,65 @@ public class AddNewCustomer extends AppCompatActivity implements
 		availzonenametxt = (EditText) findViewById(R.id.availzonenametxt);
 		availzonenametxt.setVisibility(View.VISIBLE);
 		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
+		gstNoEt= (EditText) findViewById(R.id.gstNoEt);
+		gstNoEt.setVisibility(View.GONE);
 		availroutenoetxt.setVisibility(View.VISIBLE);
 
 		availableDetails();
 		defaultAreaNameSelect();
+
+		/*ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, gstlist);
+		aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		gst_sp.setAdapter(aa);*/
+		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this,
+		                                                                     android.R.layout.simple_spinner_item,
+		                                                                     gstlist);
+		dataAdapter_zoneName.setDropDownViewResource(R.layout.list_item);
+		gst_sp.setAdapter(dataAdapter_zoneName);
+
+		gst_sp.setOnTouchListener(new View.OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(final View v, final MotionEvent event)
+			{
+				gsttouch = true;
+				return false;
+			}
+		});
+
+		gst_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id)
+			{
+				if (gsttouch)
+				{
+					Toast.makeText(getApplicationContext(), gstlist[position], Toast.LENGTH_LONG).show();
+					if (gstlist[position].equals("YES"))
+					{
+						GstSelection = "Y";
+						gstNoEt.setVisibility(View.VISIBLE);
+					}
+					else if (gstlist[position].equals("NO"))
+					{
+						GstSelection = "N";
+						gstNoEt.setVisibility(View.GONE);
+					}else {
+						gstNoEt.setVisibility(View.GONE);
+					}
+				}
+				else
+				{
+
+				}
+			}
+
+			@Override
+			public void onNothingSelected(final AdapterView<?> parent)
+			{
+
+			}
+		});
 
 //		HttpAdapter.getZoneDetailsDP(AddNewCustomer.this, "zoneName");
 //		HttpAdapter.getRoute(AddNewCustomer.this, "routeCode");
@@ -275,8 +336,14 @@ public class AddNewCustomer extends AppCompatActivity implements
 								.toJson(registerShops(shopname.getText().toString(), "shopDescription", "1", routeCode, ownername.getText().toString(),
 								                      shop_address.getText().toString(),
 								                      mobile.getText().toString(),
-								                      phone.getText().toString(), lat.getText().toString(), lang.getText().toString(), "0", locationName.getText().toString(),
-								                      selected_ShopId, "1", "2016-01-01", createdby.getText().toString(), selected_religionNameId, selected_paymentNameId, "1"));
+								                      phone.getText().toString(),
+								                      lat.getText().toString(),
+								                      lang.getText().toString(),
+								                      "0", locationName.getText().toString(),
+								                      selected_ShopId, "1", DateUtil.currentDate(),
+								                      createdby.getText().toString(),
+								                      selected_religionNameId, selected_paymentNameId, "1", GstSelection
+								));
 						Log.d("jsonString", jsonString);
 						new AddNewCustomer.CreateShopTask().execute();
 					}
@@ -348,7 +415,8 @@ public class AddNewCustomer extends AppCompatActivity implements
 	private static Map<String, String> registerShops(String shopName, String shopDescription, String routeId, String routeCode, String ownerName, String address,
 	                                                 String mobileNumber, String phoneNumbe,
 	                                                 String latitude, String longitude, String gPSL, String locationName, String shopTypeId, String active, String createdOn,
-	                                                 String createdby, String ReligionID, String PaymentTermID, String AreaId)
+	                                                 String createdby, String ReligionID, String PaymentTermID, String AreaId
+			, String GstSelection)
 	{
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("shopName", shopName);
@@ -370,6 +438,17 @@ public class AddNewCustomer extends AppCompatActivity implements
 		map.put("ReligionID", ReligionID);
 		map.put("PaymentTermID", PaymentTermID);
 		map.put("AreaId", AreaId);
+
+		if (GstSelection.equals("Y"))
+		{
+			map.put("GSTRegistered", GstSelection);
+		}
+		else
+		{
+			map.put("GSTNo", GstSelection);
+		}
+
+
 		return map;
 	}
 
@@ -507,6 +586,17 @@ public class AddNewCustomer extends AppCompatActivity implements
 			nameValuePairs.add(new BasicNameValuePair("Createdby", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId")));
 			nameValuePairs.add(new BasicNameValuePair("EmailID", emailId.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("Pincode", pin.getText().toString()));
+
+			if (GstSelection.equals("Y"))
+			{
+				nameValuePairs.add(new BasicNameValuePair("GSTRegistered", GstSelection));
+				nameValuePairs.add(new BasicNameValuePair("GSTNo", gstNoEt.getText().toString()));
+			}
+			else
+			{
+				nameValuePairs.add(new BasicNameValuePair("GSTRegistered", GstSelection));
+			}
+
 			Log.e("params", nameValuePairs.toString());
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
@@ -680,7 +770,8 @@ public class AddNewCustomer extends AppCompatActivity implements
 			e.printStackTrace();
 		}
 
-		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, zoneNamestitle);
+		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this,
+		                                                                     android.R.layout.simple_spinner_item, zoneNamestitle);
 		dataAdapter_zoneName.setDropDownViewResource(R.layout.list_item);
 		zone_sp.setAdapter(dataAdapter_zoneName);
 		zone_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -1298,13 +1389,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 			ret = false;
 			return ret;
 		}
-		if (ownername.getText().toString().length() == 0)
-		{
-			Toast.makeText(getApplicationContext(), "Please Enter Owner Name", Toast.LENGTH_LONG).show();
-			//ownername.setError("OwnerName  Can not be Blank");
-			ret = false;
-			return ret;
-		}
+
 		if (locationName.getText().toString().length() == 0)
 		{
 			Toast.makeText(getApplicationContext(), "Please Enter Your Location Name", Toast.LENGTH_LONG).show();
@@ -1340,6 +1425,24 @@ public class AddNewCustomer extends AppCompatActivity implements
 			ret = false;
 			return ret;
 		}
+
+		if (GstSelection == null || GstSelection.isEmpty() || GstSelection.equals("0"))
+		{
+			Toast.makeText(getApplicationContext(), "Please Select GST ", Toast.LENGTH_SHORT).show();
+			ret = false;
+			return ret;
+		}else {
+			if (GstSelection.equals("Y")){
+				if (gstNoEt.getText().toString().length() == 0){
+					gstNoEt.requestFocus();
+					gstNoEt.setError("Enter GST No");
+					ret = false;
+					return ret;
+				}
+			}
+		}
+		///
+
 		/*if (mobile.getText().toString().length() == 0)
 		{
 			Toast.makeText(getApplicationContext(), "Please Enter Mobile Number", Toast.LENGTH_LONG).show();
@@ -1357,6 +1460,13 @@ public class AddNewCustomer extends AppCompatActivity implements
 		if (!Validation.isValidPhoneNumber(mobile))
 		{
 			mobile.requestFocus();
+			ret = false;
+			return ret;
+		}
+		if (ownername.getText().toString().length() == 0)
+		{
+			Toast.makeText(getApplicationContext(), "Please Enter Owner Name", Toast.LENGTH_LONG).show();
+			//ownername.setError("OwnerName  Can not be Blank");
 			ret = false;
 			return ret;
 		}

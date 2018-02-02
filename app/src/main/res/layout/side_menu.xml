@@ -6,6 +6,7 @@
               android:background="@color/empty"
               android:orientation="vertical">
 
+
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="match_parent"
@@ -13,6 +14,15 @@
         android:background="@color/colorPrimaryDark"
         android:orientation="vertical"
         android:padding="@dimen/eigth">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="L"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimaryDark"
+            android:textSize="12sp"
+            android:textStyle="bold"/>
 
         <ImageView
             android:id="@+id/profileIv"

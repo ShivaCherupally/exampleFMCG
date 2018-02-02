@@ -291,6 +291,7 @@
                     android:visibility="visible"/>
             </LinearLayout>
 
+
             <EditText
                 android:id="@+id/payment"
                 android:layout_width="match_parent"
@@ -305,6 +306,38 @@
                 android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:visibility="gone"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_bg_black"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/gst_sp"
+                    style="@style/spinner_bg_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:visibility="visible"/>
+            </LinearLayout>
+            <EditText
+                android:id="@+id/gstNoEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_white"
+                android:hint="Enter GST No"
+                android:paddingLeft="10dp"
+                android:singleLine="true"
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <EditText
                 android:id="@+id/emailId"
