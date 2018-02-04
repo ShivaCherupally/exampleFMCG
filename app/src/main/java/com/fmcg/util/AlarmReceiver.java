@@ -11,7 +11,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.fmcg.Dotsoft.R;
-import com.fmcg.ui.DashboardActivity;
+import com.fmcg.Activity.HomeActivity.DashboardActivity;
 
 /**
  * Created by RuchiTiwari on 5/28/2017.

@@ -14,7 +14,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.database.RemainderDataBase;
 import com.fmcg.models.RemainderData;
-import com.fmcg.ui.RemainderListActivity;
+import com.fmcg.Activity.RemainderActivity.RemainderListActivity;
 
 
 import java.util.ArrayList;

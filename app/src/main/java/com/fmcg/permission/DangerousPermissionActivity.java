@@ -59,7 +59,6 @@ public class DangerousPermissionActivity extends Activity
 				return false;
 			}
 		}
-
 		return true;
 	}
 

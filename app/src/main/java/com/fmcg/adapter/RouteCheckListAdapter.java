@@ -9,15 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
 import com.fmcg.models.RouteDetailsData;
-import com.fmcg.ui.OrderBookList;
-import com.fmcg.ui.RouteDetails;
+import com.fmcg.Activity.MyDailyProgramActivity.RouteDetails;
 
 import java.util.List;
 

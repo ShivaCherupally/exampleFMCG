@@ -1,6 +1,5 @@
 package com.fmcg.util;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,38 +7,29 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.fmcg.ui.AddNewCustomer;
-import com.fmcg.ui.AddRemainderActivity;
-import com.fmcg.ui.BillingEditActivity;
-import com.fmcg.ui.GetShopsByRoute;
-import com.fmcg.ui.Invoice;
-import com.fmcg.ui.MasterCreationActivity;
-import com.fmcg.ui.MonthlySummary;
-import com.fmcg.ui.Order;
-import com.fmcg.ui.OrderEditActivity;
-import com.fmcg.ui.PendingListActivity;
-import com.fmcg.ui.ProfileActivity;
-import com.fmcg.ui.RemainderListActivity;
-import com.fmcg.ui.Remarks;
-import com.fmcg.ui.RouteDetails;
-import com.fmcg.ui.UpdateOrderDetailsActivity;
+import com.fmcg.Activity.AddNewCustomerActivity.AddNewCustomer;
+import com.fmcg.Activity.RemainderActivity.AddRemainderActivity;
+import com.fmcg.Activity.UpdateOrderAndBilling.BillingEditActivity;
+import com.fmcg.Activity.StartTripActivity.GetShopsByRoute;
+import com.fmcg.Activity.OrderAndBillingActivity.Invoice;
+import com.fmcg.Activity.MasterCreationActivity.MasterCreationActivity;
+import com.fmcg.Activity.MonthSummaryActivity.MonthlySummary;
+import com.fmcg.Activity.OrderAndBillingActivity.Order;
+import com.fmcg.Activity.UpdateOrderAndBilling.OrderEditActivity;
+import com.fmcg.Activity.ProfileActivity.ProfileActivity;
+import com.fmcg.Activity.RemainderActivity.RemainderListActivity;
+import com.fmcg.Activity.RemarkActivity.Remarks;
+import com.fmcg.Activity.MyDailyProgramActivity.RouteDetails;
+import com.fmcg.Activity.EditOrderAndBilling.UpdateOrderDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +40,6 @@ import me.srodrigo.androidhintspinner.HintAdapter;
 import me.srodrigo.androidhintspinner.HintSpinner;
 
 
-//import com.codefyne.mysrl.OffersListActivity;
 
 public class Util
 {

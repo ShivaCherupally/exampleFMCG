@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.fmcg.network.HttpAdapter;
 import com.fmcg.network.NetworkOperationListener;
 import com.fmcg.network.NetworkResponse;
-import com.fmcg.ui.DashboardActivity;
 import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
 import com.google.android.gms.common.ConnectionResult;

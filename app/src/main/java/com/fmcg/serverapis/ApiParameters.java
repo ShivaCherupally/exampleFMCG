@@ -108,12 +108,12 @@ public class ApiParameters {
         params.put("P_PKG_CTGRY", category);
         params.put("P_PTNT_CD", ptncode);
         params.put("P_STR", str);
-
         return params;
     }
 
 
-    public static Map<String, String> passGetPaySuccess(String orderno, String payid, String paydt, String amt, String transid, String paymethod, String ipaddress, String paystatus, String payopt) {
+    public static Map<String, String> passGetPaySuccess(String orderno,
+                                                        String payid, String paydt, String amt, String transid, String paymethod, String ipaddress, String paystatus, String payopt) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("P_ORDERNO", orderno);
         params.put("P_PAYMENT_ID", payid);
@@ -124,7 +124,6 @@ public class ApiParameters {
         params.put("P_IPADDRESS", ipaddress);
         params.put("P_PAYMENT_STATUS", paystatus);
         params.put("P_PAYMENT_OPT", payopt);
-
         return params;
     }
 

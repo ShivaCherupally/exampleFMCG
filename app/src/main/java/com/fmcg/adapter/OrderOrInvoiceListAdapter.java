@@ -1,30 +1,21 @@
 package com.fmcg.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.models.OrderBookOrInvoiceListData;
-import com.fmcg.network.HttpAdapter;
-import com.fmcg.ui.Order;
-import com.fmcg.ui.OrderBookList;
-import com.fmcg.ui.RemainderListActivity;
+import com.fmcg.Activity.ViewListActivity.OrderBookList.OrderBookList;
 import com.fmcg.util.DateUtil;
 import com.fmcg.util.SharedPrefsUtil;
 

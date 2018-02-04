@@ -337,6 +337,7 @@ public class HttpAdapter
 	public static void getOrderTotal(NetworkOperationListener listener, Object tag, String value)
 	{
 		// TODO Auto-generated method stub
+		Log.e("OrderNo",value);
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(ORDER_TOTAL_AMOUNT + "?OrderNumber=" + value, METHOD_GET, "NONE");
@@ -449,7 +450,8 @@ public class HttpAdapter
 		//operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + selectedRouteids, METHOD_POST, "NONE");
 //		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + selectedRouteids, METHOD_POST, "NONE");
 		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EnableEmployeeRouteId=" +
-				                  checkedRoutesAfterreplace + "&DisbleEmployeeRouteId=" + uncheckedRoutesAfterreplace, METHOD_POST,
+				                  checkedRoutesAfterreplace + "&DisbleEmployeeRouteId="
+				                  + uncheckedRoutesAfterreplace, METHOD_POST,
 		                  "NONE");
 	}
 

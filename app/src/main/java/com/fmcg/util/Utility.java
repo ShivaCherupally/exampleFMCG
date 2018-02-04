@@ -20,10 +20,6 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Surface;
 
-import com.fmcg.ui.OrderBookList;
-
-import okhttp3.internal.Util;
-
 
 public class Utility
 {
