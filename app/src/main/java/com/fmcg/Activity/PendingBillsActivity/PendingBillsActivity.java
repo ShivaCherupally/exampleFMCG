@@ -65,7 +65,23 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 		if (Utility.isOnline(mContext))
 		{
-			HttpAdapter.pendingBills(PendingBillsActivity.this, "PendingBills", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
+			if (SharedPrefsUtil.getStringPreference(mContext, "ACCESS_INVOICE") != null && !SharedPrefsUtil.getStringPreference(mContext, "ACCESS_INVOICE").isEmpty())
+			{
+				if (SharedPrefsUtil.getStringPreference(mContext, "ACCESS_INVOICE").equals("ACCESS_INVOICE_PAGE"))
+				{
+					Log.e("ShopId", SharedPrefsUtil.getStringPreference(mContext, "KEY_SHOP_ID") + "Invoice");
+					HttpAdapter.pendingBillsForShop(PendingBillsActivity.this, "PendingBills",
+					                                SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"),
+					                                SharedPrefsUtil.getStringPreference(mContext, "KEY_SHOP_ID")
+					);
+				}
+			}
+			else
+			{
+				HttpAdapter.pendingBills(PendingBillsActivity.this, "PendingBills",
+				                         SharedPrefsUtil.getStringPreference(mContext, "EmployeeId"));
+			}
+
 		}
 		else
 		{
@@ -116,9 +132,28 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 	public void onBackPressed()
 	{
 		super.onBackPressed();
-		Intent intent = new Intent(this, DashboardActivity.class);
-		startActivity(intent);
-		finish();
+		if (SharedPrefsUtil.getStringPreference(mContext, "ACCESS_INVOICE") != null && !SharedPrefsUtil.getStringPreference(mContext, "ACCESS_INVOICE").isEmpty())
+		{
+			if (SharedPrefsUtil.getStringPreference(mContext, "ACCESS_INVOICE").equals("ACCESS_INVOICE_PAGE"))
+			{
+//				Intent intent = new Intent(this, DashboardActivity.class);
+//				startActivity(intent);
+				finish();
+			}
+			else
+			{
+				Intent intent = new Intent(this, DashboardActivity.class);
+				startActivity(intent);
+				finish();
+			}
+		}
+		else
+		{
+			Intent intent = new Intent(this, DashboardActivity.class);
+			startActivity(intent);
+			finish();
+		}
+
 	}
 
 	@Override
@@ -137,53 +172,57 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 					if (mJson.getString("Status").equals("OK"))
 					{
 
-						Toast.makeText(mContext, "Pending Data", Toast.LENGTH_SHORT).show();
-						JSONObject mJsonData = mJson.getJSONObject("Data");
-						if (mJsonData != null)
+						if (mJson.getJSONObject("Data") != null)
 						{
+							Toast.makeText(mContext, "Pending Data", Toast.LENGTH_SHORT).show();
+							JSONObject mJsonData = mJson.getJSONObject("Data");
+							if (mJsonData != null)
+							{
 //							layouttdata.setVisibility(View.VISIBLE);
 //							nodata.setVisibility(View.GONE);
-							if (mJsonData.getString("OrderNumber") != null && !mJsonData.getString("OrderNumber").isEmpty())
-							{
-								ordernotxt.setText(mJsonData.getString("OrderNumber"));
-							}
-							if (mJsonData.getString("OrderDate") != null && !mJsonData.getString("OrderDate").isEmpty())
-							{
-								orderdatetxt.setText(mJsonData.getString("OrderDate"));
-							}
-							if (mJsonData.getString("ShopName") != null && !mJsonData.getString("ShopName").isEmpty())
-							{
-								shopNametxt.setText(mJsonData.getString("ShopName"));
-							}
-
-							try
-							{
-
-								if (String.valueOf(mJsonData.getInt("SubTotalAmount")) != null && !String.valueOf(mJsonData.getInt("SubTotalAmount")).isEmpty())
+								if (mJsonData.getString("OrderNumber") != null && !mJsonData.getString("OrderNumber").isEmpty())
 								{
-									subtotaltxt.setVisibility(View.VISIBLE);
-									subtotaltxt.setText(String.valueOf(mJsonData.getDouble("SubTotalAmount")));
+									ordernotxt.setText(mJsonData.getString("OrderNumber"));
+								}
+								if (mJsonData.getString("OrderDate") != null && !mJsonData.getString("OrderDate").isEmpty())
+								{
+									orderdatetxt.setText(mJsonData.getString("OrderDate"));
+								}
+								if (mJsonData.getString("ShopName") != null && !mJsonData.getString("ShopName").isEmpty())
+								{
+									shopNametxt.setText(mJsonData.getString("ShopName"));
+								}
+
+								try
+								{
+
+									if (String.valueOf(mJsonData.getInt("SubTotalAmount")) != null && !String.valueOf(mJsonData.getInt("SubTotalAmount")).isEmpty())
+									{
+										subtotaltxt.setVisibility(View.VISIBLE);
+										subtotaltxt.setText(String.valueOf(mJsonData.getDouble("SubTotalAmount")));
+									}
+								}
+								catch (Exception e)
+								{
+
+								}
+
+								if (String.valueOf(mJsonData.getDouble("TaxAmount")) != null && !String.valueOf(mJsonData.getDouble("TaxAmount")).isEmpty())
+								{
+									taxamounttxt.setVisibility(View.VISIBLE);
+									taxamounttxt.setText(String.valueOf(mJsonData.getDouble("TaxAmount")));
+								}
+								if (String.valueOf(mJsonData.getDouble("TotalAmount")) != null && !String.valueOf(mJsonData.getDouble("TotalAmount")).isEmpty())
+								{
+									totalamounttxt.setVisibility(View.VISIBLE);
+									totalamounttxt.setText(String.valueOf(mJsonData.getDouble("TotalAmount")));
 								}
 							}
-							catch (Exception e)
-							{
 
-							}
-
-							if (String.valueOf(mJsonData.getDouble("TaxAmount")) != null && !String.valueOf(mJsonData.getDouble("TaxAmount")).isEmpty())
-							{
-								taxamounttxt.setVisibility(View.VISIBLE);
-								taxamounttxt.setText(String.valueOf(mJsonData.getDouble("TaxAmount")));
-							}
-							if (String.valueOf(mJsonData.getDouble("TotalAmount")) != null && !String.valueOf(mJsonData.getDouble("TotalAmount")).isEmpty())
-							{
-								totalamounttxt.setVisibility(View.VISIBLE);
-								totalamounttxt.setText(String.valueOf(mJsonData.getDouble("TotalAmount")));
-							}
 						}
 						else
 						{
-							Toast.makeText(mContext, "No Data", Toast.LENGTH_SHORT).show();
+							Toast.makeText(mContext, "No Bills", Toast.LENGTH_SHORT).show();
 //							layouttdata.setVisibility(View.GONE);
 //							nodata.setVisibility(View.VISIBLE);
 						}
@@ -213,12 +252,6 @@ public class PendingBillsActivity extends AppCompatActivity implements NetworkOp
 
 	}
 
-	private void refeshActivity()
-	{
-		Intent i = getIntent();
-		finish();
-		startActivity(i);
-	}
 
 	@Override
 	public void showToast(String string, int lengthLong)

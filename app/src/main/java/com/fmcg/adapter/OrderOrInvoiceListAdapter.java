@@ -72,7 +72,7 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 				}
 				else
 				{
-					viewHolder.editBtn.setVisibility(View.VISIBLE);
+					viewHolder.editBtn.setVisibility(View.GONE);
 					viewHolder.closeRL.setVisibility(View.VISIBLE);
 					viewHolder.deleteRL.setVisibility(View.VISIBLE);
 					invoiceListData(viewHolder, position);

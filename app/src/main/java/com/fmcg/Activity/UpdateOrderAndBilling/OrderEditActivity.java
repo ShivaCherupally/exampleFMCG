@@ -58,6 +58,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fmcg.Activity.PendingBillsActivity.PendingBillsActivity;
 import com.fmcg.Dotsoft.BuildConfig;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
@@ -99,7 +100,7 @@ import static com.fmcg.util.Common.orderNUmberString;
  */
 
 public class OrderEditActivity extends AppCompatActivity implements NetworkOperationListener,
-                                                                    AdapterView.OnItemSelectedListener, View.OnTouchListener
+                                                                    AdapterView.OnItemSelectedListener, View.OnTouchListener, View.OnClickListener
 {
 	public static Activity orderBookeditActivity;
 	public List<GetProductCategory> productDP;
@@ -204,6 +205,8 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 	String orderStatusName = "";
 	ProgressDialog progressdailog;
 
+//	Button pendingBtn;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -261,6 +264,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		statusBaseLayout = (LinearLayout) findViewById(R.id.statusBaseLayout);
 		selectRouteNameBind();
 		selectAreaNameBind();
+//		pendingBtn = (Button) findViewById(R.id.pendingBtn);
 
 		if (Utility.isOnline(mContext))
 		{
@@ -333,6 +337,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 //		shopName_sp.setOnItemSelectedListener(this);
 		orderStatus_sp.setOnTouchListener(this);
 		payment_sp.setOnTouchListener(this);
+//		pendingBtn.setOnClickListener(this);
 
 
 		submit.setOnClickListener(new View.OnClickListener()
@@ -1336,6 +1341,26 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		return false;
 	}
 
+	@Override
+	public void onClick(final View v)
+	{
+	/*	if (v.getId() == R.id.pendingBtn)
+		{
+
+			if (selected_ShopId == null || selected_ShopId.isEmpty() || selected_ShopId.equals("0"))
+			{
+				Toast.makeText(getApplicationContext(), "Please Enter Shop Name", Toast.LENGTH_SHORT).show();
+				return;
+			}else {
+				Log.e("ShopId", selected_ShopId);
+				SharedPrefsUtil.setStringPreference(mContext, "ACCESS_INVOICE", "ACCESS_INVOICE_PAGE");
+				SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopId);
+				Intent i = new Intent(OrderEditActivity.this, PendingBillsActivity.class);
+				startActivity(i);
+			}
+		}*/
+	}
+
 	private class ProductCategoryTableRow extends android.widget.TableRow
 	{
 
@@ -1878,7 +1903,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 				}
 				else
 				{
-					Toast.makeText(mContext, "Please Select Order Book or Invoice", Toast.LENGTH_SHORT).show();
+					Toast.makeText(mContext, "Please Select Order Biiling", Toast.LENGTH_SHORT).show();
 				}
 
 			}

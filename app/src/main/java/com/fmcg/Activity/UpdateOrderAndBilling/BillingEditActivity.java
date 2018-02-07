@@ -106,6 +106,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 	private TableLayout tableLayout;
 	Context mContext;
 	String TotalAmount = "";
+	Double TotalAmountdouble;
 	boolean orderCancel = false;
 	String invoiceOrderno = "";
 	String paidAmount = "";
@@ -790,20 +791,14 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 				}
 				else if (response.getTag().equals("orderSummary"))
 				{
-					Double total = 0.0;
 					if (mJson.getString("Message").equals("SuccessFull"))
 					{
 						JSONArray jsonArray = mJson.getJSONArray("Data");
 						orderSummary.clear();
+						list_of_orders.clear();
 						for (int i = 0; i < jsonArray.length(); i++)
 						{
-							/*JSONObject obj = jsonArray.getJSONObject(i);
-							GetOrderSummary getOrderSummary = new Gson().fromJson(obj.toString(), GetOrderSummary.class);
-							total = total + Double.parseDouble(getOrderSummary.TotalAmount);
-							orderSummary.add(getOrderSummary);*/
-
 							JSONObject obj = jsonArray.getJSONObject(i);
-//							Log.e("categorydata", obj.toString());
 							GetOrderSummary getOrderSummary = new Gson().fromJson(obj.toString(), GetOrderSummary.class);
 							list_of_orders.add(getOrderSummary);
 						}
@@ -822,19 +817,21 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 							if (jsonArray !=null){
 								for (int i = 0; i < jsonArray.length(); i++)
 								{
-									AvailableTotalAmount = String.format("%.2f", Double.valueOf(TotalAmount));
-									TotalAmount = jsonArray.getString(i);
+									TotalAmountdouble = jsonArray.getDouble(i);
+									TotalAmount = String.valueOf(TotalAmountdouble);
 									Log.e("totalAmount", TotalAmount);
+									AvailableTotalAmount = String.format("%.2f", TotalAmountdouble);
 								}
-								totalAmt.setText("Total Amount: " + String.format("%.2f", Double.valueOf(TotalAmount)));
+//								Log.e("totalAmounttxt", String.format("%.2f", TotalAmountdouble + ""));
+								totalAmt.setText("Total Amount: " + String.format("%.2f", TotalAmountdouble));
 							}else {
 								totalAmt.setText("null");
 							}
-
 						}
 					}
 					catch (Exception e)
 					{
+						e.printStackTrace();
 
 					}
 

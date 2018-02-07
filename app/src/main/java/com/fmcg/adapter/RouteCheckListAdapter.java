@@ -63,7 +63,8 @@ public class RouteCheckListAdapter extends RecyclerView.Adapter<RouteCheckListAd
 		}
 		if (stList.get(position).getRouteName() != null && !stList.get(position).getRouteName().equalsIgnoreCase("null"))
 		{
-			viewHolder.tvRouteName.setText("Route No : " + "# " + Common.stripNonDigits(stList.get(position).getRouteName()));
+//			viewHolder.tvRouteName.setText("Route No : " + "# " + Common.stripNonDigits(stList.get(position).getRouteName()));
+			viewHolder.tvRouteName.setText("Route No : " + "# " + stList.get(position).getRouteName());
 		}
 		if (stList.get(position).getTargetAmount() != null && !stList.get(position).getTargetAmount().equalsIgnoreCase("null"))
 		{

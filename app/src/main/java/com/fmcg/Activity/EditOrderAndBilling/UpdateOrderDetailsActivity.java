@@ -27,6 +27,7 @@ import android.widget.TableRow;
 
 import com.fmcg.Activity.OrderAndBillingActivity.Invoice;
 import com.fmcg.Activity.OrderAndBillingActivity.Order;
+import com.fmcg.Activity.UpdateOrderAndBilling.BillingEditActivity;
 import com.fmcg.Activity.ViewListActivity.ViewListActivity;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
@@ -156,6 +157,8 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 	LinearLayout statusBaseLayout;
 	String orderStatusName = "";
 
+	EditText Remarks_et;
+
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -193,6 +196,8 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 		product_category_spinner = (Spinner) findViewById(R.id.product_category_spinner);
 		payment_terms_spinner = (Spinner) findViewById(R.id.payment_terms_spinner);
 		product_addiv = (ImageView) findViewById(R.id.product_addiv);
+
+		Remarks_et = (EditText)findViewById(R.id.Remarks_et);
 
 		statusBaseLayout = (LinearLayout) findViewById(R.id.statusBaseLayout);
 
@@ -693,6 +698,16 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 					{
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
 						Toast.makeText(mContext, "Successfully Updated.", Toast.LENGTH_SHORT).show();
+
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_ZONE_ID", selected_zoneId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_ROUTE_ID", selected_roueId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_AREANAME_ID", selected_areaNameId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_NAME", shopName_autoComplete.getText().toString());
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_PAYMENT_ID", selected_paymentTermsId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_ORDER_STATUS_ID", selected_orderStatusId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_DESCRIPTION", Remarks_et.getText().toString());
+
 						dailogBoxAfterSubmit();
 					}
 					else
@@ -1375,7 +1390,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 				}
 				else if (check2)
 				{
-					Intent inten = new Intent(UpdateOrderDetailsActivity.this, Invoice.class);
+					Intent inten = new Intent(UpdateOrderDetailsActivity.this, BillingEditActivity.class);
 					Util.killorderBook();
 					startActivity(inten);
 				}

@@ -44,6 +44,7 @@ import android.view.Window;
 import android.widget.*;
 import android.widget.TableRow;
 
+import com.fmcg.Activity.UpdateOrderAndBilling.BillingEditActivity;
 import com.fmcg.Dotsoft.BuildConfig;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
@@ -804,6 +805,16 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 					if (mJson.getString("Message").equalsIgnoreCase("SuccessFull"))
 					{
 						Log.e("response", mJson.getString("Message").equalsIgnoreCase("SuccessFull") + "Success");
+						Toast.makeText(mContext, "Successfully Your Order Booked.", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "Your Order Number is " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_ZONE_ID", selected_zoneId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_ROUTE_ID", selected_roueId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_AREANAME_ID", selected_areaNameId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_NAME", shopName_autoComplete.getText().toString());
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_PAYMENT_ID", selected_paymentTermsId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_ORDER_STATUS_ID", selected_orderStatusId);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_DESCRIPTION", remarksET.getText().toString());
 						Toast.makeText(mContext, "Successfully Your Order Booked.", Toast.LENGTH_SHORT).show();
 						Toast.makeText(mContext, "Your Order Number is " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
 						dailogBoxAfterSubmit();
@@ -1787,7 +1798,7 @@ public class Order extends AppCompatActivity implements NetworkOperationListener
 				}
 				else if (check2)
 				{
-					Intent inten = new Intent(Order.this, Invoice.class);
+					Intent inten = new Intent(Order.this, BillingEditActivity.class);
 					Util.killorderBook();
 					startActivity(inten);
 				}

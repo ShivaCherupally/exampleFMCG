@@ -665,6 +665,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 		else if (v.getId() == R.id.pendingBills)
 		{
+			SharedPrefsUtil.setStringPreference(mContext, "ACCESS_INVOICE", "NONACCESS_INVOICE_PAGE");
 			Intent inttt = new Intent(DashboardActivity.this, PendingBillsActivity.class);
 			Util.killMonth();
 			startActivity(inttt);

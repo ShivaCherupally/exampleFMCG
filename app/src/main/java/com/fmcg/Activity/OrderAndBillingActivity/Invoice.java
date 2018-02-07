@@ -41,6 +41,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fmcg.Activity.PendingBillsActivity.PendingBillsActivity;
+import com.fmcg.Activity.UpdateOrderAndBilling.OrderEditActivity;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
 import com.fmcg.models.GetAreaDetails;
@@ -244,7 +246,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		availzonenametxt = (EditText) findViewById(R.id.availzonenametxt);
 		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
 		pendingBtn = (Button) findViewById(R.id.pendingBtn);
-		paybillamounttxt= (TextView) findViewById(R.id.paybillamounttxt);
+		paybillamounttxt = (TextView) findViewById(R.id.paybillamounttxt);
 		paybillamounttxt.setText("\u20B9" + " 0.0");
 
 		availableDetails();
@@ -663,7 +665,19 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				}
 				break;
 			case R.id.pendingBtn:
-				if (pendingBillAccess)
+				if (selected_ShopId == null || selected_ShopId.isEmpty() || selected_ShopId.equals("0"))
+				{
+					Toast.makeText(getApplicationContext(), "Please Enter Shop Name", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				else
+				{
+					SharedPrefsUtil.setStringPreference(mContext, "ACCESS_INVOICE", "ACCESS_INVOICE_PAGE");
+					SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopId);
+					Intent i = new Intent(Invoice.this, PendingBillsActivity.class);
+					startActivity(i);
+				}
+				/*if (pendingBillAccess)
 				{
 					pendingBillAccess = false;
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -688,7 +702,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 						pendingBtn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
 					}
 					paybillamounttxt.setText("\u20B9" + " 0.0");
-				}
+				}*/
 				break;
 		}
 	}

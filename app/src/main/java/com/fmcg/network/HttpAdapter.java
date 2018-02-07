@@ -337,7 +337,7 @@ public class HttpAdapter
 	public static void getOrderTotal(NetworkOperationListener listener, Object tag, String value)
 	{
 		// TODO Auto-generated method stub
-		Log.e("OrderNo",value);
+		Log.e("OrderNo", value);
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(ORDER_TOTAL_AMOUNT + "?OrderNumber=" + value, METHOD_GET, "NONE");
@@ -439,6 +439,16 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(PENDING_BILLS + "?EmployeeId=" + empolyeeId, METHOD_GET, "NONE");
+	}
+
+	public static void pendingBillsForShop(NetworkOperationListener listener, Object tag, String empolyeeId,String shopId)
+	{
+		Log.d("jsonrequest", empolyeeId);
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(PENDING_BILLS + "?EmployeeId=" + empolyeeId +
+				                  "&ShopId=" + shopId, METHOD_GET, "NONE");
 	}
 
 	public static void routeAccept(NetworkOperationListener listener, Object tag, String checkedRoutesAfterreplace, String uncheckedRoutesAfterreplace)
