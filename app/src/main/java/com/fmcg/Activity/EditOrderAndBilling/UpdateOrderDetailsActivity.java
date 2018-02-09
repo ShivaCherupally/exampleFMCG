@@ -25,8 +25,7 @@ import android.view.Window;
 import android.widget.*;
 import android.widget.TableRow;
 
-import com.fmcg.Activity.OrderAndBillingActivity.Invoice;
-import com.fmcg.Activity.OrderAndBillingActivity.Order;
+import com.fmcg.Activity.OrderAndBillingActivity.OrderBookingActivity;
 import com.fmcg.Activity.UpdateOrderAndBilling.BillingEditActivity;
 import com.fmcg.Activity.ViewListActivity.ViewListActivity;
 import com.fmcg.Dotsoft.R;
@@ -1384,7 +1383,7 @@ public class UpdateOrderDetailsActivity extends AppCompatActivity implements Net
 			{
 				if (check1)
 				{
-					Intent in = new Intent(UpdateOrderDetailsActivity.this, Order.class);
+					Intent in = new Intent(UpdateOrderDetailsActivity.this, OrderBookingActivity.class);
 					Util.killorderBook();
 					startActivity(in);
 				}

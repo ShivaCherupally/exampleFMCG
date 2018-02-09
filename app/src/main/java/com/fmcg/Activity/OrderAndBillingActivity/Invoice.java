@@ -1212,7 +1212,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				if (check1)
 				{
 
-					Intent in = new Intent(Invoice.this, Order.class);
+					Intent in = new Intent(Invoice.this, OrderBookingActivity.class);
 					Util.killInvoice();
 					startActivity(in);
 				}

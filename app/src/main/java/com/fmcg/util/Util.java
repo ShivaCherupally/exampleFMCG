@@ -17,13 +17,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.fmcg.Activity.AddNewCustomerActivity.AddNewCustomer;
+import com.fmcg.Activity.OrderAndBillingActivity.OrderBookingActivity;
 import com.fmcg.Activity.RemainderActivity.AddRemainderActivity;
 import com.fmcg.Activity.UpdateOrderAndBilling.BillingEditActivity;
 import com.fmcg.Activity.StartTripActivity.GetShopsByRoute;
 import com.fmcg.Activity.OrderAndBillingActivity.Invoice;
 import com.fmcg.Activity.MasterCreationActivity.MasterCreationActivity;
 import com.fmcg.Activity.MonthSummaryActivity.MonthlySummary;
-import com.fmcg.Activity.OrderAndBillingActivity.Order;
 import com.fmcg.Activity.UpdateOrderAndBilling.OrderEditActivity;
 import com.fmcg.Activity.ProfileActivity.ProfileActivity;
 import com.fmcg.Activity.RemainderActivity.RemainderListActivity;
@@ -318,9 +318,9 @@ public class Util
 
 	public static void killorderBook()
 	{
-		if (Order.orderBookActivity != null)
+		if (OrderBookingActivity.orderBookActivity != null)
 		{
-			Order.orderBookActivity.finish();
+			OrderBookingActivity.orderBookActivity.finish();
 		}
 	}
 

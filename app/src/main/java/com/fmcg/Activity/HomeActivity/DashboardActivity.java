@@ -37,7 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fmcg.Activity.OrderAndBillingActivity.Invoice;
-import com.fmcg.Activity.OrderAndBillingActivity.Order;
+import com.fmcg.Activity.OrderAndBillingActivity.OrderBookingActivity;
 import com.fmcg.Activity.ViewListActivity.ViewListActivity;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Activity.UpdateCustomerActivity.UpdateCustomerNewActivity;
@@ -238,7 +238,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		if (SharedPrefsUtil.getStringPreference(getApplicationContext(), "LOCATION_ACCESSED") != null && SharedPrefsUtil
 				.getStringPreference(getApplicationContext(), "LOCATION_ACCESSED").equals("DONE"))
 		{
-
+			if (SharedPrefsUtil.getStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART") != null && !SharedPrefsUtil
+					.getStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART").isEmpty())
+			{
+				if (SharedPrefsUtil.getStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART").equals("ENABLE"))
+				{
+					SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART", "DISABLE");
+					Toast.makeText(getApplicationContext(), "Bright Udyog", Toast.LENGTH_SHORT).show();
+					trackLocationEveryFiveMint();
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Home", Toast.LENGTH_SHORT).show();
+				}
+			}
 		}
 		else
 		{
@@ -707,12 +720,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	private void logoutUserDetails()
 	{
 		SharedPrefsUtil.setStringPreference(getApplicationContext(), "USER_LOGOUT", "YES");
+
 		Intent intent = new Intent(this, LocationMonitoringService.class);
 		stopService(intent);
 		sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.clear();
 		editor.commit();
+		SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART", "ENABLE");
 		Intent setIntent = new Intent(this, LoginActivity.class);
 		setIntent.addCategory(Intent.CATEGORY_HOME);
 		setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1065,6 +1080,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		if (SharedPrefsUtil.getStringPreference(getApplicationContext(), "LOCATION_ACCESSED") != null && SharedPrefsUtil
 				.getStringPreference(getApplicationContext(), "LOCATION_ACCESSED").equals("DONE"))
 		{
+			if (SharedPrefsUtil.getStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART") != null && !SharedPrefsUtil
+					.getStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART").isEmpty())
+			{
+				if (SharedPrefsUtil.getStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART").equals("ENABLE"))
+				{
+					SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART", "DISABLE");
+					Toast.makeText(getApplicationContext(), "Bright Udyog App", Toast.LENGTH_SHORT).show();
+					trackLocationEveryFiveMint();
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), "Home", Toast.LENGTH_SHORT).show();
+				}
+			}
 
 		}
 		else
@@ -1131,7 +1160,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 			if (PLAN_ACCEPTED.equals("ACCEPTED"))
 			{
-				Intent order = new Intent(DashboardActivity.this, Order.class);
+//				Intent order = new Intent(DashboardActivity.this, Order.class);
+				Intent order = new Intent(DashboardActivity.this, OrderBookingActivity.class);
+				//
 				startActivity(order);
 			}
 			else
@@ -1265,15 +1296,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	{
 		startService(new Intent(getBaseContext(), RemainderService.class));
 		super.onPause();
-
 	}
 
 
 	@Override
 	protected void onDestroy()
 	{
-		stopService(new Intent(this, LocationMonitoringService.class));
-		mAlreadyStartedService = false;
+//		Toast.makeText(getApplicationContext(), "Bright", Toast.LENGTH_SHORT).show();
+//		stopService(new Intent(this, LocationMonitoringService.class));
+//		mAlreadyStartedService = false;
+		SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART", "ENABLE");
 		super.onDestroy();
 	}
 

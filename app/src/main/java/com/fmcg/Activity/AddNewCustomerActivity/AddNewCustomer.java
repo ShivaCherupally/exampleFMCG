@@ -43,7 +43,7 @@ import android.widget.Toast;
 
 import com.fmcg.Activity.HomeActivity.DashboardActivity;
 import com.fmcg.Activity.OrderAndBillingActivity.Invoice;
-import com.fmcg.Activity.OrderAndBillingActivity.Order;
+import com.fmcg.Activity.OrderAndBillingActivity.OrderBookingActivity;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.models.GetRouteDetails;
 import com.fmcg.models.GetZoneDetails;
@@ -499,7 +499,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 			{
 				if (check1)
 				{
-					Intent in = new Intent(AddNewCustomer.this, Order.class);
+					Intent in = new Intent(AddNewCustomer.this, OrderBookingActivity.class);
 					Util.killAddNewCoustmer();
 					startActivity(in);
 				}
@@ -1347,18 +1347,18 @@ public class AddNewCustomer extends AppCompatActivity implements
 	{
 		boolean ret = true;
 		Log.e("ZoneId", selected_zoneId);
-		if (selected_zoneId == null || selected_zoneId.isEmpty() || selected_zoneId.equals("0"))
+		/*if (selected_zoneId == null || selected_zoneId.isEmpty() || selected_zoneId.equals("0"))
 		{
 			Toast.makeText(getApplicationContext(), "Please Select Zone Name", Toast.LENGTH_SHORT).show();
 			ret = false;
 			return ret;
-		}
-		if (selected_roueId == null || selected_roueId.isEmpty() || selected_roueId.equals("0"))
+		}*/
+		/*if (selected_roueId == null || selected_roueId.isEmpty() || selected_roueId.equals("0"))
 		{
 			Toast.makeText(getApplicationContext(), "Please Select Route Name", Toast.LENGTH_SHORT).show();
 			ret = false;
 			return ret;
-		}
+		}*/
 
 		if (selected_areaNameId == null || selected_areaNameId.isEmpty() || selected_areaNameId.equals("0"))
 		{
@@ -1382,7 +1382,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 			return ret;
 		}
 
-		if (locationName.getText().toString().length() == 0)
+		/*if (locationName.getText().toString().length() == 0)
 		{
 			Toast.makeText(getApplicationContext(), "Please Enter Your Location Name", Toast.LENGTH_LONG).show();
 			//createdby.setError("Enter Your Location Name");
@@ -1435,12 +1435,12 @@ public class AddNewCustomer extends AppCompatActivity implements
 		}
 		///
 
-		/*if (mobile.getText().toString().length() == 0)
+		*//*if (mobile.getText().toString().length() == 0)
 		{
 			Toast.makeText(getApplicationContext(), "Please Enter Mobile Number", Toast.LENGTH_LONG).show();
 			//mobile.setError("Enter Your Mobile Number");
 			return ret;
-		}*/
+		}*//*
 
 		if (!Validation.isEmailAddress(emailId, true))
 		{
@@ -1461,7 +1461,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 			//ownername.setError("OwnerName  Can not be Blank");
 			ret = false;
 			return ret;
-		}
+		}*/
 
 
 		return ret;

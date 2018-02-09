@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.*;
 
+import com.fmcg.Activity.OrderAndBillingActivity.OrderBookingActivity;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
 import com.fmcg.models.GetAreaDetails;
@@ -44,7 +45,6 @@ import com.fmcg.network.NetworkOperationListener;
 import com.fmcg.network.NetworkResponse;
 import com.fmcg.Activity.HomeActivity.DashboardActivity;
 import com.fmcg.Activity.OrderAndBillingActivity.Invoice;
-import com.fmcg.Activity.OrderAndBillingActivity.Order;
 import com.fmcg.Activity.ViewListActivity.OrderBookList.OrderBookList;
 import com.fmcg.Activity.ViewListActivity.ViewListActivity;
 import com.fmcg.util.SharedPrefsUtil;
@@ -1032,7 +1032,7 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 				if (check1)
 				{
 
-					Intent in = new Intent(UpdateInvoiceActivity.this, Order.class);
+					Intent in = new Intent(UpdateInvoiceActivity.this, OrderBookingActivity.class);
 					Util.killInvoice();
 					startActivity(in);
 				}

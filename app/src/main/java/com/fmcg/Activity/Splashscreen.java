@@ -93,6 +93,7 @@ public class Splashscreen extends AppCompatActivity
 					{
 						if (userLogin.length() >= 1)
 						{
+							SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART", "ENABLE");
 							Intent i = new Intent(Splashscreen.this, DashboardActivity.class);
 							startActivity(i);
 						}

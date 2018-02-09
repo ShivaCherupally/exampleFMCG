@@ -457,6 +457,8 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		Log.e("RoutesParams", checkedRoutesAfterreplace + uncheckedRoutesAfterreplace);
+		Log.e("EnableEmployeeRouteId", checkedRoutesAfterreplace);
+		Log.e("DisbleEmployeeRouteId", uncheckedRoutesAfterreplace);
 		//operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + selectedRouteids, METHOD_POST, "NONE");
 //		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EmployeeRouteId=" + selectedRouteids, METHOD_POST, "NONE");
 		operation.execute(GET_ROUTE_ACCEPT_BY_EMP + "?EnableEmployeeRouteId=" +

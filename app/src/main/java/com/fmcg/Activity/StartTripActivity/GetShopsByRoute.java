@@ -18,9 +18,11 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -349,7 +351,9 @@ public class GetShopsByRoute extends AppCompatActivity
 			LocationManager locationManagerCt = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 			locationCt = locationManagerCt.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 			LatLng latLng = new LatLng(locationCt.getLatitude(), locationCt.getLongitude());
-			markerName = googleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.navigation)));
+			markerName = googleMap.addMarker(new MarkerOptions().position(latLng).icon(
+					getBitmapDescriptor(R.drawable.bike_big)));
+//					BitmapDescriptorFactory.fromResource(R.drawable.ic_bike)));
 			map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 			// Zoom in the Google Map
 			map.animateCamera(CameraUpdateFactory.zoomTo(15));
@@ -382,7 +386,8 @@ public class GetShopsByRoute extends AppCompatActivity
 			LocationManager locationManagerCt = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 			locationCt = locationManagerCt.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 			LatLng latLng = new LatLng(locationCt.getLatitude(), locationCt.getLongitude());
-			markerName = googleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.navigation)));
+			markerName = googleMap.addMarker(new MarkerOptions().position(latLng).icon(
+					getBitmapDescriptor(R.drawable.bike_big)));
 			map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 			// Zoom in the Google Map
 			map.animateCamera(CameraUpdateFactory.zoomTo(15));
@@ -1345,6 +1350,14 @@ public class GetShopsByRoute extends AppCompatActivity
 		return data;
 	}
 
-
+	private BitmapDescriptor getBitmapDescriptor(@DrawableRes int id) {
+		Drawable vectorDrawable = ResourcesCompat.getDrawable(getResources(), id, null);
+		Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+		                                    vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+		vectorDrawable.draw(canvas);
+		return BitmapDescriptorFactory.fromBitmap(bitmap);
+	}
 }
 

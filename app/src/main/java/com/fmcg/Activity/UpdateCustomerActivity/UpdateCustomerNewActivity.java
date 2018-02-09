@@ -925,7 +925,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 
 
-		if (selected_ShopTypeId == null || selected_ShopTypeId.isEmpty() || selected_ShopTypeId.equals("0"))
+	/*	if (selected_ShopTypeId == null || selected_ShopTypeId.isEmpty() || selected_ShopTypeId.equals("0"))
 		{
 			Toast.makeText(getApplicationContext(), "Please Select Shop Type", Toast.LENGTH_SHORT).show();
 			ret = false;
@@ -956,13 +956,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 
 
-		/*if (pin.getText().toString().length() == 0)
-		{
-//			Toast.makeText(getApplicationContext(), "Please Enter Your Pincode ", Toast.LENGTH_LONG).show();
-			pin.setError("Enter Your Pincode");
-			ret = false;
-			return ret;
-		}*/
 		if (pin.getText().toString().length() != 6)
 		{
 //			Toast.makeText(getApplicationContext(), "Please Enter Valid Pin Code", Toast.LENGTH_LONG).show();
@@ -982,14 +975,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			ret = false;
 			return ret;
 		}
-		///			nameValuePairs.add(new BasicNameValuePair("ShopTypeId", selected_ShopTypeId));
 
-		/*if (mobile.getText().toString().length() == 0)
-		{
-			Toast.makeText(getApplicationContext(), "Please Enter Mobile Number", Toast.LENGTH_LONG).show();
-			//mobile.setError("Enter Your Mobile Number");
-			return ret;
-		}*/
 
 		if (!Validation.isEmailAddress(emailId, true))
 		{
@@ -1003,7 +989,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			mobile.requestFocus();
 			ret = false;
 			return ret;
-		}
+		}*/
 
 
 		return ret;
@@ -1311,31 +1297,10 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		}
 		dataAdapter_shopNames = new ArrayAdapter<String>(this, R.layout.spinner_item, shooNamestitle);
 		dataAdapter_shopNames.setDropDownViewResource(R.layout.list_item);
-//		shopName_spinner.setAdapter(dataAdapter_shopNames);
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
-		shopName_autoComplete.setThreshold(1);//will start working from first character
-		shopName_autoComplete.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
-//		shopName_autoComplete.setTextColor(Color.RED);
-
-//		shopName_autoComplete.setTextColor(Color.He);
-		shopName_autoComplete.setTextSize(15);
-
-		/*shopName_autoComplete.setOnTouchListener(new View.OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(final View v, final MotionEvent event)
-			{
-//				shopName_autoComplete.requestFocus();
-				if (_shopNamesData.size() > 0) {
-					// show all suggestions
-					if (!shopName_autoComplete.getText().toString().equals(""))
-						dataAdapter_shopNames.getFilter().filter(null);
-					shopName_autoComplete.showDropDown();
-				}
-				return false;
-			}
-		});*/
+		shopName_autoComplete.setThreshold(1);   //will start working from first character
+		shopName_autoComplete.setAdapter(adapter);  //setting the adapter data into the AutoCompleteTextView
 
 		shopName_autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener()
 		{

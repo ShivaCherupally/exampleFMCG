@@ -54,6 +54,7 @@ public class LocationMonitoringService extends Service implements
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
+
 		mLocationClient = new GoogleApiClient.Builder(this)
 				.addConnectionCallbacks(this)
 				.addOnConnectionFailedListener(this)

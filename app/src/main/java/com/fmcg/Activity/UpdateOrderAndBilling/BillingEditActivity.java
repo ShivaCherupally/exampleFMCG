@@ -26,7 +26,8 @@ import android.widget.*;
 
 import com.fmcg.Activity.HomeActivity.DashboardActivity;
 import com.fmcg.Activity.OrderAndBillingActivity.Invoice;
-import com.fmcg.Activity.OrderAndBillingActivity.Order;
+import com.fmcg.Activity.OrderAndBillingActivity.OrderBookingActivity;
+import com.fmcg.Activity.PendingBillsActivity.PendingBillsActivity;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
 import com.fmcg.models.GetAreaDetails;
@@ -171,6 +172,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 
 	EditText availzonenametxt, availroutenoetxt;
 
+	Button pendingBtn;
 	String AvailableTotalAmount = "";
 
 	@Override
@@ -188,6 +190,8 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 
 		category_sp = (Spinner) findViewById(R.id.product_category);
 		orderNumber_sp = (Spinner) findViewById(R.id.order_number);
+		pendingBtn = (Button) findViewById(R.id.pendingBtn);
+		pendingBtn.setOnClickListener(this);
 
 
 		/*zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
@@ -220,8 +224,6 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		{
 			availroutenoetxt.setText(availableroutename);
 		}
-
-
 
 
 		areaName_sp = (Spinner) findViewById(R.id.areaName_spinner);
@@ -688,6 +690,26 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 					Toast.makeText(mContext, "No internet Connection", Toast.LENGTH_SHORT).show();
 				}
 				break;
+
+			case R.id.pendingBtn:
+				if (v.getId() == R.id.pendingBtn)
+				{
+
+					if (selected_ShopId == null || selected_ShopId.isEmpty() || selected_ShopId.equals("0"))
+					{
+						Toast.makeText(getApplicationContext(), "Please Enter Shop Name", Toast.LENGTH_SHORT).show();
+						return;
+					}
+					else
+					{
+						Log.e("ShopId", selected_ShopId);
+						SharedPrefsUtil.setStringPreference(mContext, "ACCESS_INVOICE", "ACCESS_INVOICE_PAGE");
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopId);
+						Intent i = new Intent(BillingEditActivity.this, PendingBillsActivity.class);
+						startActivity(i);
+					}
+				}
+				break;
 		}
 	}
 
@@ -814,7 +836,8 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 						if (mJson.getString("Message").equals("SuccessFull"))
 						{
 							JSONArray jsonArray = mJson.getJSONArray("Data");
-							if (jsonArray !=null){
+							if (jsonArray != null)
+							{
 								for (int i = 0; i < jsonArray.length(); i++)
 								{
 									TotalAmountdouble = jsonArray.getDouble(i);
@@ -824,7 +847,9 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 								}
 //								Log.e("totalAmounttxt", String.format("%.2f", TotalAmountdouble + ""));
 								totalAmt.setText("Total Amount: " + String.format("%.2f", TotalAmountdouble));
-							}else {
+							}
+							else
+							{
 								totalAmt.setText("null");
 							}
 						}
@@ -980,7 +1005,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		                                                                      android.widget.TableRow.LayoutParams.WRAP_CONTENT));
 
 		TextView description = new TextView(BillingEditActivity.this);
-		description.setText("VAT");
+		description.setText("GST");
 		description.setBackgroundColor(getResources().getColor(R.color.light_green));
 		description.setTextSize(15);
 		description.setPadding(10, 10, 10, 10);
@@ -1001,7 +1026,6 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		tableLayout.addView(row, new TableLayout.LayoutParams(
 				TableLayout.LayoutParams.MATCH_PARENT,
 				TableLayout.LayoutParams.WRAP_CONTENT));
-
 	}
 
 	private String createJsonInvoiceSubmit(String OrderNumber, String ZoneId, String RouteId,
@@ -1225,7 +1249,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 					{
 						if (check1)
 						{
-							Intent in = new Intent(BillingEditActivity.this, Order.class);
+							Intent in = new Intent(BillingEditActivity.this, OrderBookingActivity.class);
 							Util.killInvoice();
 							startActivity(in);
 						}
@@ -1258,6 +1282,13 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 
 	private void refreshActivity()
 	{
+		SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", "");
+		SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_NAME", "");
+		SharedPrefsUtil.setStringPreference(mContext, "KEY_ORDER_STATUS_ID", "");
+		SharedPrefsUtil.setStringPreference(mContext, "KEY_AREANAME_ID", "");
+		HttpAdapter.getAreaDetailsByRoute(BillingEditActivity.this, "areaNameDP", selected_roueId);
+		//
+
 		Intent i = getIntent();
 		finish();
 		startActivity(i);
@@ -1376,7 +1407,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 
 
 				TextView description = new TextView(mContext);
-				description.setText(String.valueOf(mProductCategory.VAT));
+				description.setText(String.valueOf(mProductCategory.VAT) + "%");
 				description.setTextSize(15);
 				//description.setPadding(15,0,0,0);
 				description.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -1725,8 +1756,11 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		}
 		else if (!zoneTouchClick && !routeTouchClick && !areaTouchClick)
 		{
-			areaName_sp.setSelection(getIndexWithId(areaName_sp, Integer.valueOf(selected_areaNameId), _areaNamesData), false);
-			HttpAdapter.getShopDetailsDP(BillingEditActivity.this, "shopName", selected_areaNameId);
+			if (selected_areaNameId != null && !selected_areaNameId.isEmpty())
+			{
+				areaName_sp.setSelection(getIndexWithId(areaName_sp, Integer.valueOf(selected_areaNameId), _areaNamesData), false);
+				HttpAdapter.getShopDetailsDP(BillingEditActivity.this, "shopName", selected_areaNameId);
+			}
 		}
 	}
 
@@ -1960,6 +1994,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 			selected_roueId = SharedPrefsUtil.getStringPreference(mContext, "KEY_ROUTE_ID");
 			selected_areaNameId = SharedPrefsUtil.getStringPreference(mContext, "KEY_AREANAME_ID");
 			selected_ShopId = SharedPrefsUtil.getStringPreference(mContext, "KEY_SHOP_ID");
+
 
 			if (selected_ShopId != null && !selected_ShopId.isEmpty())
 			{
