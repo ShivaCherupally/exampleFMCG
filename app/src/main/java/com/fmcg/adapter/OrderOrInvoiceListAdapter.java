@@ -59,8 +59,6 @@ public class OrderOrInvoiceListAdapter extends RecyclerView.Adapter<OrderOrInvoi
 	@Override
 	public void onBindViewHolder(final OrderOrInvoiceListAdapter.ViewHolder viewHolder, final int position)
 	{
-
-
 		try
 		{
 			String ACCESS_LIST = SharedPrefsUtil.getStringPreference(mContext, "ACCESS_LIST");

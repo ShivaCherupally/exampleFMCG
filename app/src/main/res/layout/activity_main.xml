@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical|center"
@@ -16,6 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="160dp"
+            android:id="@+id/mainlayout"
             android:layout_gravity="center_horizontal"
             android:background="@color/colorPrimaryDark"
             android:gravity="center_horizontal">
@@ -39,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/twenty"
+            android:id="@+id/sublayout"
             android:orientation="vertical">
 
 

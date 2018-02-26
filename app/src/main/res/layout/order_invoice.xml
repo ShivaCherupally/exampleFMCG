@@ -376,10 +376,11 @@
             android:layout_gravity="center_vertical"
             android:layout_marginTop="10dp"
             android:gravity="center_vertical"
-            android:padding="3dp"
+            android:background="@drawable/rect_white"
+            android:paddingLeft="10dp"
             android:textColor="@color/HeaderColor"
             android:textSize="17sp"
-            android:visibility="gone"/>
+            />
 
         <EditText
             android:id="@+id/Remarks_et"

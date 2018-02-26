@@ -719,20 +719,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 	private void logoutUserDetails()
 	{
-		SharedPrefsUtil.setStringPreference(getApplicationContext(), "USER_LOGOUT", "YES");
-
-		Intent intent = new Intent(this, LocationMonitoringService.class);
-		stopService(intent);
-		sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.clear();
-		editor.commit();
-		SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART", "ENABLE");
-		Intent setIntent = new Intent(this, LoginActivity.class);
-		setIntent.addCategory(Intent.CATEGORY_HOME);
-		setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(setIntent);
-		finish();
+//		SharedPrefsUtil.setStringPreference(getApplicationContext(), "USER_LOGOUT", "YES");
+		HttpAdapter.logoutUser(DashboardActivity.this, "LOG_OUT_USER",
+		                       SharedPrefsUtil.getStringPreference(getApplicationContext(), "EmployeeId"));
 	}
 
 	@Override
@@ -866,6 +855,32 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 						Toast.makeText(getApplicationContext(), "Tracking Failed", Toast.LENGTH_SHORT).show();
 					}
 
+				}
+				else if (response.getTag().equals("LOG_OUT_USER"))
+				{
+					/*if (mJson.getString("Message").equals("SuccessFull"))
+					{
+						try
+						{*/
+					SharedPrefsUtil.setStringPreference(getApplicationContext(), "USER_LOGOUT", "YES");
+					Intent intent = new Intent(this, LocationMonitoringService.class);
+					stopService(intent);
+					sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
+					SharedPreferences.Editor editor = sharedPreferences.edit();
+					editor.clear();
+					editor.commit();
+					SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART", "ENABLE");
+					Intent setIntent = new Intent(this, LoginActivity.class);
+					setIntent.addCategory(Intent.CATEGORY_HOME);
+					setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(setIntent);
+					finish();
+					/*	}
+						catch (Exception e)
+						{
+							Log.e("error", e + "");
+						}
+					}*/
 				}
 				//
 

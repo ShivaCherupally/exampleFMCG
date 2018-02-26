@@ -218,11 +218,13 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginTop="10dp"
                         android:gravity="center_vertical"
-                        android:padding="3dp"
+                        android:paddingLeft="10dp"
+                        android:background="@drawable/rect_white"
                         android:text="Selecte Payment Status"
                         android:textColor="@color/HeaderColor"
+                        android:visibility="gone"
                         android:textSize="17sp"
-                        android:visibility="gone"/>
+                        />
                 </LinearLayout>
             </LinearLayout>
 

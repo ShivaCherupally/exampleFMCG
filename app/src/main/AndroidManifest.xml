@@ -179,7 +179,6 @@
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden|adjustResize">
 
-
         </activity>
 
 
@@ -225,18 +224,7 @@
             android:theme="@style/AppBaseTheme"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <!--<activity
-            android:name="com.fmcg.ui.UpdateOrderActvity"
-            android:label="@string/update_order"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppBaseTheme"
-            android:windowSoftInputMode="stateHidden"/>-->
-        <!--<activity
-            android:name="com.fmcg.ui.UpdateCustomerActivity"
-            android:label="@string/update_customer"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppBaseTheme"
-            android:windowSoftInputMode="stateHidden"/>-->
+
         <activity
             android:name="com.fmcg.Activity.UpdateCustomerActivity.UpdateCustomerNewActivity"
             android:label="@string/update_customer"

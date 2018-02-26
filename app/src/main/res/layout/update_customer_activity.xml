@@ -123,11 +123,12 @@
 
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:visibility="gone"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="@string/routecd"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:visibility="gone"/>
+
                 <EditText
                     android:id="@+id/availroutenoetxt"
                     android:layout_width="match_parent"
@@ -213,14 +214,14 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/rect_white"
                     android:dropDownAnchor="@+id/dropdownAutoCompleteTextView"
-                    android:focusable="true"
                     android:dropDownHeight="100dp"
+                    android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="Enter Shop Name"
-                    android:textSize="15sp"
                     android:nextFocusDown="@+id/shopname"
                     android:textColor="@color/HeaderTitleColor"
-                    android:textCursorDrawable="@drawable/color_cursor"/>
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="15sp"/>
             </RelativeLayout>
 
             <EditText
@@ -332,9 +333,9 @@
                 android:maxLength="6"
                 android:padding="8dp"
                 android:singleLine="true"
-                android:textSize="15sp"
                 android:textColor="@color/HeaderTitleColor"
                 android:textCursorDrawable="@drawable/color_cursor"
+                android:textSize="15sp"
                 >
 
                 <requestFocus/>
@@ -384,22 +385,65 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:hint="@string/paymentmode"
-                android:inputType="number"
-                android:paddingLeft="25dp"
+                android:inputType="text"
+                android:paddingLeft="5dp"
                 android:singleLine="true"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/paymentSelected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:background="@drawable/rect_white"
+                android:text="Selecte Payment Status"
+                android:textColor="@color/HeaderColor"
+                android:visibility="gone"
+                android:textSize="17sp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_bg_black"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/gst_sp"
+                    style="@style/spinner_bg_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:visibility="visible"/>
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/gstNoEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_white"
+                android:hint="Enter GST No"
+                android:paddingLeft="10dp"
+                android:singleLine="true"
+                android:textCursorDrawable="@drawable/color_cursor"/>
 
             <EditText
                 android:id="@+id/emailId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_white"
                 android:enabled="true"

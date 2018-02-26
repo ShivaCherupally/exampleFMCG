@@ -284,7 +284,6 @@
                     style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-
                     android:layout_gravity="center"
                     android:inputType="text"
                     android:singleLine="true"
@@ -306,6 +305,20 @@
                 android:paddingLeft="10dp"
                 android:singleLine="true"
                 android:visibility="gone"/>
+            <TextView
+                android:id="@+id/paymentSelected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:background="@drawable/rect_white"
+                android:text="Selecte Payment Status"
+                android:textColor="@color/HeaderColor"
+                android:visibility="gone"
+                android:textSize="17sp"
+                />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
@@ -314,7 +327,6 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/rect_bg_black"
                 android:orientation="horizontal">
-
                 <Spinner
                     android:id="@+id/gst_sp"
                     style="@style/spinner_bg_style"

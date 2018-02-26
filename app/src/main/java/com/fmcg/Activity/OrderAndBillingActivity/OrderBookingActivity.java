@@ -473,7 +473,6 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 			paymentSelectedStr = SharedPrefsUtil.getStringPreference(mContext, "paymentSelected");
 			if (paymentSelectedStr != null && !paymentSelectedStr.isEmpty() && !paymentSelectedStr.equalsIgnoreCase("null"))
 			{
-
 				if (paymentSelectedStr.equalsIgnoreCase("Credit-days"))
 				{
 					CreditDays = paymentSelected.getText().toString();
@@ -490,7 +489,6 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 					chequeDate = paymentSelected.getText().toString();
 				}
 			}
-
 		}
 		catch (Exception e)
 		{

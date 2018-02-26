@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,14 +33,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fmcg.Activity.OrderAndBillingActivity.OrderBookingActivity;
 import com.fmcg.Activity.UpdateOrderAndBilling.OrderEditActivity;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.models.GetRouteDetails;
@@ -94,10 +98,11 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	SharedPreferences sharedPreferences;
 	public List<GetZoneDetails> zoneDetailsDP;
 	public List<GetRouteDetails> routeDetailsDP;
-	TextView shop, order, invoice;
-	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang, createdby, landmark, payment, emailId, descriptionShop;
+	TextView shop, order, invoice, paymentSelected;
+	EditText shopname, ownername, shop_address, pin, mobile, phone, lat, lang,
+			createdby, landmark, payment, emailId, descriptionShop, gstNoEt;
 	private Button submit;
-	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp, shopName_spinner;
+	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp, shopName_spinner, gst_sp;
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	private GoogleApiClient mGoogleApiClient;
 	private LocationRequest mLocationRequest;
@@ -152,59 +157,29 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 	String availableData = "";
 	EditText availroutenoetxt;
+	String[] gstlist = {"Select GST", "YES", "NO"};
+	boolean gsttouch = false;
+	String GstSelection = "";
+	String paymentSelectedStr = "";
+	String CreditDays = "";
+	String chequeDate = "";
+
+	//Payment Selection
+	EditText creditdays;
+	LinearLayout creditDaysLayout;
+	DatePicker dateselect;
+	Button dateaccept;
+
+	boolean paymentTouch = false;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.update_customer_activity);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
-		mContext = UpdateCustomerNewActivity.this;
 
-		shopname = (EditText) findViewById(R.id.shopname);
-		ownername = (EditText) findViewById(R.id.ownername);
-		shop_address = (EditText) findViewById(R.id.shop_address);
-		mobile = (EditText) findViewById(R.id.mobile);
-		pin = (EditText) findViewById(R.id.pin);
-		phone = (EditText) findViewById(R.id.phone);
-		lat = (EditText) findViewById(R.id.lat);
-		lang = (EditText) findViewById(R.id.lang);
-		createdby = (EditText) findViewById(R.id.createdby);
-		descriptionShop = (EditText) findViewById(R.id.descriptionShop);
-		landmark = (EditText) findViewById(R.id.landmark);
-		payment = (EditText) findViewById(R.id.payment);
-		submit = (Button) findViewById(R.id.submit);
-		shopName_spinner = (Spinner) findViewById(R.id.shopName_spinner);
-		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
-		routecd = (Spinner) findViewById(R.id.routecd);
-		areaName_sp = (Spinner) findViewById(R.id.area_name);
-		shoptype_sp = (Spinner) findViewById(R.id.shop_type_dp);
-		religion = (Spinner) findViewById(R.id.religion);
-		payment_sp = (Spinner) findViewById(R.id.payment_sp);
-		emailId = (EditText) findViewById(R.id.emailId);
-		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
-		zoneDetailsDP = new ArrayList<>();
-		routeDetailsDP = new ArrayList<>();
-		shopName_autoComplete = (AutoCompleteTextView) findViewById(R.id.shopName_autoComplete);
-		selectRouteNameBind();
-		defaultAreaNameSelect();
-
-		//HttpAdapter.getShopDetailsDP(UpdateCustomerNewActivity.this, "shopNames", "0");
-		HttpAdapter.getRouteDetails(UpdateCustomerNewActivity.this, "routeName", "0");
-		HttpAdapter.getZoneDetailsDP(UpdateCustomerNewActivity.this, "zoneName");
-		HttpAdapter.getReligion(UpdateCustomerNewActivity.this, "getReligion");
-		HttpAdapter.getPayment(UpdateCustomerNewActivity.this, "payment");
-		HttpAdapter.shopType(UpdateCustomerNewActivity.this, "shoptypeDP");
-
-		String availableroutename = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ROUTENAME");
-		if (availableroutename != null && !availableroutename.isEmpty())
-		{
-			availroutenoetxt.setText(availableroutename);
-			selected_roueId = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ROUTEID");
-			HttpAdapter.getAreaDetailsByRoute(UpdateCustomerNewActivity.this, "areaNameDP", selected_roueId);
-			clearAllData();
-		}
+		initializeViews();
+		initializeActions();
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -227,38 +202,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		                                  .setInterval(10 * 1000)        // 10 seconds, in milliseconds
 		                                  .setFastestInterval(1 * 1000); // 1 second, in milliseconds
 
-		/*String code = "5000";
-		pin.setCompoundDrawablesWithIntrinsicBounds(new TextDrawable(code), null, null, null);
-		pin.setCompoundDrawablePadding(code.length() * 10);*/
-
-		pin.setText("5000");
-		Selection.setSelection(pin.getText(), pin.getText().length());
-		pin.addTextChangedListener(new TextWatcher()
-		{
-			@Override
-			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
-			{
-
-			}
-
-			@Override
-			public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
-			{
-
-			}
-
-			@Override
-			public void afterTextChanged(final Editable s)
-			{
-				if (!s.toString().startsWith("5000"))
-				{
-					pin.setText("5000");
-					Selection.setSelection(pin.getText(), pin
-							.getText().length());
-
-				}
-			}
-		});
 
 		zone_sp.setOnTouchListener(new View.OnTouchListener()
 		{
@@ -296,28 +239,6 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			}
 		});
 
-//		pin.addTextChangedListener(new TextWatcher()
-//		{
-//			@Override
-//			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
-//			{
-//
-//			}
-//
-//			@Override
-//			public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
-//			{
-//
-//			}
-//
-//			@Override
-//			public void afterTextChanged(final Editable s)
-//			{
-//
-//			}
-//		});
-
-
 		submit.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
@@ -330,6 +251,34 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 					{
 						progressdailog = Utility.setProgressDailog(mContext);
 						progressdailog.show();
+						try
+						{
+							paymentSelectedStr = SharedPrefsUtil.getStringPreference(mContext, "paymentSelected");
+							if (paymentSelectedStr != null && !paymentSelectedStr.isEmpty() && !paymentSelectedStr.equalsIgnoreCase("null"))
+							{
+								if (paymentSelectedStr.equalsIgnoreCase("Credit-days"))
+								{
+									CreditDays = paymentSelected.getText().toString();
+									chequeDate = "";
+								}
+								else if (paymentSelectedStr.equalsIgnoreCase("Days to Cheque"))
+								{
+									CreditDays = paymentSelected.getText().toString();
+									chequeDate = "";
+								}
+								else if (paymentSelectedStr.equalsIgnoreCase("Cheque"))
+								{
+									CreditDays = "0";
+									chequeDate = paymentSelected.getText().toString();
+								}
+							}
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+
+						}
+
 						new UpdateCustomerNewActivity.CreateShopTask().execute();
 					}
 					else
@@ -341,14 +290,146 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		});
 	}
 
-
-	private void selectRouteNameBind()
+	private void initializeActions()
 	{
-		routeNamestitle.add("Select Route No");
-		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, R.layout.spinner_item, routeNamestitle);
-		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
-		routecd.setAdapter(dataAdapter_areaName);
+		defaultAreaNameSelect();
+
+		//HttpAdapter.getShopDetailsDP(UpdateCustomerNewActivity.this, "shopNames", "0");
+		HttpAdapter.getRouteDetails(UpdateCustomerNewActivity.this, "routeName", "0");
+		HttpAdapter.getZoneDetailsDP(UpdateCustomerNewActivity.this, "zoneName");
+		HttpAdapter.getReligion(UpdateCustomerNewActivity.this, "getReligion");
+		HttpAdapter.getPayment(UpdateCustomerNewActivity.this, "payment");
+		HttpAdapter.shopType(UpdateCustomerNewActivity.this, "shoptypeDP");
+
+		String availableroutename = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ROUTENAME");
+		if (availableroutename != null && !availableroutename.isEmpty())
+		{
+			availroutenoetxt.setText(availableroutename);
+			selected_roueId = SharedPrefsUtil.getStringPreference(mContext, "SELECTED_ROUTEID");
+			HttpAdapter.getAreaDetailsByRoute(UpdateCustomerNewActivity.this, "areaNameDP", selected_roueId);
+			clearAllData();
+		}
+		pin.setText("5000");
+		Selection.setSelection(pin.getText(), pin.getText().length());
+		pin.addTextChangedListener(new TextWatcher()
+		{
+			@Override
+			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
+			{
+			}
+
+			@Override
+			public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
+			{
+			}
+
+			@Override
+			public void afterTextChanged(final Editable s)
+			{
+				if (!s.toString().startsWith("5000"))
+				{
+					pin.setText("5000");
+					Selection.setSelection(pin.getText(), pin
+							.getText().length());
+
+				}
+			}
+		});
+
+
+		ArrayAdapter<String> dataAdapter_zoneName = new ArrayAdapter<String>(this,
+		                                                                     android.R.layout.simple_spinner_item,
+		                                                                     gstlist);
+		dataAdapter_zoneName.setDropDownViewResource(R.layout.list_item);
+		gst_sp.setAdapter(dataAdapter_zoneName);
+
+		gst_sp.setOnTouchListener(new View.OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(final View v, final MotionEvent event)
+			{
+				gsttouch = true;
+				return false;
+			}
+		});
+
+		gst_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id)
+			{
+				if (gsttouch)
+				{
+					Toast.makeText(getApplicationContext(), gstlist[position], Toast.LENGTH_LONG).show();
+					if (gstlist[position].equals("YES"))
+					{
+						GstSelection = "Y";
+						gstNoEt.setVisibility(View.VISIBLE);
+					}
+					else if (gstlist[position].equals("NO"))
+					{
+						GstSelection = "N";
+						gstNoEt.setVisibility(View.GONE);
+					}
+					else
+					{
+						gstNoEt.setVisibility(View.GONE);
+					}
+				}
+				else
+				{
+
+				}
+			}
+
+			@Override
+			public void onNothingSelected(final AdapterView<?> parent)
+			{
+
+			}
+		});
 	}
+
+	private void initializeViews()
+	{
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayShowHomeEnabled(true);
+		mContext = UpdateCustomerNewActivity.this;
+
+		shopname = (EditText) findViewById(R.id.shopname);
+		ownername = (EditText) findViewById(R.id.ownername);
+		shop_address = (EditText) findViewById(R.id.shop_address);
+		mobile = (EditText) findViewById(R.id.mobile);
+		pin = (EditText) findViewById(R.id.pin);
+		phone = (EditText) findViewById(R.id.phone);
+		lat = (EditText) findViewById(R.id.lat);
+		lang = (EditText) findViewById(R.id.lang);
+		createdby = (EditText) findViewById(R.id.createdby);
+		descriptionShop = (EditText) findViewById(R.id.descriptionShop);
+		landmark = (EditText) findViewById(R.id.landmark);
+		payment = (EditText) findViewById(R.id.payment);
+		submit = (Button) findViewById(R.id.submit);
+		shopName_spinner = (Spinner) findViewById(R.id.shopName_spinner);
+		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
+		routecd = (Spinner) findViewById(R.id.routecd);
+		areaName_sp = (Spinner) findViewById(R.id.area_name);
+		shoptype_sp = (Spinner) findViewById(R.id.shop_type_dp);
+		religion = (Spinner) findViewById(R.id.religion);
+		payment_sp = (Spinner) findViewById(R.id.payment_sp);
+		emailId = (EditText) findViewById(R.id.emailId);
+		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
+		zoneDetailsDP = new ArrayList<>();
+		routeDetailsDP = new ArrayList<>();
+		shopName_autoComplete = (AutoCompleteTextView) findViewById(R.id.shopName_autoComplete);
+
+		gst_sp = (Spinner) findViewById(R.id.gst_sp);
+		gstNoEt = (EditText) findViewById(R.id.gstNoEt);
+		gstNoEt.setVisibility(View.GONE);
+
+		paymentSelected = (TextView) findViewById(R.id.paymentSelected);
+		paymentSelected.setVisibility(View.GONE);
+	}
+
 
 	private void defaultAreaNameSelect()
 	{
@@ -524,6 +605,30 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			selected_zoneId = String.valueOf(zoneId);
 			selected_roueId = String.valueOf(RouteId);
 			selected_areaNameId = String.valueOf(AreaId);
+
+
+			if (jsnobj.getString("GSTRegistered") != null && !jsnobj.getString("GSTRegistered").isEmpty())
+			{
+				GstSelection = jsnobj.getString("GSTRegistered"); // "GSTRegistered");
+				if (GstSelection.equals("Y"))
+				{
+					gst_sp.setSelection(1);
+					if (jsnobj.getString("GSTNo") != null && !jsnobj.getString("GSTNo").isEmpty())
+					{
+						gstNoEt.setVisibility(View.VISIBLE);
+						gstNoEt.setText(jsnobj.getString("GSTNo") + "");
+
+					}
+				}
+				else if (GstSelection.equals("N"))
+				{
+					gst_sp.setSelection(2);
+					gstNoEt.setVisibility(View.GONE);
+				}
+
+
+			}
+
 
 //			placingAvailZoneName(Integer.parseInt(selected_zoneId));
 			zoneTouchClick = false;
@@ -788,7 +893,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		{
 			if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
 			{
-				ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},MY_PERMISSIONS_REQUEST_LOCATION);
+				ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
 			}
 			else
 			{
@@ -1198,6 +1303,8 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		payment_sp.setSelection(0);
 		selected_paymentNameId = "2";
 		descriptionShop.setText("");
+		gstNoEt.setText("");
+		gst_sp.setSelection(0);
 	}
 
 	private void areaNameSpinnerAdapter(final JSONArray jsonArray)
@@ -1487,6 +1594,34 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 				{
 					selected_paymentNameId = _paymentsSelectData.get(position - 1).getShopId();
 				}
+				/*if (paymentTouch)
+				{
+					paymentTouch = true;
+					selected_paymentNameId = _paymentsSelectData.get(position).getShopId();
+					String paymentSelected = _paymentsSelectData.get(position).getShopName();
+					Log.e("paymentSelected", paymentSelected);
+					if (paymentSelected != null && !paymentSelected.isEmpty() && !paymentSelected.equalsIgnoreCase("null"))
+					{
+						if (paymentSelected.equalsIgnoreCase("Credit-days"))
+						{
+							dailogBoxforPaymentSelection("Credit-days");
+						}
+						else if (paymentSelected.equalsIgnoreCase("Days to Cheque"))
+						{
+							dailogBoxforPaymentSelection("Days to Cheque");
+						}
+						else if (paymentSelected.equalsIgnoreCase("Cheque"))
+						{
+							dailogBoxforPaymentSelection("Cheque");
+						}
+					}
+				}
+				else
+				{
+					paymentTouch = true;
+				}*/
+
+
 			}
 
 			@Override
@@ -1495,6 +1630,78 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 			}
 		});
+	}
+
+
+	private void dailogBoxforPaymentSelection(final String type)
+	{
+		promoDialog = new Dialog(this);
+		promoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		promoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		promoDialog.setCancelable(false);
+		promoDialog.setContentView(R.layout.pop_up_dailog_for_payment_selection);
+		close_popup = (ImageView) promoDialog.findViewById(R.id.close_popup);
+		alert_submit = (Button) promoDialog.findViewById(R.id.alert_submit);
+		creditdays = (EditText) promoDialog.findViewById(R.id.creditdays);
+		creditDaysLayout = (LinearLayout) promoDialog.findViewById(R.id.creditDaysLayout);
+
+		dateselect = (DatePicker) promoDialog.findViewById(R.id.dateselect);
+		dateaccept = (Button) promoDialog.findViewById(R.id.dateaccept);
+
+		if (type.equals("Days to Cheque"))
+		{
+			daysAccess();
+		}
+		else if (type.equals("Cheque"))
+		{
+			DialogFragment newFragment = new OrderBookingActivity.DatePickerFragmentDailog();
+			newFragment.show(getSupportFragmentManager(), "datePicker");
+		}
+		else if (type.equals("Credit-days"))
+		{
+			daysAccess();
+		}
+
+		close_popup.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				if (promoDialog != null)
+				{
+					promoDialog.dismiss();
+					Util.hideSoftKeyboard(mContext, v);
+//					selected_paymentTermsId = "2";
+					payment_sp.setSelection(0);
+//					refreshActivity();
+				}
+			}
+		});
+
+		alert_submit.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				String daysCredits = creditdays.getText().toString();
+				if (daysCredits != null && !daysCredits.isEmpty())
+				{
+					paymentSelected.setText(daysCredits + " Days" + "");
+					paymentSelected.setVisibility(View.VISIBLE);
+				}
+				promoDialog.dismiss();
+				Util.hideSoftKeyboard(mContext, v);
+			}
+		});
+	}
+
+	private void daysAccess()
+	{
+		promoDialog.show();
+		paymentSelected.setText("");
+		creditDaysLayout.setVisibility(View.VISIBLE);
+		dateselect.setVisibility(View.GONE);
+		dateaccept.setVisibility(View.GONE);
 	}
 
 	public String serviceCall()
@@ -1520,7 +1727,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 
 			// Add your data
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			nameValuePairs.add(new BasicNameValuePair("shopId", selected_ShopTypeId));
+			nameValuePairs.add(new BasicNameValuePair("shopId", selected_ShopId));
 			nameValuePairs.add(new BasicNameValuePair("ShopName", shopname.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("ShopDescription", descriptionShop.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("OwnerName", ownername.getText().toString()));
@@ -1542,6 +1749,22 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			nameValuePairs.add(new BasicNameValuePair("Createdby", SharedPrefsUtil.getStringPreference(mContext, "EmployeeId")));
 			nameValuePairs.add(new BasicNameValuePair("EmailID", emailId.getText().toString()));
 			nameValuePairs.add(new BasicNameValuePair("Pincode", pin.getText().toString()));
+
+			if (GstSelection.equals("Y"))
+			{
+				nameValuePairs.add(new BasicNameValuePair("GSTRegistered", GstSelection));
+				nameValuePairs.add(new BasicNameValuePair("GSTNo", gstNoEt.getText().toString()));
+				//[shopId=1, ShopName=Shiva, ShopDescription=H, OwnerName=hyb,
+				// Address=J, Latitude=17.4951454, Longitude=78.4124815,
+				// PhoneNumber=9393, MobileNumber=9969693939,
+				// GPSL=0, LocationName=h, ZoneId=1,
+				// RouteId=11, ShopTypeId=1, ReligionID=1, PaymentTermId=2, AreaId=142, Active=Y, DateTime=26-02-2018, Createdby=31,
+				// EmailID=0h@fb.com, Pincode=500098, GSTRegistered=Y, GSTNo=DE123]
+			}
+			else
+			{
+				nameValuePairs.add(new BasicNameValuePair("GSTRegistered", GstSelection));
+			}
 
 			availableData = nameValuePairs.toString();
 			Log.e("params", nameValuePairs.toString());

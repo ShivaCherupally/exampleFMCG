@@ -14,9 +14,10 @@ public class HttpAdapter
 	public static final String METHOD_PUT = "PUT";
 
 	//Live Url
-//	public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
+	public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
 	//Test Url
-	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
+//	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
+	//http://202.143.96.20/Orderstest/api/Services/
 
 
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
@@ -124,6 +125,10 @@ public class HttpAdapter
 	public static final String MONTH_SUMMARY = BASE_URL + "GetMonthlySummaryByEmployee";
 	public static final String PENDING_BILLS = BASE_URL + "GetCustomerPendingBills";
 	public static final String USER_TRACKING = BASE_URL + "InsertMobileUserTracking";
+
+	public static final String LOGOUT_USER = BASE_URL + "LogOut";
+
+	public static final String LOGIN_URL = BASE_URL + "LoginService";
 
 	//userTracking
 	//public static final String PENDING_BILLS = BASE_URL + "GetCustomerPendingBills";
@@ -357,6 +362,14 @@ public class HttpAdapter
 		NetworkOperation operation = new NetworkOperation(listener, tag);
 		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
 		operation.execute(GETAREADETAILS_BY_ROUTE + "?RouteId=" + value, METHOD_GET, "NONE");
+	}
+
+	public static void logoutUser(NetworkOperationListener listener, Object tag, String value)
+	{
+		// TODO Auto-generated method stub
+		NetworkOperation operation = new NetworkOperation(listener, tag);
+		operation.setContentType(CONTENT_TYPE_APPLICATION_JSON);
+		operation.execute(LOGOUT_USER + "?UserId=" + value, METHOD_POST, "NONE");
 	}
 
 	public static void GetOrderNumber(NetworkOperationListener listener, Object tag)

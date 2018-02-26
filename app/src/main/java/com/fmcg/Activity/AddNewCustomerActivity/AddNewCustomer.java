@@ -152,6 +152,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 	boolean gsttouch = false;
 	String GstSelection = "";
 
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -181,7 +182,7 @@ public class AddNewCustomer extends AppCompatActivity implements
 
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
 		zone_sp.setVisibility(View.GONE);
-		gst_sp = (Spinner) findViewById(R.id.gst_sp);
+
 		routecd = (Spinner) findViewById(R.id.routecd);
 		routecd.setVisibility(View.GONE);
 		areaName_sp = (Spinner) findViewById(R.id.area_name);
@@ -193,6 +194,8 @@ public class AddNewCustomer extends AppCompatActivity implements
 		availzonenametxt = (EditText) findViewById(R.id.availzonenametxt);
 		availzonenametxt.setVisibility(View.VISIBLE);
 		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
+
+		gst_sp = (Spinner) findViewById(R.id.gst_sp);
 		gstNoEt= (EditText) findViewById(R.id.gstNoEt);
 		gstNoEt.setVisibility(View.GONE);
 		availroutenoetxt.setVisibility(View.VISIBLE);

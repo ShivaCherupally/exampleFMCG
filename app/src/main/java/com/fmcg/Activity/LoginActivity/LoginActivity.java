@@ -16,13 +16,17 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fmcg.Activity.HomeActivity.DashboardActivity;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.models.UserDetails;
+import com.fmcg.network.HttpAdapter;
 import com.fmcg.util.SharedPrefsUtil;
 import com.fmcg.util.Utility;
 import com.google.gson.Gson;
@@ -54,6 +58,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 	public Context context;
 	TextView appname;
 
+	Animation uptodown, downtoup;
+	LinearLayout mainlayout, sublayout;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -64,6 +71,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 		password = (EditText) findViewById(R.id.pass_et);
 		loginBtn = (AppCompatButton) findViewById(R.id.loginBtn);
 		appname = (TextView) findViewById(R.id.appname);
+		mainlayout = (LinearLayout) findViewById(R.id.mainlayout);
+		sublayout = (LinearLayout) findViewById(R.id.sublayout);
+
+		uptodown = AnimationUtils.loadAnimation(this, R.anim.uptodown);
+		downtoup = AnimationUtils.loadAnimation(this, R.anim.downtoup);
+		mainlayout.setAnimation(uptodown);
+		sublayout.setAnimation(downtoup);
 
 
 		context = LoginActivity.this;
@@ -125,7 +139,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 		// Create a new HttpClient and Post Header
 		String responseBody = null;
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost("http://202.143.96.20/Orderstest/api/Services/LoginService");
+//		HttpPost httppost = new HttpPost("http://202.143.96.20/Orderstest/api/Services/LoginService");
+		HttpPost httppost = new HttpPost(HttpAdapter.LOGIN_URL);
 		try
 		{
 			// Add your data
@@ -209,11 +224,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 				if (success != null)
 				{
 					UserDetails userDetails = new Gson().fromJson(success.toString(), UserDetails.class);
-					if (!userDetails.Status.equals(null))
+					Log.e("loginResponse", success.toString());
+					if (!userDetails.ResponseID.equals(null))
 					{
-						if (userDetails.Status.equals("OK"))
+						if (userDetails.ResponseID.equals("1"))
 						{
-							Toast.makeText(LoginActivity.this, userDetails.Message, Toast.LENGTH_SHORT).show();
+							Toast.makeText(LoginActivity.this, "You have successfully logged in", Toast.LENGTH_SHORT).show();
 							//insert code or saveing code
 							SharedPreferences.Editor editor = sharedPreferences.edit();
 							editor.putString("username", userDetails.Data.EmployeeId);
@@ -247,13 +263,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 							startActivity(login);
 							finish();
 						}
-						else
+						else if (userDetails.ResponseID.equals("-1"))
 						{
-							Toast.makeText(LoginActivity.this, "Login Failed..", Toast.LENGTH_SHORT).show();
-							//Toast.makeText(LoginActivity.this, userDetails.Message, Toast.LENGTH_SHORT).show();
-							/*Intent login = new Intent(LoginActivity.this, NavigationActivity.class);
-							startActivity(login);*/
+							Toast.makeText(LoginActivity.this, "Invalid Credentials. ", Toast.LENGTH_SHORT).show();
 						}
+						else if (userDetails.ResponseID.equals("-2"))
+						{
+							Toast.makeText(LoginActivity.this, "User already logged in", Toast.LENGTH_SHORT).show();
+						}
+
 					}
 					else
 					{
