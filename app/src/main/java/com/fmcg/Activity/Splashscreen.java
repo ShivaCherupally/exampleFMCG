@@ -15,6 +15,10 @@ import android.widget.TextView;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Activity.HomeActivity.DashboardActivity;
 import com.fmcg.Activity.LoginActivity.LoginActivity;
+import com.fmcg.network.HttpAdapter;
+import com.fmcg.network.NetworkOperationListener;
+import com.fmcg.network.NetworkResponse;
+import com.fmcg.service.LocationMonitoringService;
 import com.fmcg.util.SharedPrefsUtil;
 
 import java.text.DateFormat;
@@ -22,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-public class Splashscreen extends AppCompatActivity
+public class Splashscreen extends AppCompatActivity implements NetworkOperationListener
 {
 
 	SharedPreferences sharedPreferences;
@@ -63,9 +67,6 @@ public class Splashscreen extends AppCompatActivity
 		final String userLogin = sharedPreferences.getString("username", "");
 
 
-
-
-
 //		DateFormat dateInstance = SimpleDateFormat.getDateInstance();
 //		String PresentDate = dateInstance.format(Calendar.getInstance().getTime());
 //		SharedPrefsUtil.setStringPreference(context, "LoginTime", PresentDate);
@@ -93,6 +94,7 @@ public class Splashscreen extends AppCompatActivity
 					{
 						if (userLogin.length() >= 1)
 						{
+
 							SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART", "ENABLE");
 							Intent i = new Intent(Splashscreen.this, DashboardActivity.class);
 							startActivity(i);
@@ -120,16 +122,49 @@ public class Splashscreen extends AppCompatActivity
 
 	private void loginExpired()
 	{
-		SharedPrefsUtil.setStringPreference(context, "PLAN_STARTED", "");
-		Intent next = new Intent(Splashscreen.this, LoginActivity.class);
-		startActivity(next);
+		HttpAdapter.logoutUser(Splashscreen.this, "LOG_OUT_USER",
+		                       SharedPrefsUtil.getStringPreference(getApplicationContext(), "EmployeeId"));
+
 	}
+
+
 
 
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
+	}
+
+	@Override
+	public void operationCompleted(final NetworkResponse response)
+	{
+		if (response.getStatusCode() == 200)
+		{
+			if (response.getTag().equals("LOG_OUT_USER"))
+			{
+				SharedPrefsUtil.setStringPreference(context, "PLAN_STARTED", "");
+				SharedPrefsUtil.setStringPreference(getApplicationContext(), "USER_LOGOUT", "YES");
+				Intent intent = new Intent(this, LocationMonitoringService.class);
+				stopService(intent);
+				sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
+				SharedPreferences.Editor editor = sharedPreferences.edit();
+				editor.clear();
+				editor.commit();
+				SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART", "ENABLE");
+				Intent setIntent = new Intent(this, LoginActivity.class);
+				setIntent.addCategory(Intent.CATEGORY_HOME);
+				setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(setIntent);
+				finish();
+			}
+		}
+	}
+
+	@Override
+	public void showToast(final String string, final int lengthLong)
+	{
+
 	}
 }
 

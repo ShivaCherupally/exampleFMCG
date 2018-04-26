@@ -164,11 +164,11 @@
             <LinearLayout
                 android:id="@+id/arealayout"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edittext_whites"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/availAreatxt"
@@ -192,21 +192,42 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="@string/routecd"
                     android:singleLine="true"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittext_whites"
+                android:orientation="vertical">
 
 
+                <Spinner
+                    android:id="@+id/shopname_spinner"
+                    style="@style/spinner_bg_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/routecd"
+                    android:singleLine="true"/>
             </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/dropdownAutoCompleteTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rect_bg_black"
                 android:paddingBottom="8dp"
-                android:paddingTop="8dp">
+                android:paddingTop="8dp"
+                android:visibility="gone">
+
 
                 <AutoCompleteTextView
                     android:id="@+id/shopName_autoComplete"
@@ -221,8 +242,10 @@
                     android:nextFocusDown="@+id/shopname"
                     android:textColor="@color/HeaderTitleColor"
                     android:textCursorDrawable="@drawable/color_cursor"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp"
+                    />
             </RelativeLayout>
+
 
             <EditText
                 android:id="@+id/shopname"
@@ -400,13 +423,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="10dp"
+                android:background="@drawable/rect_white"
                 android:gravity="center_vertical"
                 android:paddingLeft="10dp"
-                android:background="@drawable/rect_white"
                 android:text="Selecte Payment Status"
                 android:textColor="@color/HeaderColor"
-                android:visibility="gone"
                 android:textSize="17sp"
+                android:visibility="gone"
                 />
 
             <LinearLayout

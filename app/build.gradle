@@ -28,7 +28,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.android.support:cardview-v7:24.2.1'
     testCompile 'junit:junit:4.12'
     compile 'org.apache.httpcomponents:httpmime:4.2.3'
@@ -50,10 +50,5 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
 
-//    compile 'com.github.safetysystemtechnology:location-tracker-background:v1.3'
-//    compile 'com.github.ganfra:material-spinner:2.0.0'
-
-
-    //compile 'com.github.ganfra:material-spinner:1.1.1'
     compile project(':volley')
 }

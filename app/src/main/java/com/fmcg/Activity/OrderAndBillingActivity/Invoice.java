@@ -42,7 +42,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fmcg.Activity.PendingBillsActivity.PendingBillsActivity;
-import com.fmcg.Activity.UpdateOrderAndBilling.OrderEditActivity;
 import com.fmcg.Dotsoft.R;
 import com.fmcg.Dotsoft.util.Common;
 import com.fmcg.models.GetAreaDetails;
@@ -117,7 +116,8 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 	public String orderNumberDropDown;
 
 
-	public Spinner shopName_sp, orderStatus_sp, category_sp, payment_sp, orderNumber_sp, zone_sp, routeName_sp, areaName_sp, routecd;
+	public Spinner  orderStatus_sp, category_sp, payment_sp, orderNumber_sp, zone_sp, routeName_sp, areaName_sp, routecd
+			, shopname_spinner;
 	public CheckBox isShopClosed, ordered, invoice;
 	public TextView uploadImage, shopClosed, orderDate, submit, remarksTV, tvDisplayDate, totalAmt, invoiceNum, cancel;
 	private EditText remarksET, paidAmt;
@@ -243,6 +243,8 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		cancel = (TextView) findViewById(R.id.cancel);
 		list_li = (LinearLayout) findViewById(R.id.items_li);
 
+		shopname_spinner = (Spinner) findViewById(R.id.shopname_spinner);
+
 		availzonenametxt = (EditText) findViewById(R.id.availzonenametxt);
 		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
 		pendingBtn = (Button) findViewById(R.id.pendingBtn);
@@ -295,7 +297,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		zone_sp.setOnItemSelectedListener(this);
 		routeName_sp.setOnItemSelectedListener(this);
 		areaName_sp.setOnItemSelectedListener(this);
-//		shopName_sp.setOnItemSelectedListener(this);
+		shopname_spinner.setOnItemSelectedListener(this);
 		orderStatus_sp.setOnItemSelectedListener(this);
 		payment_sp.setOnItemSelectedListener(this);
 		pendingBtn.setOnClickListener(this);
@@ -365,10 +367,10 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				selectedSpinner = "AREA";
 				dropDownValueSelection(position, _areaNamesData, selectedSpinner);
 				break;
-			/*case R.id.shopname_spinner:
+			case R.id.shopname_spinner:
 				selectedSpinner = "SHOP";
 				dropDownValueSelection(position, _shopNamesData, selectedSpinner);
-				break;*/
+				break;
 			case R.id.order_status_spinner:
 				selectedSpinner = "ORDER_STATUS";
 				dropDownValueSelection(position, _orderStatusData, selectedSpinner);
@@ -409,11 +411,11 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 						selected_areaNameId = _dropDownData.get(position - 1).getShopId();
 						HttpAdapter.getShopDetailsDP(Invoice.this, "shopName", selected_areaNameId);
 					}
-					/*else if (selectedSpinner.equals("SHOP"))
+					else if (selectedSpinner.equals("SHOP"))
 					{
 						selected_ShopId = _dropDownData.get(position - 1).getShopId();
 						HttpAdapter.getOrderNumberDp(Invoice.this, "orderNumber", selected_ShopId);
-					}*/
+					}
 					else if (selectedSpinner.equals("ORDER_STATUS"))
 					{
 						selected_orderStatusId = _dropDownData.get(position - 1).getShopId();
@@ -1680,7 +1682,7 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 				String shopNamee = jsnobj.getString("ShopName");
 				_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-			//shooNamestitle.add("Select Shop Name");
+			shooNamestitle.add("Select Shop Name");
 			if (_shopNamesData.size() > 0)
 			{
 				for (int i = 0; i < _shopNamesData.size(); i++)
@@ -1692,8 +1694,8 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		catch (Exception e)
 		{
 		}
-		/*SPINNER_SELECTION = "SHOP";
-		adapterDataAssigingToSpinner(shooNamestitle, SPINNER_SELECTION);*/
+		SPINNER_SELECTION = "SHOP";
+		adapterDataAssigingToSpinner(shooNamestitle, SPINNER_SELECTION);
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
 		shopName_autoComplete.setThreshold(1);
@@ -1809,10 +1811,10 @@ public class Invoice extends AppCompatActivity implements View.OnClickListener, 
 		{
 			areaName_sp.setAdapter(dataAdapter);
 		}
-		/*else if (spinnerSelction.equals("SHOP"))
+		else if (spinnerSelction.equals("SHOP"))
 		{
-			shopName_sp.setAdapter(dataAdapter);
-		}*/
+			shopname_spinner.setAdapter(dataAdapter);
+		}
 		else if (spinnerSelction.equals("ORDER_STATUS"))
 		{
 			orderStatus_sp.setAdapter(dataAdapter);

@@ -3,22 +3,24 @@ package com.fmcg.network;
 
 import android.util.Log;
 
-import com.fmcg.util.SharedPrefsUtil;
 
 public class HttpAdapter
 {
+	public static final String VERSION = "Test";
+//	public static final String VERSION = "Live";
+
+	//Live Url
+	//	public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
+
+	//Test Url
+	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
+
+
 	public static final String METHOD_GET = "GET";
 	public static final String METHOD_POST = "POST";
 	public static final String METHOD_DELETE = "DELETE";
 	public static final String METHOD_UPDATE = "UPDATE";
 	public static final String METHOD_PUT = "PUT";
-
-	//Live Url
-	public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
-	//Test Url
-//	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
-	//http://202.143.96.20/Orderstest/api/Services/
-
 
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	public static final String CONTENT_TYPE_APPLICATION_JSON = "application/json";

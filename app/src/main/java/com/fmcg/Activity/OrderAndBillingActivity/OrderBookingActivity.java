@@ -105,7 +105,7 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 	public final List<GetProductCategory> list = new ArrayList<GetProductCategory>();
 	private List<String> productDP_str;
 
-	public Spinner orderStatus_sp, category_sp, payment_sp, areaName_sp;
+	public Spinner orderStatus_sp, category_sp, payment_sp, areaName_sp, shopname_spinner;
 
 	public TextView uploadImage, shopClosed, submit;
 	private static TextView paymentSelected;
@@ -192,6 +192,7 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 		gettingDataFromServer();
 		selectAreaNameBind();
 		selectOrderStatus();
+		selectShopNames();
 
 	}
 
@@ -222,6 +223,8 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 		list_li = (LinearLayout) findViewById(R.id.items_li);
 		statusBaseLayout = (LinearLayout) findViewById(R.id.statusBaseLayout);
 
+		shopname_spinner = (Spinner) findViewById(R.id.shopname_spinner);
+
 	}
 
 	private void initializeActions()
@@ -243,6 +246,7 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 		areaName_sp.setOnItemSelectedListener(this);
 		orderStatus_sp.setOnItemSelectedListener(this);
 		payment_sp.setOnItemSelectedListener(this);
+		shopname_spinner.setOnItemSelectedListener(this);
 
 		submit.setOnClickListener(new View.OnClickListener()
 		{
@@ -579,6 +583,15 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		orderStatus_sp.setAdapter(dataAdapter_areaName);
 		//selectShopNameBind();
+	}
+
+	private void selectShopNames()
+	{
+		shooNamestitle.add("Select Shop Names");
+		ArrayAdapter<String> dataAdapter_shonames = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
+		                                                                     shooNamestitle);
+		dataAdapter_shonames.setDropDownViewResource(R.layout.list_item);
+		shopname_spinner.setAdapter(dataAdapter_shonames);
 	}
 
 
@@ -1013,6 +1026,10 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 				selectedSpinner = "PAYMENT_TYPE";
 				dropDownValueSelection(position, _paymentsSelectData, selectedSpinner);
 				break;
+			case R.id.shopname_spinner:
+				selectedSpinner = "SHOP_NAMES";
+				dropDownValueSelection(position, _shopNamesData, selectedSpinner);
+				break;
 		}
 
 	}
@@ -1025,7 +1042,6 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 			{
 				if (_dropDownData.size() != 0)
 				{
-
 					if (selectedSpinner.equals("AREA"))
 					{
 						selected_areaNameId = _dropDownData.get(position - 1).getShopId();
@@ -1073,6 +1089,22 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 							else if (paymentSelected.equalsIgnoreCase("Cheque"))
 							{
 								dailogBoxforPaymentSelection("Cheque");
+							}
+						}
+					}
+					if (selectedSpinner.equals("SHOP_NAMES"))
+					{
+						selected_ShopId = _dropDownData.get(position - 1).getShopId();
+						String selectedName = _dropDownData.get(position - 1).getShopName();
+						Log.e("entryShopName", selectedName);
+						for (int i = 0; i < _shopNamesData.size(); i++)
+						{
+							String availName = _shopNamesData.get(i).getShopName();
+							if (availName.equals(selectedName))
+							{
+								selected_ShopId = _shopNamesData.get(i).getShopId();
+								Log.e("selected_ShopId", selected_ShopId + "");
+								break;
 							}
 						}
 					}
@@ -1716,7 +1748,7 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 				String shopNamee = jsnobj.getString("ShopName");
 				_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-//			shooNamestitle.add("Select Shop Name");
+			shooNamestitle.add("Select Shop Name");
 			if (_shopNamesData.size() > 0)
 			{
 				for (int i = 0; i < _shopNamesData.size(); i++)
@@ -1728,8 +1760,10 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 		catch (Exception e)
 		{
 		}
+		SPINNER_SELECTION = "SHOP_NAMES";
+		adapterDataAssigingToSpinner(shooNamestitle, SPINNER_SELECTION);
 
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
+		/*ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shooNamestitle);
 		shopName_autoComplete.setThreshold(1);
 		shopName_autoComplete.setAdapter(adapter);
 		shopName_autoComplete.setTextColor(Color.BLACK);
@@ -1760,7 +1794,7 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 					e.printStackTrace();
 				}
 			}
-		});
+		});*/
 
 	}
 
@@ -1843,6 +1877,10 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 		else if (spinnerSelction.equals("PAYMENT_SELECT"))
 		{
 			payment_sp.setAdapter(dataAdapter);
+		}
+		else if (spinnerSelction.equals("SHOP_NAMES"))
+		{
+			shopname_spinner.setAdapter(dataAdapter);
 		}
 
 

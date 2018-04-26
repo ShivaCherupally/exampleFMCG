@@ -394,7 +394,6 @@ public class UpdateInvoiceActivity extends AppCompatActivity implements View.OnC
 			catch (Exception e)
 			{
 				e.printStackTrace();
-
 			}
 
 			return result;

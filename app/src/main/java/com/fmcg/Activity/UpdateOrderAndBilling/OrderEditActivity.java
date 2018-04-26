@@ -239,7 +239,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		availroutenoetxt.setVisibility(View.GONE);
 
 		areaName_sp = (Spinner) findViewById(R.id.areaName_spinner);
-//		shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
+		shopName_sp = (Spinner) findViewById(R.id.shopname_spinner);
 		orderStatus_sp = (Spinner) findViewById(R.id.order_status_spinner);
 		payment_sp = (Spinner) findViewById(R.id.payment_terms_spinner);
 
@@ -326,7 +326,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		zone_sp.setOnItemSelectedListener(this);
 		routeName_sp.setOnItemSelectedListener(this);
 		areaName_sp.setOnItemSelectedListener(this);
-//		shopName_sp.setOnItemSelectedListener(this);
+		shopName_sp.setOnItemSelectedListener(this);
 		orderStatus_sp.setOnItemSelectedListener(this);
 		payment_sp.setOnItemSelectedListener(this);
 
@@ -2274,16 +2274,16 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		{
 			areaName_sp.setAdapter(dataAdapter);
 		}
-		/*else if (spinnerSelction.equals("SHOP"))
+		else if (spinnerSelction.equals("SHOP"))
 		{
 			ArrayAdapter<String> dataAdapterShops = new ArrayAdapter<String>(this, R.layout.list_item, spinnerTitles);
 			dataAdapterShops.setDropDownViewResource(R.layout.list_item);
-//			shopName_sp.setAdapter(dataAdapter);
-			shopName_autoComplete.setThreshold(1);//will start working from first character
-			shopName_autoComplete.setAdapter(dataAdapterShops);//setting the adapter data into the AutoCompleteTextView
-			shopName_autoComplete.setTextColor(Color.BLACK);
-			shopName_autoComplete.setTextSize(16);
-		}*/
+			shopName_sp.setAdapter(dataAdapter);
+//			shopName_autoComplete.setThreshold(1);//will start working from first character
+//			shopName_autoComplete.setAdapter(dataAdapterShops);//setting the adapter data into the AutoCompleteTextView
+//			shopName_autoComplete.setTextColor(Color.BLACK);
+//			shopName_autoComplete.setTextSize(16);
+		}
 		else if (spinnerSelction.equals("ORDER_STATUS"))
 		{
 			orderStatus_sp.setAdapter(dataAdapter);
@@ -2456,8 +2456,8 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 
 	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
 	{
-		/*SPINNER_SELECTION = "SHOP";
-		adapterDataAssigingToSpinner(shoptypesNamestitle, SPINNER_SELECTION);*/
+		SPINNER_SELECTION = "SHOP";
+		adapterDataAssigingToSpinner(shoptypesNamestitle, SPINNER_SELECTION);
 		if (zoneTouchClick)
 		{
 			clearShopNamesData(shoptypesNamestitle);

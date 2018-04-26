@@ -115,7 +115,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 {
 	SharedPreferences sharedPreferences;
 	TextView mydayPlan, shop, profile, getshops, mylocation, new_customer, endTrip, remarks, logout, order, invoice, userName, shop_update, remainder,
-			viewList, pendingBills, mastercreation, month_summary;
+			viewList, pendingBills, mastercreation, month_summary, versiontxt;
 	ImageView profileIv;
 	DrawerLayout drawer;
 	Toolbar toolbar;
@@ -318,6 +318,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		pendingBills = (TextView) view.findViewById(R.id.pendingBills);
 		mastercreation = (TextView) view.findViewById(R.id.mastercreation);
 		month_summary = (TextView) view.findViewById(R.id.month_summary);
+
+		versiontxt = (TextView) view.findViewById(R.id.versiontxt);
+		versiontxt.setText(HttpAdapter.VERSION);
 
 
 		userName = (TextView) view.findViewById(R.id.userName);
@@ -728,7 +731,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	public void operationCompleted(NetworkResponse response)
 	{
 		Common.disMissDialog();
-//		Log.e("response", response.getResponseString());
 		if (response.getStatusCode() == 200)
 		{
 			try

@@ -20,35 +20,35 @@
             android:layout_marginTop="10dp"
             android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/availzonenametxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="@drawable/rect_bg_grey"
-                    android:layout_gravity="center_vertical"
-                    android:clickable="false"
-                    android:editable="false"
-                    android:focusable="false"
-                    android:padding="@dimen/eigth"
-                    android:text="Zone Name"
-                    android:textColor="@color/black"
-                    />
+            <EditText
+                android:id="@+id/availzonenametxt"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/rect_bg_grey"
+                android:clickable="false"
+                android:editable="false"
+                android:focusable="false"
+                android:padding="@dimen/eigth"
+                android:text="Zone Name"
+                android:textColor="@color/black"
+                />
 
-                <EditText
-                    android:id="@+id/availroutenoetxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:clickable="false"
-                    android:editable="false"
-                    android:focusable="false"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/rect_bg_grey"
-                    android:padding="@dimen/eigth"
-                    android:text="Route No"
-                    android:textColor="@color/black"
-                    />
+            <EditText
+                android:id="@+id/availroutenoetxt"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rect_bg_grey"
+                android:clickable="false"
+                android:editable="false"
+                android:focusable="false"
+                android:padding="@dimen/eigth"
+                android:text="Route No"
+                android:textColor="@color/black"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -58,14 +58,13 @@
                 android:orientation="horizontal">
 
                 <Spinner
-                    android:drawableLeft="@drawable/areaicon"
                     android:id="@+id/areaName_spinner"
                     style="@style/spinner_bg_style"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:drawableLeft="@drawable/areaicon"
                     android:hint="Area Name"
-
                     android:singleLine="true"/>
             </LinearLayout>
 
@@ -74,6 +73,17 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/rect_bg_black"
                 android:orientation="vertical">
+
+
+                <Spinner
+                    android:id="@+id/shopname_spinner"
+                    style="@style/spinner_bg_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:drawableLeft="@drawable/areaicon"
+                    android:hint="Shop Names"
+                    android:singleLine="true"/>
 
 
                 <AutoCompleteTextView
@@ -85,16 +95,17 @@
                     android:background="@drawable/rect_white"
                     android:hint="Enter Shop Name"
                     android:maxLines="1"
+                    android:layout_marginTop="5dp"
                     android:singleLine="true"
-                    android:textSize="17sp"
+                    android:visibility="gone"
                     android:textColor="@color/HeaderColor"
-                    android:textCursorDrawable="@drawable/color_cursor">
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:textSize="17sp">
 
                     <requestFocus/>
                 </AutoCompleteTextView>
 
             </LinearLayout>
-
 
 
             <LinearLayout
@@ -128,11 +139,11 @@
                     android:layout_width="170dp"
                     android:layout_height="170dp"
                     android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/emptycolor"
                     android:elevation="15dp"
                     android:visibility="gone"
-                    android:background="@color/emptycolor"
                     app:cardCornerRadius="@dimen/eigth"
-                    android:layout_marginTop="10dp"
                     >
 
                     <ImageView
@@ -149,8 +160,8 @@
                     android:id="@+id/items_li"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
                     android:background="@color/emptycolor"
+                    android:orientation="vertical"
                     android:visibility="visible">
 
                     <LinearLayout
@@ -217,13 +228,13 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginTop="10dp"
+                        android:background="@drawable/rect_white"
                         android:gravity="center_vertical"
                         android:paddingLeft="10dp"
-                        android:background="@drawable/rect_white"
                         android:text="Selecte Payment Status"
                         android:textColor="@color/HeaderColor"
-                        android:visibility="gone"
                         android:textSize="17sp"
+                        android:visibility="gone"
                         />
                 </LinearLayout>
             </LinearLayout>
@@ -238,13 +249,14 @@
                 android:gravity="start"
                 android:hint="Remarks"
                 android:inputType="text"
-                android:textSize="17sp"
                 android:padding="8dp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:textSize="17sp"/>
 
 
         </LinearLayout>
     </ScrollView>
+
     <LinearLayout
         android:id="@+id/bottomHRLID"
         android:layout_width="match_parent"

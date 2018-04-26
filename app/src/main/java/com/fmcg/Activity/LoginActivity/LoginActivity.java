@@ -1,5 +1,6 @@
 package com.fmcg.Activity.LoginActivity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,6 +63,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 	Animation uptodown, downtoup;
 	LinearLayout mainlayout, sublayout;
+
+	Activity mactivity;
+	boolean doubleBackToExitPressedOnce = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -292,5 +298,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 		}
 	}
 
+	@Override
+	public void onBackPressed()
+	{
 
+		 if (doubleBackToExitPressedOnce)
+		{
+			super.onBackPressed();
+			return;
+		}
+
+		this.doubleBackToExitPressedOnce = true;
+		Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+
+		new Handler().postDelayed(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				doubleBackToExitPressedOnce = false;
+			}
+		}, 2000);
+	}
 }

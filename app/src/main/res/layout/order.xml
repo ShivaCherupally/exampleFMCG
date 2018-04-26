@@ -168,6 +168,15 @@
                 android:background="@drawable/rect_bg_black"
                 android:orientation="vertical">
 
+                <Spinner
+                    android:id="@+id/shopname_spinner"
+                    style="@style/spinner_bg_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:hint="Shop Name"
+                    android:singleLine="true"/>
+
 
                 <AutoCompleteTextView
                     android:id="@+id/shopName_autoComplete"
@@ -177,14 +186,12 @@
                     android:layout_below="@+id/textView1"
                     android:background="@drawable/rect_white"
                     android:hint="Enter Shop Name"
-
-
                     android:maxLines="1"
                     android:singleLine="true"
+                    android:visibility="gone"
                     android:textColor="@color/HeaderColor"
                     android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="17sp">
-
                     <requestFocus/>
                 </AutoCompleteTextView>
 
