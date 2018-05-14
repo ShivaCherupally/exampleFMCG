@@ -162,6 +162,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 
 	AutoCompleteTextView shopName_autoComplete;
 	String AvailShopName = "";
+	String AvailAreaName = "";
 
 	boolean zoneTouchClick = false;
 	boolean routeTouchClick = false;
@@ -170,7 +171,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 	boolean orderStatusTouchClick = false;
 	boolean paymentTermsTouchClick = false;
 
-	EditText availzonenametxt, availroutenoetxt;
+	EditText availzonenametxt, availroutenoetxt, availableAreaName, availableSHopName;
 
 	Button pendingBtn;
 	String AvailableTotalAmount = "";
@@ -179,7 +180,7 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.order_invoice);
+		setContentView(R.layout.edit_invoice);
 		mContext = BillingEditActivity.this;
 		invoiceActivity = BillingEditActivity.this;
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -192,6 +193,8 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 		orderNumber_sp = (Spinner) findViewById(R.id.order_number);
 		pendingBtn = (Button) findViewById(R.id.pendingBtn);
 		pendingBtn.setOnClickListener(this);
+		availableSHopName = (EditText) findViewById(R.id.availableSHopName);
+		availableAreaName = (EditText) findViewById(R.id.availableAreaName);
 
 
 		/*zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
@@ -2003,6 +2006,19 @@ public class BillingEditActivity extends AppCompatActivity implements View.OnCli
 
 
 			AvailShopName = SharedPrefsUtil.getStringPreference(mContext, "KEY_SHOP_NAME");
+			if (AvailShopName != null && !AvailShopName.isEmpty())
+			{
+				availableSHopName.setText(AvailShopName);
+			}
+
+
+			AvailAreaName = SharedPrefsUtil.getStringPreference(mContext, "KEY_AREANAME");
+			if (AvailAreaName != null && !AvailAreaName.isEmpty())
+			{
+				availableAreaName.setText(AvailAreaName);
+			}
+			//KEY_AREANAME
+
 			selected_orderStatusId = SharedPrefsUtil.getStringPreference(mContext, "KEY_ORDER_STATUS_ID");
 			Log.e("AvailShopName", AvailShopName);
 			Log.e("selected_orderStatusId", selected_orderStatusId);

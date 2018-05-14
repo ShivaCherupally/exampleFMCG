@@ -302,13 +302,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 	public void onBackPressed()
 	{
 
-		 if (doubleBackToExitPressedOnce)
+		finishAffinity();
+		android.os.Process.killProcess(android.os.Process.myUid());
+
+		/* if (doubleBackToExitPressedOnce)
 		{
 			super.onBackPressed();
+			int pid = android.os.Process.myPid();
+			android.os.Process.killProcess(pid);
+			finishAffinity();
 			return;
 		}
 
 		this.doubleBackToExitPressedOnce = true;
+
 		Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
 
 		new Handler().postDelayed(new Runnable()
@@ -318,6 +325,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 			{
 				doubleBackToExitPressedOnce = false;
 			}
-		}, 2000);
+		}, 2000);*/
 	}
 }

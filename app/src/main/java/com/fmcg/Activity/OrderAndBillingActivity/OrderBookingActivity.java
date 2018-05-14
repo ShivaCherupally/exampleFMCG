@@ -181,6 +181,9 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 	private static long back_pressed;
 	boolean backIconClick = false;
 
+	String Selcted_AreaName = "";
+	String Selcted_Shopname = "";
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -713,7 +716,8 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_ZONE_ID", selected_zoneId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_ROUTE_ID", selected_roueId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_AREANAME_ID", selected_areaNameId);
-						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_NAME", shopName_autoComplete.getText().toString());
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_AREANAME", Selcted_AreaName);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_NAME", Selcted_Shopname);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_PAYMENT_ID", selected_paymentTermsId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_ORDER_STATUS_ID", selected_orderStatusId);
@@ -1045,6 +1049,7 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 					if (selectedSpinner.equals("AREA"))
 					{
 						selected_areaNameId = _dropDownData.get(position - 1).getShopId();
+						Selcted_AreaName = _dropDownData.get(position - 1).getShopName();
 						HttpAdapter.getShopDetailsDP(OrderBookingActivity.this, "shopName", selected_areaNameId);
 					}
 					else if (selectedSpinner.equals("ORDER_STATUS"))
@@ -1095,6 +1100,7 @@ public class OrderBookingActivity extends AppCompatActivity implements NetworkOp
 					if (selectedSpinner.equals("SHOP_NAMES"))
 					{
 						selected_ShopId = _dropDownData.get(position - 1).getShopId();
+						Selcted_Shopname = _dropDownData.get(position - 1).getShopName();
 						String selectedName = _dropDownData.get(position - 1).getShopName();
 						Log.e("entryShopName", selectedName);
 						for (int i = 0; i < _shopNamesData.size(); i++)

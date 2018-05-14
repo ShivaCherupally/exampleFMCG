@@ -103,6 +103,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			createdby, landmark, payment, emailId, descriptionShop, gstNoEt;
 	private Button submit;
 	private Spinner routecd, religion, payment_sp, shoptype_sp, areaName_sp, zone_sp, shopName_spinner, gst_sp;
+	Spinner shoppNamesSpnn;
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	private GoogleApiClient mGoogleApiClient;
 	private LocationRequest mLocationRequest;
@@ -169,6 +170,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	LinearLayout creditDaysLayout;
 	DatePicker dateselect;
 	Button dateaccept;
+	String selectedAreaName = "";
 
 	boolean paymentTouch = false;
 
@@ -293,6 +295,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 	private void initializeActions()
 	{
 		defaultAreaNameSelect();
+		defaultShopNameSelect();
 
 		//HttpAdapter.getShopDetailsDP(UpdateCustomerNewActivity.this, "shopNames", "0");
 		HttpAdapter.getRouteDetails(UpdateCustomerNewActivity.this, "routeName", "0");
@@ -416,6 +419,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		shoptype_sp = (Spinner) findViewById(R.id.shop_type_dp);
 		religion = (Spinner) findViewById(R.id.religion);
 		payment_sp = (Spinner) findViewById(R.id.payment_sp);
+		shoppNamesSpnn = (Spinner) findViewById(R.id.shoppNamesSpnn);
 		emailId = (EditText) findViewById(R.id.emailId);
 		availroutenoetxt = (EditText) findViewById(R.id.availroutenoetxt);
 		zoneDetailsDP = new ArrayList<>();
@@ -439,6 +443,16 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, R.layout.spinner_item, areaNamestitle);
 		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 		areaName_sp.setAdapter(dataAdapter_areaName);
+	}
+
+	private void defaultShopNameSelect()
+	{
+		selected_ShopId = "";
+		shoptypesNamestitle.clear();
+		shoptypesNamestitle.add("Select Shop Name");
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, R.layout.spinner_item, shoptypesNamestitle);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+		shoppNamesSpnn.setAdapter(dataAdapter_areaName);
 	}
 
 	@Override
@@ -486,7 +500,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 						areaNameSpinnerAdapter(jsonArray);
 					}
 				}
-
+//{"ShopId":312,"ShopCode":"B00300003000312","ShopCategoryId":1,
+// "ShopCategoryName":"A Category Shops","ShopName":"Arjun Singh KGS","ShopDescription":"Arjun Singh KGS","AreaId":30,"AreaName":"KATTEL MANDI","OwnerName":"Arjun Singh KGS","Address":"","MobileNumber":"","PhoneNumber":"","Latitude":"","Longitude":"","GPSL":"","LocationName":"","ShopTypeId":1,"ShopTypeName":"Wholesale","ReligionId":1,
+// "ReligionName":"Hindu","PaymentTermsId":2,"PaymentName":"Cash","Active":"Y","Pincode":null}
 				else if (response.getTag().equals("shopNames"))
 				{
 					if (mJson.getString("Message").equals("SuccessFull"))
@@ -545,13 +561,13 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 						else
 						{
 							Toast.makeText(UpdateCustomerNewActivity.this, "Details Failed to Updated", Toast.LENGTH_SHORT).show();
-							dailogBoxAfterSubmit();
+//							dailogBoxAfterSubmit();
 						}
 					}
 					else
 					{
 						Toast.makeText(UpdateCustomerNewActivity.this, "Details Failed to Updated", Toast.LENGTH_SHORT).show();
-						dailogBoxAfterSubmit();
+//						dailogBoxAfterSubmit();
 					}
 				}
 
@@ -807,6 +823,9 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_NAME", shopname.getText().toString());
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_PAYMENT_ID", selected_paymentNameId);
 						Log.e("shopIdserver", selected_ShopId + "");
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_AREANAME", selectedAreaName);
+
+
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_DESCRIPTION", descriptionShop.getText().toString());
 						Toast.makeText(UpdateCustomerNewActivity.this, "Successfully Shop Details Updated..", Toast.LENGTH_SHORT).show();
@@ -1358,6 +1377,7 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 					if (position != 0)
 					{
 						selected_areaNameId = _areaNamesData.get(position - 1).getShopId();
+						selectedAreaName = _areaNamesData.get(position - 1).getShopName();
 						HttpAdapter.getShopDetailsDP(UpdateCustomerNewActivity.this, "shopNames", selected_areaNameId);
 					}
 					else
@@ -1388,10 +1408,11 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 			{
 				JSONObject jsnobj = jsonArray.getJSONObject(i);
 				String shopId = jsnobj.getString("ShopId");
+				//ShopName
 				String shopNamee = jsnobj.getString("ShopName");
 				_shopNamesData.add(new ShopNamesData(shopId, shopNamee));
 			}
-//			shooNamestitle.add("Select Shop Name");
+			shooNamestitle.add("Select Shop Name");
 			if (_shopNamesData.size() > 0)
 			{
 				for (int i = 0; i < _shopNamesData.size(); i++)
@@ -1409,9 +1430,10 @@ public class UpdateCustomerNewActivity extends AppCompatActivity implements View
 		ArrayAdapter<String> dataAdapter_shopNames = new ArrayAdapter<String>(this, R.layout.spinner_item, shooNamestitle);
 		dataAdapter_shopNames.setDropDownViewResource(R.layout.list_item);
 
-		shopName_spinner.setAdapter(dataAdapter_shopNames);
+//		shopName_spinner.setAdapter(dataAdapter_shopNames);
+		shoppNamesSpnn.setAdapter(dataAdapter_shopNames);
 
-		shopName_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		shoppNamesSpnn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)

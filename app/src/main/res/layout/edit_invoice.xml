@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/invoice_number"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/rect_bg_black"
+            android:gravity="center_vertical"
+            android:paddingBottom="10dp"
+            android:paddingLeft="33dp"
+            android:text="InvoiceNumber"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/rect_bg_grey"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/zone_name_spinner"
+                style="@style/spinner_bg_style"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@color/empty"
+                android:hint="Zone Name"
+                android:singleLine="true"
+                android:visibility="gone"/>
+
+            <!--<EditText-->
+            <!--android:id="@+id/availzonenametxt"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:background="@color/empty"-->
+            <!--android:clickable="false"-->
+            <!--android:editable="false"-->
+            <!--android:focusable="false"-->
+
+            <!--android:padding="@dimen/eigth"-->
+
+            <!--android:text="Zone Name"-->
+            <!--android:textColor="@color/black"-->
+            <!--/>-->
+
+            <EditText
+                android:id="@+id/availzonenametxt"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/empty"
+                android:clickable="false"
+                android:editable="false"
+                android:focusable="false"
+                android:padding="@dimen/eigth"
+                android:text="Zone"
+                android:textColor="@color/black"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/rect_bg_grey"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/routeName_spinner"
+                style="@style/spinner_bg_style"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+
+                android:layout_gravity="center"
+                android:background="@color/empty"
+                android:hint="Route Name"
+                android:singleLine="true"
+
+                android:visibility="gone"/>
+
+            <EditText
+                android:id="@+id/availroutenoetxt"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/empty"
+                android:clickable="false"
+                android:editable="false"
+                android:focusable="false"
+                android:padding="@dimen/eigth"
+                android:text="Route No"
+                android:textColor="@color/black"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/rect_bg_black"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/areaName_spinner"
+                style="@style/spinner_bg_style"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:hint="Area Name"
+                android:singleLine="true"
+                android:visibility="gone"/>
+
+            <EditText
+                android:id="@+id/availableAreaName"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/empty"
+                android:clickable="false"
+                android:editable="false"
+                android:focusable="false"
+                android:padding="@dimen/eigth"
+                android:text="Area Name"
+                android:textColor="@color/black"
+                />
+        </LinearLayout>
+
+
+        <!--<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/rect_bg_black"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/shopname_spinner"
+                style="@style/spinner_bg_style"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:hint="Shop Name"
+                android:singleLine="true"/>
+        </LinearLayout>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rect_bg_black"
+            android:orientation="vertical">
+
+
+            <Spinner
+                android:id="@+id/shopname_spinner"
+                style="@style/spinner_bg_style"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:hint="Shop Names"
+                android:singleLine="true"
+                android:visibility="gone"/>
+
+            <EditText
+                android:id="@+id/availableSHopName"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/empty"
+                android:clickable="false"
+                android:editable="false"
+                android:focusable="false"
+                android:padding="@dimen/eigth"
+                android:text="Shop Name"
+                android:textColor="@color/black"
+                />
+
+            <AutoCompleteTextView
+                android:id="@+id/shopName_autoComplete"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/textView1"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/rect_white"
+                android:hint="Enter Shop Name"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/HeaderColor"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:visibility="gone">
+
+                <requestFocus/>
+            </AutoCompleteTextView>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/pendingBtn"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/submit_rectangle"
+                android:backgroundTint="@color/progresscolor"
+                android:gravity="center"
+                android:text="Pending Bill"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/rect_bg_black"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/paybillamounttxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/rect_bg_black"
+                    android:gravity="center"
+                    android:text="0.0"
+
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_bg_black"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/order_number"
+                style="@style/spinner_bg_style"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:hint="Order Number"
+                android:singleLine="true"/>
+        </LinearLayout>
+
+        <DatePicker
+            android:id="@+id/dpResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_bg_black"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/order_status_spinner"
+                style="@style/spinner_bg_style"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:hint="Order Type"
+                android:singleLine="true"/>
+        </LinearLayout>
+
+        <TableLayout android:id="@+id/tableRow1"
+                     xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"
+                     android:layout_gravity="center_horizontal|center"
+                     android:layout_marginTop="10dp"
+                     android:background="@drawable/edittext_whites"
+                     android:gravity="center_horizontal"
+                     android:padding="8dp"
+                     android:shrinkColumns="*"
+                     android:stretchColumns="*">
+
+            <!--<TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:layout_weight="1"
+                    android:background="@drawable/table_view_border_3"
+                    android:gravity="center"
+                    android:padding="10dip"
+                    android:singleLine="true"
+                    android:text="Prod"
+                    android:textColor="#ffffff"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:background="@drawable/table_view_border_3"
+                    android:gravity="center"
+                    android:padding="10dip"
+                    android:singleLine="true"
+                    android:text="Prc"
+                    android:textColor="#ffffff"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:background="@drawable/table_view_border_3"
+                    android:gravity="center"
+                    android:padding="10dip"
+                    android:singleLine="true"
+                    android:text="Qty"
+                    android:textColor="#ffffff"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:background="@drawable/table_view_border_3"
+                    android:gravity="center"
+                    android:padding="10dip"
+                    android:singleLine="true"
+                    android:text="Fres"
+                    android:textColor="#ffffff"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:background="@drawable/table_view_border_3"
+                    android:gravity="center"
+                    android:padding="10dip"
+                    android:singleLine="true"
+                    android:text="TaxAmt"
+                    android:textColor="#ffffff"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:background="@drawable/table_view_border_3"
+                    android:gravity="center"
+                    android:padding="10dip"
+                    android:singleLine="true"
+                    android:text="STot"
+                    android:textColor="#ffffff"/>
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+            </TableRow>-->
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/totalAmount"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_bg_black"
+            android:gravity="center"
+            android:textColor="@color/black"/>
+
+        <EditText
+            android:id="@+id/paidAmount"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_bg_black"
+            android:gravity="start|center"
+            android:hint="Paid Amount "
+
+            android:inputType="numberDecimal"
+            android:paddingLeft="8dp"
+            android:textColor="@color/black"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_bg_black"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/payment_terms_spinner"
+                style="@style/spinner_bg_style"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:hint="Payment Terms Name"
+                android:singleLine="true"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/paymentSelectedvalue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_white"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textColor="@color/HeaderColor"
+            android:textSize="17sp"
+            />
+
+        <EditText
+            android:id="@+id/Remarks_et"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rect_bg_black"
+            android:gravity="start"
+            android:hint="Remarks"
+            android:inputType="text|textCapSentences"
+            android:textColor="@color/black"
+            android:visibility="gone"/>
+
+
+        <CheckBox
+            android:id="@+id/isInvoice"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/isInvoice"
+            android:textSize="18sp"
+            android:visibility="gone"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:descendantFocusability="afterDescendants"
+            android:focusableInTouchMode="false"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/cancel"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/submit_rectangle"
+                android:clickable="true"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:text="Cancel Order"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                />
+
+
+            <TextView
+                android:id="@+id/submit"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/submit_rectangle"
+                android:clickable="true"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:text="@string/submit"
+                android:textAllCaps="true"
+
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -110,7 +110,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 	public final List<GetProductCategory> list = new ArrayList<GetProductCategory>();
 	private List<String> productDP_str;
 
-	public Spinner shopName_sp, orderStatus_sp, category_sp, payment_sp, routeName_sp, areaName_sp, routecd, zone_sp;
+	public Spinner shopName_sp, orderStatus_sp, category_sp, payment_sp, routeName_sp, areaName_sp, routecd, zone_sp, shopnamesSpinner;
 
 	public CheckBox isShopClosed, ordered, invoice;
 	public TextView uploadImage, shopClosed, orderDate, submit, tvDisplayDate, orderNumInvoice;
@@ -185,7 +185,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 	String selected_orderStatusId = "";
 	String selected_paymentTermsId = "";
 	String SPINNER_SELECTION = "";
-	String AvailShopName = "";
+	String AvailShopName = "", AvailAreaName = "";
 
 	AutoCompleteTextView shopName_autoComplete;
 	String selectedName = "";
@@ -199,7 +199,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 	boolean orderStatusTouchClick = false;
 	boolean paymentTermsTouchClick = false;
 
-	EditText availzonenametxt, availroutenoetxt;
+	EditText availzonenametxt, availroutenoetxt, shopNametxt, areaNametxt;
 	LinearLayout statusBaseLayout;
 	String orderStatusName = "";
 	ProgressDialog progressdailog;
@@ -221,6 +221,9 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 
 		category_sp = (Spinner) findViewById(R.id.product_category);
 		zone_sp = (Spinner) findViewById(R.id.zone_name_spinner);
+
+		shopnamesSpinner = (Spinner) findViewById(R.id.shopnamesSpinner);
+
 //		((TextView) zone_sp.getChildAt(0)).setTextColor(getResources().getColor(R.color.HeaderColor));
 		zone_sp.setVisibility(View.VISIBLE);
 		zone_sp.setEnabled(false);
@@ -254,6 +257,9 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 
 		shopName_autoComplete = (AutoCompleteTextView) findViewById(R.id.shopName_autoComplete);
 
+		areaNametxt = (EditText) findViewById(R.id.areaNametxt);
+		shopNametxt = (EditText) findViewById(R.id.shopNametxt);
+
 		paymentSelected = (TextView) findViewById(R.id.paymentSelected);
 		paymentSelected.setVisibility(View.GONE);
 		remarksET = (EditText) findViewById(R.id.Remarks_et);
@@ -263,6 +269,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		statusBaseLayout = (LinearLayout) findViewById(R.id.statusBaseLayout);
 		selectRouteNameBind();
 		selectAreaNameBind();
+		selectShopNameBind();
 //		pendingBtn = (Button) findViewById(R.id.pendingBtn);
 
 		if (Utility.isOnline(mContext))
@@ -669,6 +676,15 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		//selectShopNameBind();
 	}
 
+	private void selectShopNameBind()
+	{
+		shooNamestitle.add("Select Shop Name");
+		ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shooNamestitle);
+		dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+		shopnamesSpinner.setAdapter(dataAdapter_areaName);
+		//selectShopNameBind();
+	}
+
 	@Override
 	public void operationCompleted(NetworkResponse response)
 	{
@@ -805,11 +821,13 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_ZONE_ID", selected_zoneId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_ROUTE_ID", selected_roueId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_AREANAME_ID", selected_areaNameId);
-						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_NAME", shopName_autoComplete.getText().toString());
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_NAME", AvailShopName);
+						SharedPrefsUtil.setStringPreference(mContext, "KEY_AREANAME", AvailAreaName);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_PAYMENT_ID", selected_paymentTermsId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_SHOP_ID", selected_ShopId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_ORDER_STATUS_ID", selected_orderStatusId);
 						SharedPrefsUtil.setStringPreference(mContext, "KEY_DESCRIPTION", remarksET.getText().toString());
+
 						Toast.makeText(mContext, "Successfully Your Order Booked.", Toast.LENGTH_SHORT).show();
 						Toast.makeText(mContext, "Your Order Number is " + mJson.getString("Data"), Toast.LENGTH_SHORT).show();
 						dailogBoxAfterSubmit();
@@ -2059,7 +2077,8 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 			areaNamestitle.add("Select Area Name");
 			shoptypesNamestitle.clear();
 			shopName_autoComplete.setText("");
-			ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, areaNamestitle);
+			ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
+			                                                                     areaNamestitle);
 			dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
 			areaName_sp.setAdapter(dataAdapter_areaName);
 
@@ -2276,9 +2295,17 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		}
 		else if (spinnerSelction.equals("SHOP"))
 		{
-			ArrayAdapter<String> dataAdapterShops = new ArrayAdapter<String>(this, R.layout.list_item, spinnerTitles);
+			ArrayAdapter<String> dataAdapterShops = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
+			                                                                 spinnerTitles);
 			dataAdapterShops.setDropDownViewResource(R.layout.list_item);
 			shopName_sp.setAdapter(dataAdapter);
+			shopnamesSpinner.setAdapter(dataAdapterShops);
+
+		/*	ArrayAdapter<String> dataAdapter_areaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
+			                                                                     areaNamestitle);
+			dataAdapter_areaName.setDropDownViewResource(R.layout.list_item);
+			areaName_sp.setAdapter(dataAdapter_areaName);*/
+
 //			shopName_autoComplete.setThreshold(1);//will start working from first character
 //			shopName_autoComplete.setAdapter(dataAdapterShops);//setting the adapter data into the AutoCompleteTextView
 //			shopName_autoComplete.setTextColor(Color.BLACK);
@@ -2394,7 +2421,18 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 
 			Log.e("selected_ShopId", selected_ShopId + "shopId");
 
+			AvailAreaName = SharedPrefsUtil.getStringPreference(mContext, "KEY_AREANAME");
 			AvailShopName = SharedPrefsUtil.getStringPreference(mContext, "KEY_SHOP_NAME");
+
+			if (AvailShopName != null && !AvailShopName.isEmpty())
+			{
+				shopNametxt.setText(AvailShopName);
+			}
+
+			if (AvailAreaName != null && !AvailAreaName.isEmpty())
+			{
+				areaNametxt.setText(AvailAreaName);
+			}
 
 
 			if (selected_zoneId != null && !selected_zoneId.isEmpty())
@@ -2456,8 +2494,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 
 	private void shopNameSpinnerAdapter(final JSONArray jsonArray)
 	{
-		SPINNER_SELECTION = "SHOP";
-		adapterDataAssigingToSpinner(shoptypesNamestitle, SPINNER_SELECTION);
+
 		if (zoneTouchClick)
 		{
 			clearShopNamesData(shoptypesNamestitle);
@@ -2482,7 +2519,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 					String shopNamee = jsnobj.getString("ShopName");
 					_shoptypesData.add(new ShopNamesData(String.valueOf(shopId), shopNamee));
 				}
-//			shoptypesNamestitle.add("Select Shop Name");
+				shoptypesNamestitle.add("Select Shop Name");
 				if (_shoptypesData.size() > 0)
 				{
 					for (int i = 0; i < _shoptypesData.size(); i++)
@@ -2494,9 +2531,12 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 			catch (Exception e)
 			{
 			}
-			shopDataBinding(shoptypesNamestitle);
+			SPINNER_SELECTION = "SHOP";
+			adapterDataAssigingToSpinner(shoptypesNamestitle, SPINNER_SELECTION);
+
+//			shopDataBinding(shoptypesNamestitle);
 		}
-		shopName_autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener()
+		/*shopName_autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener()
 		{
 			@Override
 			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
@@ -2531,7 +2571,7 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 					e.printStackTrace();
 				}
 			}
-		});
+		});*/
 	}
 
 	private void clearShopNamesData(final ArrayList<String> shoptypesNamestitles)
@@ -2540,6 +2580,8 @@ public class OrderEditActivity extends AppCompatActivity implements NetworkOpera
 		selected_ShopId = "";
 		_shoptypesData.clear();
 		shopName_autoComplete.setText("");
+
+
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, shoptypesNamestitle);
 		shopName_autoComplete.setThreshold(1);
 		shopName_autoComplete.setAdapter(adapter);

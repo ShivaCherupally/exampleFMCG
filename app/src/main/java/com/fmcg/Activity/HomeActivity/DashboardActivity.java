@@ -869,14 +869,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 					stopService(intent);
 					sharedPreferences = getSharedPreferences("userlogin", Context.MODE_PRIVATE);
 					SharedPreferences.Editor editor = sharedPreferences.edit();
+					SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART", "ENABLE");
 					editor.clear();
 					editor.commit();
-					SharedPrefsUtil.setStringPreference(getApplicationContext(), "LOCATION_SERVICE_RESTART", "ENABLE");
-					Intent setIntent = new Intent(this, LoginActivity.class);
-					setIntent.addCategory(Intent.CATEGORY_HOME);
-					setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					Intent setIntent = new Intent(DashboardActivity.this, LoginActivity.class);
+//					setIntent.addCategory(Intent.CATEGORY_HOME);
+//					setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(setIntent);
-					finish();
+//					finish();
+
+
 					/*	}
 						catch (Exception e)
 						{

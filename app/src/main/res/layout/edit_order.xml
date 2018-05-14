@@ -126,21 +126,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:hint="Area Name"
-                    android:visibility="gone"
                     android:singleLine="true"/>
-                <EditText
-                    android:id="@+id/areaNametxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/empty"
-                    android:clickable="false"
-                    android:editable="false"
-                    android:focusable="false"
-                    android:padding="@dimen/eigth"
-                    android:text="Area Name"
-                    android:textColor="@color/black"
-                    />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -155,21 +141,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:visibility="gone"
+                    android:hint="Area Name"
                     android:singleLine="true"/>
-                <EditText
-                    android:id="@+id/shopNametxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/empty"
-                    android:clickable="false"
-                    android:editable="false"
-                    android:focusable="false"
-                    android:padding="@dimen/eigth"
-                    android:text="Shop Name"
-                    android:textColor="@color/black"
-                    />
             </LinearLayout>
 
 

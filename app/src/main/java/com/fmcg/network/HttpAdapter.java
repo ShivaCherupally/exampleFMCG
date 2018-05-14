@@ -6,14 +6,14 @@ import android.util.Log;
 
 public class HttpAdapter
 {
-	public static final String VERSION = "Test";
+	public static final String VERSION = "Live";
 //	public static final String VERSION = "Live";
 
 	//Live Url
-	//	public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
+		public static final String BASE_URL = "http://202.143.96.20/Orderstest/api/Services/";
 
 	//Test Url
-	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
+//	public static final String BASE_URL = "http://202.143.96.20/BRIGHTUDYOGWEBAPI/api/Services/";
 
 
 	public static final String METHOD_GET = "GET";
